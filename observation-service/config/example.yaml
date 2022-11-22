@@ -1,0 +1,23 @@
+HTTPPort: 8081
+GRPCPort: 9001
+
+DeploymentConfig:
+  EnvironmentType: local
+
+NewRelicConfig:
+  Enabled: false
+  AppName: observation-service
+  License: newrelic-license-secret
+  IgnoreStatusCodes:
+    - 400
+    - 401
+    - 403
+    - 404
+    - 405
+    - 412
+
+SentryConfig:
+  Enabled: false
+  DSN: xxx.xxx.xxx
+  Labels:
+    App: observation-service
