@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  # Automatically run CI on Release and Pre-Release tags and main branch
+  # (except changes to non-relevant paths)
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+    branches:
+      - main
+
+  # Automatically run CI on branches, that have active PR opened
+  pull_request:
+    branches:
+      - main
+  
+  # To make it possible to trigger e2e CI workflow for any arbitrary git ref
+  workflow_dispatch:
+
+env:
+  ARTIFACT_RETENTION_DAYS: 7
+  GO_VERSION: 1.18
+  GO_LINT_VERSION: v1.45.2
+
+jobs:
+  lint-go:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        id: setup-go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@v3
+      - name: Lint Common module
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: ${{ env.GO_LINT_VERSION }}
+          working-directory: common
+          args: --timeout 3m --verbose
+      - name: Lint Observation Service module
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: ${{ env.GO_LINT_VERSION }}
+          working-directory: observation-service
+          skip-pkg-cache: true
+          skip-build-cache: true
+          args: --timeout 3m --verbose
+
+  unit-tests-observation-service:
+    runs-on: ubuntu-latest
+    env:
+      GOPATH: ${{ github.workspace }}/api/.go
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Test Dependencies
+        uses: ./.github/actions/setup-tests
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      
+      - name: Run Observation Service test
+        run: make test-observation-service

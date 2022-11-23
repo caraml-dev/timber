@@ -1,0 +1,94 @@
+package config
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
+	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestDefaultConfigs(t *testing.T) {
+	emptyInterfaceMap := make(map[string]interface{})
+	emptyStringMap := make(map[string]string)
+	defaultCfg := Config{
+		HTTPPort: 8081,
+		GRPCPort: 9001,
+		DeploymentConfig: DeploymentConfig{
+			EnvironmentType: "local",
+		},
+		NewRelicConfig: newrelic.Config{
+			Enabled:           false,
+			AppName:           "",
+			License:           "",
+			IgnoreStatusCodes: []int{},
+			Labels:            emptyInterfaceMap,
+		},
+		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
+	}
+	cfg, err := Load()
+	require.NoError(t, err)
+	assert.Equal(t, defaultCfg, *cfg)
+	assert.Equal(t, ":8081", cfg.ListenAddress("http"))
+	assert.Equal(t, ":9001", cfg.ListenAddress("grpc"))
+}
+
+// TestLoadConfigFiles verifies that when multiple configs are passed in
+// they are consumed in the correct order
+func TestLoadConfigFiles(t *testing.T) {
+	tests := []struct {
+		name        string
+		configFiles []string
+		errString   string
+		expected    Config
+	}{
+		{
+			name:        "success | load multiple config files",
+			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
+			expected: Config{
+				HTTPPort: 8002,
+				GRPCPort: 9002,
+				DeploymentConfig: DeploymentConfig{
+					EnvironmentType: "dev",
+				},
+				NewRelicConfig: newrelic.Config{
+					Enabled:           true,
+					AppName:           "observation-service",
+					License:           "amazing-license",
+					IgnoreStatusCodes: []int{403, 404, 405},
+					Labels:            map[string]interface{}{"env": "dev"},
+				},
+				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "observation-service", "env": "dev"}},
+			},
+		},
+		{
+			name:        "failure | bad config",
+			configFiles: []string{"../testdata/config3.yaml"},
+			errString: strings.Join([]string{"failed to update viper config: failed to unmarshal config values: 1 error(s) decoding:\n\n* cannot ",
+				"parse 'HTTPPort' as int: strconv.ParseInt: parsing \"abc\": invalid syntax"}, ""),
+		},
+		{
+			name:        "failure | file read",
+			configFiles: []string{"../testdata/config4.yaml"},
+			errString: strings.Join([]string{"failed to update viper config: failed to read config from file '../testdata/config4.yaml': ",
+				"While parsing config: yaml: unmarshal errors:\n  line 1: cannot unmarshal !!str `bad_config` ",
+				"into map[string]interface {}"}, ""),
+		},
+	}
+
+	for _, data := range tests {
+		t.Run(data.name, func(t *testing.T) {
+			cfg, err := Load(data.configFiles...)
+			if data.errString == "" {
+				// Success
+				require.NoError(t, err)
+				assert.Equal(t, data.expected, *cfg)
+			} else {
+				assert.EqualError(t, err, data.errString)
+				assert.Nil(t, cfg)
+			}
+		})
+	}
+}

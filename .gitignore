@@ -1,0 +1,20 @@
+# IDE tooling
+.idea
+.vscode
+
+# Test coverage
+cover.out.tmp
+cover.out
+
+# Protos
+.protoc/
+protoc-*
+
+# Dependency directories
+vendor/
+bin/
+*.pyc
+
+# Misc
+.DS_Store
+tags

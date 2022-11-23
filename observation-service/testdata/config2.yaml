@@ -1,0 +1,4 @@
+SentryConfig:
+  Labels:
+    app: observation-service
+    env: dev

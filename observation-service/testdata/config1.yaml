@@ -1,0 +1,20 @@
+HTTPPort: 8002
+GRPCPort: 9002
+
+NewRelicConfig:
+  Enabled: true
+  AppName: observation-service
+  License: amazing-license
+  IgnoreStatusCodes:
+    - 403
+    - 404
+    - 405
+  Labels:
+    env: dev
+
+SentryConfig:
+  Labels:
+    app: observation-service
+
+DeploymentConfig:
+  EnvironmentType: dev
