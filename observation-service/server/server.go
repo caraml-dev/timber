@@ -13,7 +13,6 @@ import (
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
@@ -29,9 +28,8 @@ var (
 type Server struct {
 	upiv1.UnimplementedObservationServiceServer
 
-	appContext        *appcontext.AppContext
-	config            *config.Config
-	observationClient upiv1.ObservationServiceClient
+	appContext *appcontext.AppContext
+	config     *config.Config
 	// cleanup captures all the actions to be executed on server shut down
 	cleanup []func()
 }
@@ -52,22 +50,11 @@ func NewServer(configFiles []string) (*Server, error) {
 		return nil, customErr.Newf(customErr.GetType(err), fmt.Sprintf("Failed initializing AppContext: %v", err))
 	}
 
-	// Create gRPC client
-	dialOpts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	}
-	conn, err := grpc.Dial(cfg.ListenAddress("grpc"), dialOpts...)
-	if err != nil {
-		return nil, err
-	}
-	observationClient := upiv1.NewObservationServiceClient(conn)
-
 	// Create gRPC server
 	srv := &Server{
-		observationClient: observationClient,
-		appContext:        appCtx,
-		config:            cfg,
-		cleanup:           cleanup,
+		appContext: appCtx,
+		config:     cfg,
+		cleanup:    cleanup,
 	}
 
 	return srv, nil

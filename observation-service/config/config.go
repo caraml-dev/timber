@@ -10,8 +10,8 @@ import (
 )
 
 type Config struct {
-	HTTPPort int `envconfig:"CARAML_HTTP_PORT" default:"8081"`
-	GRPCPort int `envconfig:"CARAML_GRPC_PORT" default:"9001"`
+	HTTPPort int `envconfig:"APP_HTTP_PORT" default:"8081"`
+	GRPCPort int `envconfig:"APP_GRPC_PORT" default:"9001"`
 
 	DeploymentConfig DeploymentConfig
 	NewRelicConfig   newrelic.Config

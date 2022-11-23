@@ -40,6 +40,8 @@ func ParseConfig(spec interface{}, filepaths []string) error {
 	return nil
 }
 
+// reflectViperConfig recursively traverse over a map and convert nested values into
+// environment variables delimited with a full-stop (.)
 func reflectViperConfig(prefix string, spec interface{}, v *viper.Viper) error {
 	s := reflect.ValueOf(spec)
 	s = s.Elem()
