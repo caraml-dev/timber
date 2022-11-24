@@ -13,6 +13,10 @@ func TestNewAppContext(t *testing.T) {
 	cfg := &config.Config{}
 	appCtx, err := NewAppContext(cfg)
 
+	expectedAppContext := &AppContext{
+		ObservationLogger: appCtx.ObservationLogger,
+	}
+
 	require.NoError(t, err)
-	assert.Equal(t, &AppContext{}, appCtx)
+	assert.Equal(t, expectedAppContext, appCtx)
 }

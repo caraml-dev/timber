@@ -2,7 +2,6 @@ package appcontext
 
 import (
 	"log"
-	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
 	"github.com/caraml-dev/observation-service/observation-service/logger"
@@ -17,8 +16,7 @@ func NewAppContext(cfg *config.Config) (*AppContext, error) {
 	var observationLogger *logger.ObservationLogger
 	observationLogger, err := logger.NewObservationLogger(
 		cfg.LogConsumerConfig,
-		cfg.LogConsumerConfig.QueueLength,
-		time.Duration(cfg.LogConsumerConfig.FlushIntervalSeconds),
+		cfg.LogProducerConfig,
 	)
 	if err != nil {
 		return nil, err

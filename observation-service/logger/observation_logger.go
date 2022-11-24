@@ -6,45 +6,42 @@ import (
 	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
-	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
+	"github.com/caraml-dev/observation-service/observation-service/models"
 )
 
 type LogConsumer interface {
-	Consume(queueChannel chan *upiv1.ObservationLog) error
+	Consume(logsChannel chan *models.ObservationLogEntry) error
+}
+
+type LogProducer interface {
+	Produce(log []*models.ObservationLogEntry) error
 }
 
 type ObservationLogger struct {
-	queue    chan *upiv1.ObservationLog
-	consumer LogConsumer
+	logsChannel chan *models.ObservationLogEntry
+	consumer    LogConsumer
+	producer    LogProducer
 
 	flushInterval time.Duration
 }
 
 func (l *ObservationLogger) Consume(ctx context.Context) error {
-	// TODO: Pass queueLength from config
-	queueLength := 100
-	queueChannel := make(chan *upiv1.ObservationLog, queueLength)
-
-	err := l.consumer.Consume(queueChannel)
+	err := l.consumer.Consume(l.logsChannel)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (l *ObservationLogger) Append(log *upiv1.ObservationLog) error {
-	l.queue <- log
-	return nil
-}
-
+// worker is a goroutine that periodically calls Produce method
 func (l *ObservationLogger) worker() {
 	for range time.Tick(l.flushInterval) {
-		logs := make([]*upiv1.ObservationLog, 0)
+		logs := make([]*models.ObservationLogEntry, 0)
 
 	collection:
 		for {
 			select {
-			case log := <-l.queue:
+			case log := <-l.logsChannel:
 				logs = append(logs, log)
 			default:
 				break collection
@@ -52,50 +49,77 @@ func (l *ObservationLogger) worker() {
 		}
 
 		if len(logs) > 0 {
-			// TODO: Implement publishing of Observation logs
-			fmt.Println(logs)
+			l.producer.Produce(logs)
 		}
 	}
 }
 
-func NewNoopObservationLogger() (*ObservationLogger, error) {
-	return nil, nil
+type NoopLogConsumer struct{}
+
+func NewNoopLogConsumer() (*NoopLogConsumer, error) {
+	return &NoopLogConsumer{}, nil
+}
+
+func (k *NoopLogConsumer) Consume(logsChannel chan *models.ObservationLogEntry) error {
+	return nil
+}
+
+type NoopLogProducer struct{}
+
+func NewNoopLogProducer() (*NoopLogProducer, error) {
+	return &NoopLogProducer{}, nil
+}
+
+func (k *NoopLogProducer) Produce(log []*models.ObservationLogEntry) error {
+	return nil
 }
 
 func NewObservationLogger(
 	consumerConfig config.LogConsumerConfig,
-	queueLength int,
-	flushInterval time.Duration,
+	producerConfig config.LogProducerConfig,
 ) (*ObservationLogger, error) {
-	c := make(chan *upiv1.ObservationLog, queueLength)
-
 	var err error
 	var consumer LogConsumer
 	// Instantiate Consumer
 	switch consumerConfig.Kind {
+	case config.LoggerNoopConsumer:
+		consumer, err = NewNoopLogConsumer()
 	case config.LoggerKafkaConsumer:
 		consumer, err = NewKafkaLogConsumer(
 			consumerConfig.KafkaConsumerConfig.Brokers,
 			consumerConfig.KafkaConsumerConfig.Topic,
 			consumerConfig.KafkaConsumerConfig.ConnectTimeoutMS,
-			c,
 		)
-		if err != nil {
-			return nil, err
-		}
 	default:
 		return nil, fmt.Errorf("invalid consumer (%s) was provided", consumerConfig.Kind)
 	}
-
-	// TODO: Instantiate Producer
-
-	logger := &ObservationLogger{
-		queue:         c,
-		consumer:      consumer,
-		flushInterval: flushInterval,
+	if err != nil {
+		return nil, err
 	}
 
-	// go logger.worker()
+	// Instantiate Producer
+	var producer LogProducer
+	c := make(chan *models.ObservationLogEntry, producerConfig.QueueLength)
+	switch producerConfig.Kind {
+	case config.LoggerNoopProducer:
+		producer, err = NewNoopLogProducer()
+	case config.LoggerStdOutProducer:
+		producer, err = NewStdOutLogProducer()
+	default:
+		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	logger := &ObservationLogger{
+		logsChannel:   c,
+		consumer:      consumer,
+		producer:      producer,
+		flushInterval: time.Duration(producerConfig.FlushIntervalSeconds),
+	}
+
+	go logger.worker()
 
 	return logger, nil
 }

@@ -17,6 +17,7 @@ type Config struct {
 	NewRelicConfig    newrelic.Config
 	SentryConfig      sentry.Config
 	LogConsumerConfig LogConsumerConfig
+	LogProducerConfig LogProducerConfig
 }
 
 // DeploymentConfig captures the config related to the deployment of Observation Service
@@ -24,17 +25,16 @@ type DeploymentConfig struct {
 	EnvironmentType string `default:"local"`
 }
 
-// ObservationLoggerConsumerKind captures the consumer config related of Observation Service logs
+// ObservationLoggerConsumerKind captures the consumer config for reading Observation Service logs
 type ObservationLoggerConsumerKind = string
 
 const (
+	LoggerNoopConsumer  ObservationLoggerConsumerKind = ""
 	LoggerKafkaConsumer ObservationLoggerConsumerKind = "kafka"
 )
 
 type LogConsumerConfig struct {
-	Kind                 ObservationLoggerConsumerKind `default:"kafka"`
-	QueueLength          int                           `default:"100"`
-	FlushIntervalSeconds int                           `default:"1"`
+	Kind ObservationLoggerConsumerKind `default:""`
 
 	KafkaConsumerConfig *KafkaConsumerConfig
 }
@@ -43,6 +43,20 @@ type KafkaConsumerConfig struct {
 	Brokers          string
 	Topic            string
 	ConnectTimeoutMS int `default:"1000"`
+}
+
+// ObservationLoggerProducerKind captures the producer config for flushing Observation Service logs
+type ObservationLoggerProducerKind = string
+
+const (
+	LoggerNoopProducer   ObservationLoggerProducerKind = ""
+	LoggerStdOutProducer ObservationLoggerProducerKind = "stdout"
+)
+
+type LogProducerConfig struct {
+	Kind                 ObservationLoggerProducerKind `default:""`
+	QueueLength          int                           `default:"100"`
+	FlushIntervalSeconds int                           `default:"1"`
 }
 
 // ListenAddress returns the Observation API port

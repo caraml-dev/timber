@@ -27,3 +27,6 @@ LogConsumerConfig:
   KafkaConsumerConfig:
     Brokers: localhost:9092
     Topic: test-topic
+
+LogProducerConfig:
+  Kind: stdout
