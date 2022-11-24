@@ -61,6 +61,10 @@ func NewServer(configFiles []string) (*Server, error) {
 }
 
 func (srv *Server) Start() {
+	log.Println("Starting background services...")
+	backgroundErrChannel := make(chan error, 1)
+	cancelBackgroundSvc := srv.startBackgroundService(backgroundErrChannel)
+
 	// Bind to all interfaces at port cfg.port
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", srv.config.GRPCPort))
 	if err != nil {
@@ -100,18 +104,21 @@ func (srv *Server) Start() {
 
 	select {
 	case <-stopCh:
-		fmt.Println("Got signal to stop server")
+		log.Println("Got signal to stop server")
 	case err := <-errCh:
-		fmt.Println(fmt.Errorf("Failed to run server %v", err))
+		log.Println(fmt.Errorf("Failed to run server %v", err))
+	case backgroundErr := <-backgroundErrChannel:
+		log.Println("Background services encounter an error", backgroundErr.Error())
 	}
 
+	cancelBackgroundSvc()
 	grpcServer.GracefulStop()
-	fmt.Println("Stopped gRPC server...")
+	log.Println("Stopped gRPC server...")
 }
 
 func (s *Server) LogObservations(ctx context.Context, in *upiv1.LogObservationsRequest) (*upiv1.LogObservationsResponse, error) {
 	// TODO: Implement eager observations logging
-	fmt.Println("Called caraml.upi.v1.ObservationService/LogObservations")
+	log.Println("Called caraml.upi.v1.ObservationService/LogObservations")
 	logObservationsResponse := &upiv1.LogObservationsResponse{}
 	return logObservationsResponse, nil
 }
@@ -126,4 +133,16 @@ func setupSignalHandler() (stopCh <-chan struct{}) {
 	}()
 
 	return stop
+}
+
+func (srv *Server) startBackgroundService(errChannel chan error) context.CancelFunc {
+	backgroundSvcCtx, cancel := context.WithCancel(context.Background())
+	go func() {
+		err := srv.appContext.ObservationLogger.Consume(backgroundSvcCtx)
+		if err != nil {
+			errChannel <- err
+		}
+	}()
+
+	return cancel
 }

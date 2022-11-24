@@ -13,14 +13,36 @@ type Config struct {
 	HTTPPort int `envconfig:"APP_HTTP_PORT" default:"8081"`
 	GRPCPort int `envconfig:"APP_GRPC_PORT" default:"9001"`
 
-	DeploymentConfig DeploymentConfig
-	NewRelicConfig   newrelic.Config
-	SentryConfig     sentry.Config
+	DeploymentConfig  DeploymentConfig
+	NewRelicConfig    newrelic.Config
+	SentryConfig      sentry.Config
+	LogConsumerConfig LogConsumerConfig
 }
 
 // DeploymentConfig captures the config related to the deployment of Observation Service
 type DeploymentConfig struct {
 	EnvironmentType string `default:"local"`
+}
+
+// ObservationLoggerConsumerKind captures the consumer config related of Observation Service logs
+type ObservationLoggerConsumerKind = string
+
+const (
+	LoggerKafkaConsumer ObservationLoggerConsumerKind = "kafka"
+)
+
+type LogConsumerConfig struct {
+	Kind                 ObservationLoggerConsumerKind `default:"kafka"`
+	QueueLength          int                           `default:"100"`
+	FlushIntervalSeconds int                           `default:"1"`
+
+	KafkaConsumerConfig *KafkaConsumerConfig
+}
+
+type KafkaConsumerConfig struct {
+	Brokers          string
+	Topic            string
+	ConnectTimeoutMS int `default:"1000"`
 }
 
 // ListenAddress returns the Observation API port
