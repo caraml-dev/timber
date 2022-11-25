@@ -56,7 +56,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 		},
 	)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	// Generate record
@@ -189,9 +189,6 @@ func (suite *ObservationServiceTestSuite) TestLogKafkaSourceToKafkaSink() {
 	// Produce to Kafka Source Topic
 	produceToKafka(timestamp)
 
-	// Sleep as it takes time for Kafka message to reach integration-test-sink topic
-	time.Sleep(300 * time.Second)
-
 	// Read from Kafka Sink Topic
 	consumer, err := kafka.NewConsumer(
 		&kafka.ConfigMap{
@@ -230,11 +227,11 @@ W:
 	consumer.Close()
 	suite.Require().NoError(err)
 	expectedObservation := fmt.Sprintf(
-		"{\"prediction_id\":\"integration-test-prediction-id\", \"row_id\":\"integration-test-row-id\","+
-			" \"target_name\":\"target-name\", \"observation_values\":[{\"name\":\"integration-test-variable\","+
-			" \"type\":\"TYPE_STRING\", \"string_value\":\"integration-test-variable-value\"}],"+
-			" \"observation_context\":[{\"name\":\"project\", \"type\":\"TYPE_STRING\", \"string_value\":\"integration-test\"}],"+
-			" \"observation_timestamp\":\"%s\"}",
+		"{\"prediction_id\":\"integration-test-prediction-id\",\"row_id\":\"integration-test-row-id\","+
+			"\"target_name\":\"target-name\",\"observation_values\":[{\"name\":\"integration-test-variable\","+
+			"\"type\":\"TYPE_STRING\",\"string_value\":\"integration-test-variable-value\"}],"+
+			"\"observation_context\":[{\"name\":\"project\",\"type\":\"TYPE_STRING\",\"string_value\":\"integration-test\"}],"+
+			"\"observation_timestamp\":\"%s\"}",
 		currentTime.UTC().Format(time.RFC3339),
 	)
 	suite.Require().Equal(observationLogEntryJson, expectedObservation)

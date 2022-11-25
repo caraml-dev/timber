@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -17,7 +16,6 @@ func TestObservationLogEntryValue(t *testing.T) {
 	// Get loggable data and validate
 	kvPairs, err := logEntry.Value()
 	require.NoError(t, err)
-	fmt.Println(kvPairs)
 	assert.Equal(t, map[string]interface{}{
 		"observation_timestamp": "2000-02-01T04:05:06.000000007Z",
 		"prediction_id":         "1",

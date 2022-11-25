@@ -57,6 +57,8 @@ func newKafkaConsumer(
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Brokers,
 		"group.id":          "observation-service",
+		// At-least-once semantics
+		"auto.offset.reset": "earliest",
 	})
 	if err != nil {
 		return nil, err
@@ -99,8 +101,6 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 					log.Println(err)
 				}
 				convertedLogMessage := types.NewObservationLogEntry(decodedLogMessage)
-				log.Println("============================= DEBUG @KafkaLogConsumer - Consume =============================")
-				log.Println(convertedLogMessage)
 
 				logsChannel <- convertedLogMessage
 			case kafka.PartitionEOF:

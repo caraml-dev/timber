@@ -43,7 +43,6 @@ func (l *ObservationLogger) worker() {
 		for {
 			select {
 			case log := <-l.logsChannel:
-				fmt.Println("========================== DEBUG @ObservationLogger - Consume logsChannel ==========================")
 				logs = append(logs, log)
 			default:
 				break collection
@@ -51,7 +50,6 @@ func (l *ObservationLogger) worker() {
 		}
 
 		if len(logs) > 0 {
-			fmt.Println("========================== DEBUG @ObservationLogger - Produce logsChannel ==========================")
 			err := l.producer.Produce(logs)
 			if err != nil {
 				log.Println(err)
