@@ -1,5 +1,4 @@
-HTTPPort: 8002
-GRPCPort: 9002
+Port: 9002
 
 NewRelicConfig:
   Enabled: true

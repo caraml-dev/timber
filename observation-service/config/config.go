@@ -10,8 +10,7 @@ import (
 )
 
 type Config struct {
-	HTTPPort int `envconfig:"APP_HTTP_PORT" default:"8081"`
-	GRPCPort int `envconfig:"APP_GRPC_PORT" default:"9001"`
+	Port int `envconfig:"PORT" default:"9001"`
 
 	DeploymentConfig  DeploymentConfig
 	NewRelicConfig    newrelic.Config
@@ -71,11 +70,8 @@ type LogProducerConfig struct {
 }
 
 // ListenAddress returns the Observation API port
-func (c *Config) ListenAddress(portType string) string {
-	if portType == "http" {
-		return fmt.Sprintf(":%d", c.HTTPPort)
-	}
-	return fmt.Sprintf(":%d", c.GRPCPort)
+func (c *Config) ListenAddress() string {
+	return fmt.Sprintf(":%d", c.Port)
 }
 
 func Load(filepaths ...string) (*Config, error) {

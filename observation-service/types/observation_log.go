@@ -1,4 +1,4 @@
-package models
+package types
 
 import (
 	"encoding/json"
@@ -13,6 +13,8 @@ type ObservationLogKey struct {
 	EventTimestamp int64
 }
 
+// ObservationLogEntry is an alias for upiv1.ObservationLog proto, to support extension of default
+// methods such as MarshalJSON and Value, to consolidate conversions required to write to different sinks
 type ObservationLogEntry upiv1.ObservationLog
 
 // MarshalJSON implements custom Marshaling for ObservationLogEntry, using the underlying proto def

@@ -7,19 +7,19 @@ import (
 	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/models"
+	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
 type LogConsumer interface {
-	Consume(logsChannel chan *models.ObservationLogEntry) error
+	Consume(logsChannel chan *types.ObservationLogEntry) error
 }
 
 type LogProducer interface {
-	Produce(log []*models.ObservationLogEntry) error
+	Produce(log []*types.ObservationLogEntry) error
 }
 
 type ObservationLogger struct {
-	logsChannel chan *models.ObservationLogEntry
+	logsChannel chan *types.ObservationLogEntry
 	consumer    LogConsumer
 	producer    LogProducer
 
@@ -37,7 +37,7 @@ func (l *ObservationLogger) Consume(ctx context.Context) error {
 // worker is a goroutine that periodically calls Produce method
 func (l *ObservationLogger) worker() {
 	for range time.Tick(l.flushInterval) {
-		logs := make([]*models.ObservationLogEntry, 0)
+		logs := make([]*types.ObservationLogEntry, 0)
 
 	collection:
 		for {
@@ -66,7 +66,7 @@ func NewNoopLogConsumer() (*NoopLogConsumer, error) {
 	return &NoopLogConsumer{}, nil
 }
 
-func (k *NoopLogConsumer) Consume(logsChannel chan *models.ObservationLogEntry) error {
+func (k *NoopLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) error {
 	return nil
 }
 
@@ -76,7 +76,7 @@ func NewNoopLogProducer() (*NoopLogProducer, error) {
 	return &NoopLogProducer{}, nil
 }
 
-func (k *NoopLogProducer) Produce(log []*models.ObservationLogEntry) error {
+func (k *NoopLogProducer) Produce(log []*types.ObservationLogEntry) error {
 	return nil
 }
 
@@ -91,11 +91,7 @@ func NewObservationLogger(
 	case config.LoggerNoopConsumer:
 		consumer, err = NewNoopLogConsumer()
 	case config.LoggerKafkaConsumer:
-		consumer, err = NewKafkaLogConsumer(
-			consumerConfig.KafkaConsumerConfig.Brokers,
-			consumerConfig.KafkaConsumerConfig.Topic,
-			consumerConfig.KafkaConsumerConfig.ConnectTimeoutMS,
-		)
+		consumer, err = NewKafkaLogConsumer(*consumerConfig.KafkaConsumerConfig)
 	default:
 		return nil, fmt.Errorf("invalid consumer (%s) was provided", consumerConfig.Kind)
 	}
@@ -105,20 +101,14 @@ func NewObservationLogger(
 
 	// Instantiate Producer
 	var producer LogProducer
-	c := make(chan *models.ObservationLogEntry, producerConfig.QueueLength)
+	c := make(chan *types.ObservationLogEntry, producerConfig.QueueLength)
 	switch producerConfig.Kind {
 	case config.LoggerNoopProducer:
 		producer, err = NewNoopLogProducer()
 	case config.LoggerStdOutProducer:
 		producer, err = NewStdOutLogProducer()
 	case config.LoggerKafkaProducer:
-		producer, err = NewKafkaLogProducer(
-			producerConfig.KafkaProducerConfig.Brokers,
-			producerConfig.KafkaProducerConfig.Topic,
-			producerConfig.KafkaProducerConfig.MaxMessageBytes,
-			producerConfig.KafkaProducerConfig.CompressionType,
-			producerConfig.KafkaProducerConfig.ConnectTimeoutMS,
-		)
+		producer, err = NewKafkaLogProducer(*producerConfig.KafkaProducerConfig)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}

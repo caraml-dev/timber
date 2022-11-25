@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/caraml-dev/observation-service/observation-service/models"
-
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+
+	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
 type kafkaProducer interface {
@@ -21,26 +22,22 @@ type KafkaLogPublisher struct {
 }
 
 func NewKafkaLogProducer(
-	kafkaBrokers string,
-	kafkaTopic string,
-	kafkaMaxMessageBytes int,
-	kafkaCompressionType string,
-	KafkaConnectTimeoutMS int,
+	cfg config.KafkaProducerConfig,
 ) (*KafkaLogPublisher, error) {
 	// Create Kafka Producer
-	producer, err := newKafkaProducer(kafkaBrokers, kafkaMaxMessageBytes, kafkaCompressionType)
+	producer, err := newKafkaProducer(cfg.Brokers, cfg.MaxMessageBytes, cfg.CompressionType)
 	if err != nil {
 		return nil, err
 	}
 	// Test that we are able to query the broker on the topic. If the topic
 	// does not already exist on the broker, this should create it.
-	_, err = producer.GetMetadata(&kafkaTopic, false, KafkaConnectTimeoutMS)
+	_, err = producer.GetMetadata(&cfg.Topic, false, cfg.ConnectTimeoutMS)
 	if err != nil {
-		return nil, fmt.Errorf("error Querying topic %s from Kafka broker(s): %s", kafkaTopic, err)
+		return nil, fmt.Errorf("error Querying topic %s from Kafka broker(s): %s", cfg.Topic, err)
 	}
 	// Create Kafka Logger
 	return &KafkaLogPublisher{
-		topic:    kafkaTopic,
+		topic:    cfg.Topic,
 		producer: producer,
 	}, nil
 }
@@ -63,7 +60,7 @@ func newKafkaProducer(
 	return producer, nil
 }
 
-func (p *KafkaLogPublisher) Produce(logs []*models.ObservationLogEntry) error {
+func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 	deliveryChan := make(chan kafka.Event, 1)
 	defer close(deliveryChan)
 
@@ -97,10 +94,10 @@ func (p *KafkaLogPublisher) Produce(logs []*models.ObservationLogEntry) error {
 }
 
 func newKafkaLogEntry(
-	log *models.ObservationLogEntry,
+	log *types.ObservationLogEntry,
 ) (keyBytes []byte, valueBytes []byte, err error) {
 	// Create the Kafka key
-	key := &models.ObservationLogKey{
+	key := &types.ObservationLogKey{
 		EventTimestamp: time.Now().Unix(),
 	}
 	// Marshal the key

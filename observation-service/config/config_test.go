@@ -14,8 +14,7 @@ func TestDefaultConfigs(t *testing.T) {
 	emptyInterfaceMap := make(map[string]interface{})
 	emptyStringMap := make(map[string]string)
 	defaultCfg := Config{
-		HTTPPort: 8081,
-		GRPCPort: 9001,
+		Port: 9001,
 		DeploymentConfig: DeploymentConfig{
 			EnvironmentType: "local",
 		},
@@ -51,8 +50,7 @@ func TestDefaultConfigs(t *testing.T) {
 	cfg, err := Load()
 	require.NoError(t, err)
 	assert.Equal(t, defaultCfg, *cfg)
-	assert.Equal(t, ":8081", cfg.ListenAddress("http"))
-	assert.Equal(t, ":9001", cfg.ListenAddress("grpc"))
+	assert.Equal(t, ":9001", cfg.ListenAddress())
 }
 
 // TestLoadConfigFiles verifies that when multiple configs are passed in
@@ -68,8 +66,7 @@ func TestLoadConfigFiles(t *testing.T) {
 			name:        "success | load multiple config files",
 			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
 			expected: Config{
-				HTTPPort: 8002,
-				GRPCPort: 9002,
+				Port: 9002,
 				DeploymentConfig: DeploymentConfig{
 					EnvironmentType: "dev",
 				},
@@ -107,7 +104,7 @@ func TestLoadConfigFiles(t *testing.T) {
 			name:        "failure | bad config",
 			configFiles: []string{"../testdata/config3.yaml"},
 			errString: strings.Join([]string{"failed to update viper config: failed to unmarshal config values: 1 error(s) decoding:\n\n* cannot ",
-				"parse 'HTTPPort' as int: strconv.ParseInt: parsing \"abc\": invalid syntax"}, ""),
+				"parse 'Port' as int: strconv.ParseInt: parsing \"abc\": invalid syntax"}, ""),
 		},
 		{
 			name:        "failure | file read",

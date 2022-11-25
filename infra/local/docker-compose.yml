@@ -28,11 +28,3 @@ services:
     volumes:
       - ./update_run.sh:/tmp/update_run.sh
     command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
-
-  fluentd:
-    image: fluent/fluentd:v1.15-1
-    volumes:
-      - ./fluentd:/fluentd/etc
-    ports:
-      - "24224:24224"
-      - "24224:24224/udp"

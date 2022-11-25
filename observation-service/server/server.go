@@ -66,9 +66,9 @@ func (srv *Server) Start() {
 	cancelBackgroundSvc := srv.startBackgroundService(backgroundErrChannel)
 
 	// Bind to all interfaces at port cfg.port
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", srv.config.GRPCPort))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", srv.config.Port))
 	if err != nil {
-		fmt.Println(fmt.Errorf("failed to listen the port %d", srv.config.GRPCPort))
+		fmt.Println(fmt.Errorf("failed to listen the port %d", srv.config.Port))
 		return
 	}
 
@@ -96,7 +96,7 @@ func (srv *Server) Start() {
 	}()
 
 	go func() {
-		fmt.Printf("Serving at port: %d\n", srv.config.GRPCPort)
+		fmt.Printf("Serving at port: %d\n", srv.config.Port)
 		if err := m.Serve(); err != nil {
 			errCh <- customErr.Wrapf(err, "CMux server failed")
 		}

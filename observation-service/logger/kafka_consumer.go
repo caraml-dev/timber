@@ -12,7 +12,8 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/caraml-dev/observation-service/observation-service/models"
+	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
 type kafkaConsumer interface {
@@ -28,23 +29,21 @@ type KafkaLogConsumer struct {
 }
 
 func NewKafkaLogConsumer(
-	kafkaBrokers string,
-	kafkaTopic string,
-	KafkaConnectTimeoutMS int,
+	cfg config.KafkaConsumerConfig,
 ) (*KafkaLogConsumer, error) {
-	consumer, err := newKafkaConsumer(kafkaBrokers, kafkaTopic, KafkaConnectTimeoutMS)
+	consumer, err := newKafkaConsumer(cfg)
 	if err != nil {
 		return nil, err
 	}
 	// Test that we are able to query the broker on the topic. If the topic
 	// does not already exist on the broker, this should create it.
-	_, err = consumer.GetMetadata(&kafkaTopic, false, KafkaConnectTimeoutMS)
+	_, err = consumer.GetMetadata(&cfg.Topic, false, cfg.ConnectTimeoutMS)
 	if err != nil {
-		return nil, fmt.Errorf("error Querying topic %s from Kafka broker(s): %s", kafkaTopic, err)
+		return nil, fmt.Errorf("error Querying topic %s from Kafka broker(s): %s", cfg.Topic, err)
 	}
 
 	kafkaLogConsumer := &KafkaLogConsumer{
-		topic:    kafkaTopic,
+		topic:    cfg.Topic,
 		consumer: consumer,
 	}
 
@@ -53,19 +52,17 @@ func NewKafkaLogConsumer(
 
 // newKafkaConsumer creates a new Kafka consumer and subscribes to relevant Kafka topic
 func newKafkaConsumer(
-	kafkaBrokers string,
-	kafkaTopic string,
-	KafkaConnectTimeoutMS int,
+	cfg config.KafkaConsumerConfig,
 ) (kafkaConsumer, error) {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": kafkaBrokers,
+		"bootstrap.servers": cfg.Brokers,
 		"group.id":          "observation-service",
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	err = consumer.Subscribe(kafkaTopic, nil)
+	err = consumer.Subscribe(cfg.Topic, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +70,7 @@ func newKafkaConsumer(
 	return consumer, nil
 }
 
-func (k *KafkaLogConsumer) Consume(logsChannel chan *models.ObservationLogEntry) error {
+func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) error {
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 
@@ -101,7 +98,7 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *models.ObservationLogEntry)
 				if err != nil {
 					log.Println(err)
 				}
-				convertedLogMessage := models.NewObservationLogEntry(decodedLogMessage)
+				convertedLogMessage := types.NewObservationLogEntry(decodedLogMessage)
 				log.Println("============================= DEBUG @KafkaLogConsumer - Consume =============================")
 				log.Println(convertedLogMessage)
 
