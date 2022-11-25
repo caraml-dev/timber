@@ -21,12 +21,3 @@ SentryConfig:
   DSN: xxx.xxx.xxx
   Labels:
     App: observation-service
-
-LogConsumerConfig:
-  Kind: kafka
-  KafkaConsumerConfig:
-    Brokers: localhost:9092
-    Topic: test-topic
-
-LogProducerConfig:
-  Kind: stdout

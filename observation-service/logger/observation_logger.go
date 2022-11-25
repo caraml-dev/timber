@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
@@ -42,6 +43,7 @@ func (l *ObservationLogger) worker() {
 		for {
 			select {
 			case log := <-l.logsChannel:
+				fmt.Println("========================== DEBUG @ObservationLogger - Consume logsChannel ==========================")
 				logs = append(logs, log)
 			default:
 				break collection
@@ -49,7 +51,11 @@ func (l *ObservationLogger) worker() {
 		}
 
 		if len(logs) > 0 {
-			l.producer.Produce(logs)
+			fmt.Println("========================== DEBUG @ObservationLogger - Produce logsChannel ==========================")
+			err := l.producer.Produce(logs)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }
@@ -105,6 +111,14 @@ func NewObservationLogger(
 		producer, err = NewNoopLogProducer()
 	case config.LoggerStdOutProducer:
 		producer, err = NewStdOutLogProducer()
+	case config.LoggerKafkaProducer:
+		producer, err = NewKafkaLogProducer(
+			producerConfig.KafkaProducerConfig.Brokers,
+			producerConfig.KafkaProducerConfig.Topic,
+			producerConfig.KafkaProducerConfig.MaxMessageBytes,
+			producerConfig.KafkaProducerConfig.CompressionType,
+			producerConfig.KafkaProducerConfig.ConnectTimeoutMS,
+		)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}

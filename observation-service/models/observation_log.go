@@ -3,10 +3,15 @@ package models
 import (
 	"encoding/json"
 
-	"github.com/caraml-dev/observation-service/observation-service/errors"
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 	"google.golang.org/protobuf/encoding/protojson"
+
+	"github.com/caraml-dev/observation-service/observation-service/errors"
 )
+
+type ObservationLogKey struct {
+	EventTimestamp int64
+}
 
 type ObservationLogEntry upiv1.ObservationLog
 

@@ -40,7 +40,7 @@ func TestObservationLogEntryValue(t *testing.T) {
 	}, kvPairs)
 }
 
-// Helper methods for resultlog package tests
+// Helper methods for models package tests
 func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 
 	// Create a ObservationLogEntry record and add the data
@@ -48,14 +48,14 @@ func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 	rowId := "1"
 	targetName := "target_variable"
 	observationContext := []*upiv1.Variable{
-		&upiv1.Variable{
+		{
 			Name:        "project",
 			Type:        upiv1.Type_TYPE_STRING,
 			StringValue: "local",
 		},
 	}
 	observationValues := []*upiv1.Variable{
-		&upiv1.Variable{
+		{
 			Name:        "variable1",
 			Type:        upiv1.Type_TYPE_STRING,
 			StringValue: "variable_value",

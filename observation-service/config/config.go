@@ -45,18 +45,29 @@ type KafkaConsumerConfig struct {
 	ConnectTimeoutMS int `default:"1000"`
 }
 
+type KafkaProducerConfig struct {
+	Brokers          string
+	Topic            string
+	MaxMessageBytes  int    `default:"1048588"`
+	CompressionType  string `default:"none"`
+	ConnectTimeoutMS int    `default:"1000"`
+}
+
 // ObservationLoggerProducerKind captures the producer config for flushing Observation Service logs
 type ObservationLoggerProducerKind = string
 
 const (
 	LoggerNoopProducer   ObservationLoggerProducerKind = ""
 	LoggerStdOutProducer ObservationLoggerProducerKind = "stdout"
+	LoggerKafkaProducer  ObservationLoggerProducerKind = "kafka"
 )
 
 type LogProducerConfig struct {
 	Kind                 ObservationLoggerProducerKind `default:""`
 	QueueLength          int                           `default:"100"`
 	FlushIntervalSeconds int                           `default:"1"`
+
+	KafkaProducerConfig *KafkaProducerConfig
 }
 
 // ListenAddress returns the Observation API port

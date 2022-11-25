@@ -27,6 +27,26 @@ func TestDefaultConfigs(t *testing.T) {
 			Labels:            emptyInterfaceMap,
 		},
 		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
+		LogConsumerConfig: LogConsumerConfig{
+			Kind: "",
+			KafkaConsumerConfig: &KafkaConsumerConfig{
+				Brokers:          "",
+				Topic:            "",
+				ConnectTimeoutMS: 1000,
+			},
+		},
+		LogProducerConfig: LogProducerConfig{
+			Kind:                 "",
+			QueueLength:          100,
+			FlushIntervalSeconds: 1,
+			KafkaProducerConfig: &KafkaProducerConfig{
+				Brokers:          "",
+				Topic:            "",
+				MaxMessageBytes:  1048588,
+				CompressionType:  "none",
+				ConnectTimeoutMS: 1000,
+			},
+		},
 	}
 	cfg, err := Load()
 	require.NoError(t, err)
@@ -61,6 +81,26 @@ func TestLoadConfigFiles(t *testing.T) {
 					Labels:            map[string]interface{}{"env": "dev"},
 				},
 				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "observation-service", "env": "dev"}},
+				LogConsumerConfig: LogConsumerConfig{
+					Kind: "",
+					KafkaConsumerConfig: &KafkaConsumerConfig{
+						Brokers:          "",
+						Topic:            "",
+						ConnectTimeoutMS: 1000,
+					},
+				},
+				LogProducerConfig: LogProducerConfig{
+					Kind:                 "",
+					QueueLength:          100,
+					FlushIntervalSeconds: 1,
+					KafkaProducerConfig: &KafkaProducerConfig{
+						Brokers:          "",
+						Topic:            "",
+						MaxMessageBytes:  1048588,
+						CompressionType:  "none",
+						ConnectTimeoutMS: 1000,
+					},
+				},
 			},
 		},
 		{

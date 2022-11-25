@@ -1,0 +1,13 @@
+LogConsumerConfig:
+  Kind: kafka
+  KafkaConsumerConfig:
+    Brokers: localhost:9092
+    Topic: integration-test-source
+    ConnectTimeoutMS: 20000
+
+LogProducerConfig:
+  Kind: kafka
+  KafkaProducerConfig:
+    Brokers: localhost:9092
+    Topic: integration-test-sink
+    ConnectTimeoutMS: 20000

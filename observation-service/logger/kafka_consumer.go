@@ -15,7 +15,6 @@ import (
 	"github.com/caraml-dev/observation-service/observation-service/models"
 )
 
-// kafkaConsumer contains GetMetadata and Produce methods for mocking in unit tests
 type kafkaConsumer interface {
 	GetMetadata(*string, bool, int) (*kafka.Metadata, error)
 	Subscribe(string, kafka.RebalanceCb) error
@@ -36,6 +35,12 @@ func NewKafkaLogConsumer(
 	consumer, err := newKafkaConsumer(kafkaBrokers, kafkaTopic, KafkaConnectTimeoutMS)
 	if err != nil {
 		return nil, err
+	}
+	// Test that we are able to query the broker on the topic. If the topic
+	// does not already exist on the broker, this should create it.
+	_, err = consumer.GetMetadata(&kafkaTopic, false, KafkaConnectTimeoutMS)
+	if err != nil {
+		return nil, fmt.Errorf("error Querying topic %s from Kafka broker(s): %s", kafkaTopic, err)
 	}
 
 	kafkaLogConsumer := &KafkaLogConsumer{
@@ -97,6 +102,8 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *models.ObservationLogEntry)
 					log.Println(err)
 				}
 				convertedLogMessage := models.NewObservationLogEntry(decodedLogMessage)
+				log.Println("============================= DEBUG @KafkaLogConsumer - Consume =============================")
+				log.Println(convertedLogMessage)
 
 				logsChannel <- convertedLogMessage
 			case kafka.PartitionEOF:
