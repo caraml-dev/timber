@@ -35,16 +35,10 @@ const (
 type LogConsumerConfig struct {
 	Kind ObservationLoggerConsumerKind `default:""`
 
-	KafkaConsumerConfig *KafkaConsumerConfig
+	KafkaConfig *KafkaConfig
 }
 
-type KafkaConsumerConfig struct {
-	Brokers          string
-	Topic            string
-	ConnectTimeoutMS int `default:"1000"`
-}
-
-type KafkaProducerConfig struct {
+type KafkaConfig struct {
 	Brokers          string
 	Topic            string
 	MaxMessageBytes  int    `default:"1048588"`
@@ -66,7 +60,7 @@ type LogProducerConfig struct {
 	QueueLength          int                           `default:"100"`
 	FlushIntervalSeconds int                           `default:"1"`
 
-	KafkaProducerConfig *KafkaProducerConfig
+	KafkaConfig *KafkaConfig
 }
 
 // ListenAddress returns the Observation API port

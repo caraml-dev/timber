@@ -28,9 +28,11 @@ func TestDefaultConfigs(t *testing.T) {
 		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
 		LogConsumerConfig: LogConsumerConfig{
 			Kind: "",
-			KafkaConsumerConfig: &KafkaConsumerConfig{
+			KafkaConfig: &KafkaConfig{
 				Brokers:          "",
 				Topic:            "",
+				MaxMessageBytes:  1048588,
+				CompressionType:  "none",
 				ConnectTimeoutMS: 1000,
 			},
 		},
@@ -38,7 +40,7 @@ func TestDefaultConfigs(t *testing.T) {
 			Kind:                 "",
 			QueueLength:          100,
 			FlushIntervalSeconds: 1,
-			KafkaProducerConfig: &KafkaProducerConfig{
+			KafkaConfig: &KafkaConfig{
 				Brokers:          "",
 				Topic:            "",
 				MaxMessageBytes:  1048588,
@@ -80,9 +82,11 @@ func TestLoadConfigFiles(t *testing.T) {
 				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "observation-service", "env": "dev"}},
 				LogConsumerConfig: LogConsumerConfig{
 					Kind: "",
-					KafkaConsumerConfig: &KafkaConsumerConfig{
+					KafkaConfig: &KafkaConfig{
 						Brokers:          "",
 						Topic:            "",
+						MaxMessageBytes:  1048588,
+						CompressionType:  "none",
 						ConnectTimeoutMS: 1000,
 					},
 				},
@@ -90,7 +94,7 @@ func TestLoadConfigFiles(t *testing.T) {
 					Kind:                 "",
 					QueueLength:          100,
 					FlushIntervalSeconds: 1,
-					KafkaProducerConfig: &KafkaProducerConfig{
+					KafkaConfig: &KafkaConfig{
 						Brokers:          "",
 						Topic:            "",
 						MaxMessageBytes:  1048588,

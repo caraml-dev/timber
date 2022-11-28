@@ -3,9 +3,9 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/google/uuid"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
 	"github.com/caraml-dev/observation-service/observation-service/types"
@@ -22,7 +22,7 @@ type KafkaLogPublisher struct {
 }
 
 func NewKafkaLogProducer(
-	cfg config.KafkaProducerConfig,
+	cfg config.KafkaConfig,
 ) (*KafkaLogPublisher, error) {
 	// Create Kafka Producer
 	producer, err := newKafkaProducer(cfg.Brokers, cfg.MaxMessageBytes, cfg.CompressionType)
@@ -97,8 +97,11 @@ func newKafkaLogEntry(
 	log *types.ObservationLogEntry,
 ) (keyBytes []byte, valueBytes []byte, err error) {
 	// Create the Kafka key
+	batchId := uuid.New().String()
 	key := &types.ObservationLogKey{
-		EventTimestamp: time.Now().Unix(),
+		ObservationBatchId: batchId,
+		PredictionId:       log.PredictionId,
+		RowId:              log.RowId,
 	}
 	// Marshal the key
 	keyBytes, err = json.Marshal(key)

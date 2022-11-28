@@ -4,9 +4,10 @@ go 1.18
 
 require (
 	github.com/caraml-dev/observation-service/common v0.0.0-00010101000000-000000000000
-	github.com/caraml-dev/universal-prediction-interface v0.0.0-20221121034437-f0f5747ed4b5
+	github.com/caraml-dev/universal-prediction-interface v0.0.0-20221128075513-0b87b176b580
 	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/gojek/mlp v1.7.4
+	github.com/google/uuid v1.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/soheilhy/cmux v0.1.5
 	github.com/spf13/cobra v1.5.0
@@ -34,7 +35,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect

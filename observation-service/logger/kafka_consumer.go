@@ -29,7 +29,7 @@ type KafkaLogConsumer struct {
 }
 
 func NewKafkaLogConsumer(
-	cfg config.KafkaConsumerConfig,
+	cfg config.KafkaConfig,
 ) (*KafkaLogConsumer, error) {
 	consumer, err := newKafkaConsumer(cfg)
 	if err != nil {
@@ -52,7 +52,7 @@ func NewKafkaLogConsumer(
 
 // newKafkaConsumer creates a new Kafka consumer and subscribes to relevant Kafka topic
 func newKafkaConsumer(
-	cfg config.KafkaConsumerConfig,
+	cfg config.KafkaConfig,
 ) (kafkaConsumer, error) {
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Brokers,

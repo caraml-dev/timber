@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -121,7 +122,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 func setupObservationService() (chan bool, *server.Server) {
 	observationServer, err := server.NewServer([]string{"test.yaml"})
 	if err != nil {
-		log.Fatalf("fail to instantiate treatment server: %s", err.Error())
+		log.Fatalf("fail to instantiate observation service server: %s", err.Error())
 	}
 
 	c := make(chan bool, 1)
@@ -201,16 +202,21 @@ func (suite *ObservationServiceTestSuite) TestLogKafkaSourceToKafkaSink() {
 	suite.Require().NoError(err)
 
 	startTime := time.Now()
+	var observationLogKeyJson string
 	var observationLogEntryJson string
 W:
 	for {
 		ev := consumer.Poll(1000)
 		switch e := ev.(type) {
 		case *kafka.Message:
+			keyValue := e.Key
+			observationLogKeyJson = string(keyValue)
+			fmt.Printf("%% Key on %s:\n%s\n",
+				e.TopicPartition, string(keyValue))
 			messageValue := e.Value
 			fmt.Printf("%% Message on %s:\n%s\n",
 				e.TopicPartition, string(messageValue))
-			observationLogEntryJson = string(e.Value)
+			observationLogEntryJson = string(messageValue)
 			break W
 		case kafka.PartitionEOF:
 			fmt.Printf("%% Reached %v\n", e)
@@ -226,6 +232,7 @@ W:
 	}
 	consumer.Close()
 	suite.Require().NoError(err)
+	expectedObservationKey := "\"prediction_id\":\"integration-test-prediction-id\",\"row_id\":\"integration-test-row-id\""
 	expectedObservation := fmt.Sprintf(
 		"{\"prediction_id\":\"integration-test-prediction-id\",\"row_id\":\"integration-test-row-id\","+
 			"\"target_name\":\"target-name\",\"observation_values\":[{\"name\":\"integration-test-variable\","+
@@ -234,5 +241,8 @@ W:
 			"\"observation_timestamp\":\"%s\"}",
 		currentTime.UTC().Format(time.RFC3339),
 	)
-	suite.Require().Equal(observationLogEntryJson, expectedObservation)
+	// strings.ReplaceAll is required to make test output deterministic
+	// https://developers.google.com/protocol-buffers/docs/reference/go/faq#unstable-json
+	suite.Require().Equal(strings.ReplaceAll(observationLogEntryJson, " ", ""), expectedObservation)
+	suite.Require().Contains(strings.ReplaceAll(observationLogKeyJson, " ", ""), expectedObservationKey)
 }

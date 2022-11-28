@@ -89,7 +89,7 @@ func NewObservationLogger(
 	case config.LoggerNoopConsumer:
 		consumer, err = NewNoopLogConsumer()
 	case config.LoggerKafkaConsumer:
-		consumer, err = NewKafkaLogConsumer(*consumerConfig.KafkaConsumerConfig)
+		consumer, err = NewKafkaLogConsumer(*consumerConfig.KafkaConfig)
 	default:
 		return nil, fmt.Errorf("invalid consumer (%s) was provided", consumerConfig.Kind)
 	}
@@ -106,7 +106,7 @@ func NewObservationLogger(
 	case config.LoggerStdOutProducer:
 		producer, err = NewStdOutLogProducer()
 	case config.LoggerKafkaProducer:
-		producer, err = NewKafkaLogProducer(*producerConfig.KafkaProducerConfig)
+		producer, err = NewKafkaLogProducer(*producerConfig.KafkaConfig)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}

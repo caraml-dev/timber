@@ -5,10 +5,24 @@ import (
 	"time"
 
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+func TestObservationLogKeyValue(t *testing.T) {
+	logKey, uuidString := makeTestObservationLogKey(t)
+
+	// Get loggable data and validate
+	kvPairs, err := logKey.Value()
+	require.NoError(t, err)
+	assert.Equal(t, map[string]interface{}{
+		"observation_batch_id": uuidString,
+		"prediction_id":        "1",
+		"row_id":               "1",
+	}, kvPairs)
+}
 
 func TestObservationLogEntryValue(t *testing.T) {
 	logEntry := makeTestObservationLogEntry(t)
@@ -38,7 +52,22 @@ func TestObservationLogEntryValue(t *testing.T) {
 	}, kvPairs)
 }
 
-// Helper methods for models package tests
+// Helper methods for types package tests
+func makeTestObservationLogKey(t *testing.T) (*ObservationLogKey, string) {
+	// Create a ObservationLogKey record and add the data
+	batchId := uuid.New().String()
+	predictionId := "1"
+	rowId := "1"
+
+	key := &ObservationLogKey{
+		ObservationBatchId: batchId,
+		PredictionId:       predictionId,
+		RowId:              rowId,
+	}
+
+	return key, batchId
+}
+
 func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 
 	// Create a ObservationLogEntry record and add the data
