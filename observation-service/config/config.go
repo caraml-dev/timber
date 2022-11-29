@@ -40,7 +40,7 @@ type LogConsumerConfig struct {
 }
 
 type KafkaConfig struct {
-	// Kafka Brokers to connect to, comma-delimited, in the format of "<broker_host>:<broker_port>"
+	// Kafka Brokers to connect to, comma-delimited, in the form of "<broker_host>:<broker_port>"
 	Brokers string
 	// Kafka Topic to produce to/consume from
 	Topic string
