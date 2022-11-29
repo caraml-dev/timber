@@ -25,6 +25,7 @@ var (
 	shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
 )
 
+// Server captures config for starting and stopping Observation Service server
 type Server struct {
 	upiv1.UnimplementedObservationServiceServer
 
@@ -60,6 +61,7 @@ func NewServer(configFiles []string) (*Server, error) {
 	return srv, nil
 }
 
+// Start initializes Observation Service server
 func (s *Server) Start() {
 	log.Println("Starting background services...")
 	backgroundErrChannel := make(chan error, 1)
@@ -116,6 +118,7 @@ func (s *Server) Start() {
 	log.Println("Stopped gRPC server...")
 }
 
+// LogObservations triggers eager logging of ObservationLog
 func (s *Server) LogObservations(ctx context.Context, in *upiv1.LogObservationsRequest) (*upiv1.LogObservationsResponse, error) {
 	// TODO: Implement eager observations logging
 	log.Println("Called caraml.upi.v1.ObservationService/LogObservations")

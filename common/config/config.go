@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// ParseConfig parses configurations from various files into a Viper config
 func ParseConfig(spec interface{}, filepaths []string) error {
 	v := viper.New()
 

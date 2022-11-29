@@ -16,11 +16,13 @@ type kafkaProducer interface {
 	Produce(*kafka.Message, chan kafka.Event) error
 }
 
+// KafkaLogPublisher captures configs for publishing ObservationLog to a Kafka topic
 type KafkaLogPublisher struct {
 	topic    string
 	producer kafkaProducer
 }
 
+// NewKafkaLogProducer initializes a KafkaLogPublisher struct
 func NewKafkaLogProducer(
 	cfg config.KafkaConfig,
 ) (*KafkaLogPublisher, error) {
@@ -60,6 +62,7 @@ func newKafkaProducer(
 	return producer, nil
 }
 
+// Produce logs ObservationLog to a Kafka topic
 func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 	deliveryChan := make(chan kafka.Event, 1)
 	defer close(deliveryChan)

@@ -31,6 +31,7 @@ func TestObservationLogger(t *testing.T) {
 		producer:      logProducer,
 		flushInterval: time.Duration(producerConfig.FlushIntervalSeconds),
 	}
+	expected.batcherInfo = observationLogger.batcherInfo
 
 	assert.NoError(t, nil, err)
 	assert.Equal(t, expected, observationLogger)

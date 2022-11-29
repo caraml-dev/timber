@@ -23,12 +23,14 @@ type kafkaConsumer interface {
 	Close() error
 }
 
+// KafkaLogConsumer captures configs for polling ObservationLog from a Kafka topic
 type KafkaLogConsumer struct {
 	pollInterval int
 	topic        string
 	consumer     kafkaConsumer
 }
 
+// NewKafkaLogConsumer initializes a KafkaLogConsumer struct
 func NewKafkaLogConsumer(
 	cfg config.KafkaConfig,
 ) (*KafkaLogConsumer, error) {
@@ -73,6 +75,7 @@ func newKafkaConsumer(
 	return consumer, nil
 }
 
+// Consume polls for ObservationLog from a Kafka topic to a buffered Go channel
 func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) error {
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)

@@ -85,6 +85,7 @@ func (e *HTTPError) Error() string {
 	return e.Message
 }
 
+// NewHTTPError wraps generic Go error to a HTTPError type and returns it
 func NewHTTPError(err error) *HTTPError {
 	return &HTTPError{
 		Code:    GetHTTPErrorCode(err),

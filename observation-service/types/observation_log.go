@@ -10,8 +10,11 @@ import (
 	"github.com/caraml-dev/observation-service/observation-service/errors"
 )
 
+// ObservationLogKey is an alias for upiv1.ObservationLogKey proto, to support extension of default
+// methods such as Value, to consolidate conversions required to write to different sinks
 type ObservationLogKey upiv1.ObservationLogKey
 
+// NewObservationLogKey initializes a ObservationLogKey struct
 func NewObservationLogKey(rawObservationKey *upiv1.ObservationLogKey) *ObservationLogKey {
 	return &ObservationLogKey{
 		ObservationBatchId: uuid.New().String(),
@@ -65,6 +68,7 @@ func (logEntry *ObservationLogEntry) Value() (map[string]interface{}, error) {
 	return kvPairs, nil
 }
 
+// NewObservationLogEntry initializes a ObservationLogEntry struct
 func NewObservationLogEntry(rawObservation *upiv1.ObservationLog) *ObservationLogEntry {
 	return &ObservationLogEntry{
 		PredictionId:         rawObservation.GetPredictionId(),
