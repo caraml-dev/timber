@@ -13,6 +13,7 @@ import (
 
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	testcontainers "github.com/testcontainers/testcontainers-go"
 	"google.golang.org/protobuf/proto"
@@ -62,8 +63,10 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 
 	// Generate record
 	// Create the Kafka key
-	key := &KafkaKey{
-		EventTimestamp: timestamp,
+	key := &upiv1.ObservationLogKey{
+		ObservationBatchId: uuid.New().String(),
+		PredictionId:       "integration-test-prediction-id",
+		RowId:              "integration-test-row-id",
 	}
 	// Marshal the key
 	keyBytes := []byte(fmt.Sprintf("%v", key))

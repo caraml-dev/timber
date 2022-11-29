@@ -34,6 +34,8 @@ func TestDefaultConfigs(t *testing.T) {
 				MaxMessageBytes:  1048588,
 				CompressionType:  "none",
 				ConnectTimeoutMS: 1000,
+				PollInterval:     1000,
+				AutoOffsetReset:  "latest",
 			},
 		},
 		LogProducerConfig: LogProducerConfig{
@@ -46,6 +48,8 @@ func TestDefaultConfigs(t *testing.T) {
 				MaxMessageBytes:  1048588,
 				CompressionType:  "none",
 				ConnectTimeoutMS: 1000,
+				PollInterval:     1000,
+				AutoOffsetReset:  "latest",
 			},
 		},
 	}
@@ -88,6 +92,8 @@ func TestLoadConfigFiles(t *testing.T) {
 						MaxMessageBytes:  1048588,
 						CompressionType:  "none",
 						ConnectTimeoutMS: 1000,
+						PollInterval:     1000,
+						AutoOffsetReset:  "latest",
 					},
 				},
 				LogProducerConfig: LogProducerConfig{
@@ -100,6 +106,8 @@ func TestLoadConfigFiles(t *testing.T) {
 						MaxMessageBytes:  1048588,
 						CompressionType:  "none",
 						ConnectTimeoutMS: 1000,
+						PollInterval:     1000,
+						AutoOffsetReset:  "latest",
 					},
 				},
 			},

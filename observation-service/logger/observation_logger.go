@@ -58,26 +58,6 @@ func (l *ObservationLogger) worker() {
 	}
 }
 
-type NoopLogConsumer struct{}
-
-func NewNoopLogConsumer() (*NoopLogConsumer, error) {
-	return &NoopLogConsumer{}, nil
-}
-
-func (k *NoopLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) error {
-	return nil
-}
-
-type NoopLogProducer struct{}
-
-func NewNoopLogProducer() (*NoopLogProducer, error) {
-	return &NoopLogProducer{}, nil
-}
-
-func (k *NoopLogProducer) Produce(log []*types.ObservationLogEntry) error {
-	return nil
-}
-
 func NewObservationLogger(
 	consumerConfig config.LogConsumerConfig,
 	producerConfig config.LogProducerConfig,

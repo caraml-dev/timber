@@ -24,8 +24,9 @@ type kafkaConsumer interface {
 }
 
 type KafkaLogConsumer struct {
-	topic    string
-	consumer kafkaConsumer
+	pollInterval int
+	topic        string
+	consumer     kafkaConsumer
 }
 
 func NewKafkaLogConsumer(
@@ -43,8 +44,9 @@ func NewKafkaLogConsumer(
 	}
 
 	kafkaLogConsumer := &KafkaLogConsumer{
-		topic:    cfg.Topic,
-		consumer: consumer,
+		pollInterval: cfg.PollInterval,
+		topic:        cfg.Topic,
+		consumer:     consumer,
 	}
 
 	return kafkaLogConsumer, nil
@@ -57,8 +59,7 @@ func newKafkaConsumer(
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": cfg.Brokers,
 		"group.id":          "observation-service",
-		// At-least-once semantics
-		"auto.offset.reset": "earliest",
+		"auto.offset.reset": cfg.AutoOffsetReset,
 	})
 	if err != nil {
 		return nil, err
@@ -92,7 +93,7 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 			break
 		default:
 			// Log errors as we don't want to crash the server due to bad records
-			ev := k.consumer.Poll(1000)
+			ev := k.consumer.Poll(k.pollInterval)
 			switch e := ev.(type) {
 			case *kafka.Message:
 				decodedLogMessage := &upiv1.ObservationLog{}
