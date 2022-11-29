@@ -7,6 +7,6 @@ type Config struct {
 }
 
 type Sentry struct {
-	Url    string `default:"https://xx.xx.xx"`
+	URL    string `default:"https://xx.xx.xx"`
 	Labels map[string]string
 }

@@ -85,7 +85,7 @@ func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 		event := <-deliveryChan
 		msg := event.(*kafka.Message)
 		if msg.TopicPartition.Error != nil {
-			err = fmt.Errorf("Delivery failed: %v\n", msg.TopicPartition.Error)
+			err = fmt.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 			return err
 		}
 	}
@@ -97,9 +97,9 @@ func newKafkaLogEntry(
 	log *types.ObservationLogEntry,
 ) (keyBytes []byte, valueBytes []byte, err error) {
 	// Create the Kafka key
-	batchId := uuid.New().String()
+	batchID := uuid.New().String()
 	key := &types.ObservationLogKey{
-		ObservationBatchId: batchId,
+		ObservationBatchId: batchID,
 		PredictionId:       log.PredictionId,
 		RowId:              log.RowId,
 	}

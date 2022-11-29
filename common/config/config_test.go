@@ -13,7 +13,7 @@ import (
 func TestDefaultConfigs(t *testing.T) {
 	host := "localhost"
 	port := 3000
-	sentryUrl := "https://xx.xx.xx"
+	sentryURL := "https://xx.xx.xx"
 	sentryLabels := map[string]string{}
 
 	cfg := tu.Config{}
@@ -23,14 +23,14 @@ func TestDefaultConfigs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, host, cfg.Host)
 	require.Equal(t, port, cfg.Port)
-	require.Equal(t, sentryUrl, cfg.Sentry.Url)
+	require.Equal(t, sentryURL, cfg.Sentry.URL)
 	require.Equal(t, sentryLabels, cfg.Sentry.Labels)
 }
 
 func TestFileConfigs(t *testing.T) {
 	host := "localhost"
 	port := 3030
-	sentryUrl := "https://yy.yy.yy"
+	sentryURL := "https://yy.yy.yy"
 	sentryLabels := map[string]string{"env": "local"}
 
 	cfg := tu.Config{}
@@ -40,19 +40,19 @@ func TestFileConfigs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, host, cfg.Host)
 	require.Equal(t, port, cfg.Port)
-	require.Equal(t, sentryUrl, cfg.Sentry.Url)
+	require.Equal(t, sentryURL, cfg.Sentry.URL)
 	require.Equal(t, sentryLabels, cfg.Sentry.Labels)
 }
 
 func TestEnvConfigs(t *testing.T) {
 	host := "envhost"
 	port := "9999"
-	sentryUrl := "https://zz.zz.zz"
+	sentryURL := "https://zz.zz.zz"
 	sentryLabels := map[string]string{}
 
 	os.Setenv("HOST", host)
 	os.Setenv("PORT", port)
-	os.Setenv("SENTRY::URL", sentryUrl)
+	os.Setenv("SENTRY::URL", sentryURL)
 
 	cfg := tu.Config{}
 	var filePaths []string
@@ -61,6 +61,6 @@ func TestEnvConfigs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, host, cfg.Host)
 	require.Equal(t, port, fmt.Sprint(cfg.Port))
-	require.Equal(t, sentryUrl, cfg.Sentry.Url)
+	require.Equal(t, sentryURL, cfg.Sentry.URL)
 	require.Equal(t, sentryLabels, cfg.Sentry.Labels)
 }

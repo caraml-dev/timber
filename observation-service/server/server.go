@@ -60,15 +60,15 @@ func NewServer(configFiles []string) (*Server, error) {
 	return srv, nil
 }
 
-func (srv *Server) Start() {
+func (s *Server) Start() {
 	log.Println("Starting background services...")
 	backgroundErrChannel := make(chan error, 1)
-	cancelBackgroundSvc := srv.startBackgroundService(backgroundErrChannel)
+	cancelBackgroundSvc := s.startBackgroundService(backgroundErrChannel)
 
 	// Bind to all interfaces at port cfg.port
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", srv.config.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
 	if err != nil {
-		fmt.Println(fmt.Errorf("failed to listen the port %d", srv.config.Port))
+		fmt.Println(fmt.Errorf("failed to listen the port %d", s.config.Port))
 		return
 	}
 
@@ -80,7 +80,7 @@ func (srv *Server) Start() {
 	opts := []grpc.ServerOption{}
 	grpcServer := grpc.NewServer(opts...)
 	reflection.Register(grpcServer)
-	upiv1.RegisterObservationServiceServer(grpcServer, srv)
+	upiv1.RegisterObservationServiceServer(grpcServer, s)
 
 	// Add health checker
 	healthChecker := newHealthChecker()
@@ -96,7 +96,7 @@ func (srv *Server) Start() {
 	}()
 
 	go func() {
-		fmt.Printf("Serving at port: %d\n", srv.config.Port)
+		fmt.Printf("Serving at port: %d\n", s.config.Port)
 		if err := m.Serve(); err != nil {
 			errCh <- customErr.Wrapf(err, "CMux server failed")
 		}
@@ -135,10 +135,10 @@ func setupSignalHandler() (stopCh <-chan struct{}) {
 	return stop
 }
 
-func (srv *Server) startBackgroundService(errChannel chan error) context.CancelFunc {
+func (s *Server) startBackgroundService(errChannel chan error) context.CancelFunc {
 	backgroundSvcCtx, cancel := context.WithCancel(context.Background())
 	go func() {
-		err := srv.appContext.ObservationLogger.Consume(backgroundSvcCtx)
+		err := s.appContext.ObservationLogger.Consume(backgroundSvcCtx)
 		if err != nil {
 			errChannel <- err
 		}

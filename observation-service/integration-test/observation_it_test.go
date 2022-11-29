@@ -116,7 +116,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 	event := <-deliveryChan
 	msg := event.(*kafka.Message)
 	if msg.TopicPartition.Error != nil {
-		err = fmt.Errorf("Delivery failed: %v\n", msg.TopicPartition.Error)
+		err = fmt.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 		log.Println(err)
 	}
 	producer.Close()
@@ -205,21 +205,21 @@ func (suite *ObservationServiceTestSuite) TestLogKafkaSourceToKafkaSink() {
 	suite.Require().NoError(err)
 
 	startTime := time.Now()
-	var observationLogKeyJson string
-	var observationLogEntryJson string
+	var observationLogKeyJSON string
+	var observationLogEntryJSON string
 W:
 	for {
 		ev := consumer.Poll(1000)
 		switch e := ev.(type) {
 		case *kafka.Message:
 			keyValue := e.Key
-			observationLogKeyJson = string(keyValue)
+			observationLogKeyJSON = string(keyValue)
 			fmt.Printf("%% Key on %s:\n%s\n",
 				e.TopicPartition, string(keyValue))
 			messageValue := e.Value
 			fmt.Printf("%% Message on %s:\n%s\n",
 				e.TopicPartition, string(messageValue))
-			observationLogEntryJson = string(messageValue)
+			observationLogEntryJSON = string(messageValue)
 			break W
 		case kafka.PartitionEOF:
 			fmt.Printf("%% Reached %v\n", e)
@@ -246,6 +246,6 @@ W:
 	)
 	// strings.ReplaceAll is required to make test output deterministic
 	// https://developers.google.com/protocol-buffers/docs/reference/go/faq#unstable-json
-	suite.Require().Equal(strings.ReplaceAll(observationLogEntryJson, " ", ""), expectedObservation)
-	suite.Require().Contains(strings.ReplaceAll(observationLogKeyJson, " ", ""), expectedObservationKey)
+	suite.Require().Equal(strings.ReplaceAll(observationLogEntryJSON, " ", ""), expectedObservation)
+	suite.Require().Contains(strings.ReplaceAll(observationLogKeyJSON, " ", ""), expectedObservationKey)
 }

@@ -55,24 +55,24 @@ func TestObservationLogEntryValue(t *testing.T) {
 // Helper methods for types package tests
 func makeTestObservationLogKey(t *testing.T) (*ObservationLogKey, string) {
 	// Create a ObservationLogKey record and add the data
-	batchId := uuid.New().String()
-	predictionId := "1"
-	rowId := "1"
+	batchID := uuid.New().String()
+	predictionID := "1"
+	rowID := "1"
 
 	key := &ObservationLogKey{
-		ObservationBatchId: batchId,
-		PredictionId:       predictionId,
-		RowId:              rowId,
+		ObservationBatchId: batchID,
+		PredictionId:       predictionID,
+		RowId:              rowID,
 	}
 
-	return key, batchId
+	return key, batchID
 }
 
 func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 
 	// Create a ObservationLogEntry record and add the data
-	predictionId := "1"
-	rowId := "1"
+	predictionID := "1"
+	rowID := "1"
 	targetName := "target_variable"
 	observationContext := []*upiv1.Variable{
 		{
@@ -91,8 +91,8 @@ func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 	timestamp := time.Date(2000, 2, 1, 4, 5, 6, 7, time.UTC)
 
 	entry := &ObservationLogEntry{
-		PredictionId:         predictionId,
-		RowId:                rowId,
+		PredictionId:         predictionID,
+		RowId:                rowID,
 		TargetName:           targetName,
 		ObservationContext:   observationContext,
 		ObservationValues:    observationValues,
