@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -35,4 +36,8 @@ func TestObservationLogger(t *testing.T) {
 
 	assert.NoError(t, nil, err)
 	assert.Equal(t, expected, observationLogger)
+
+	ctx := context.Background()
+	err = expected.Consume(ctx)
+	assert.NoError(t, nil, err)
 }
