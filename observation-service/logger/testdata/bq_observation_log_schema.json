@@ -1,0 +1,102 @@
+[
+    {
+        "name": "prediction_id",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Unique identifier of a prediction response returned by prediction service. This information is used to join the prediction to an observation."
+    },
+    {
+        "name": "row_id",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Prediction requests may contain multiple prediction instances. The row_id identifies a particular prediction instance that was used to produce an observation. This information is used to join the prediction to an observation."
+    },
+    {
+        "name": "target_name",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The name of the observation target. This information is used to join the prediction to an observation."
+    },
+    {
+        "name": "observation_values",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "description": "The ground-truth values. It can be a double, string or integer type.",
+        "fields": [
+            {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Describes what the value represents."
+            },
+            {
+                "name": "type",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Type of the variable."
+            },
+            {
+                "name": "double_value",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is a float."
+            },
+            {
+                "name": "integer_value",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is an integer."
+            },
+            {
+                "name": "string_value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is a string."
+            }
+        ]
+    },
+    {
+        "name": "observation_context",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "description": "A set of key-value pairs to provide additional context for the observation.",
+        "fields": [
+            {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Describes what the value represents."
+            },
+            {
+                "name": "type",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Type of the variable."
+            },
+            {
+                "name": "double_value",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is a float."
+            },
+            {
+                "name": "integer_value",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is an integer."
+            },
+            {
+                "name": "string_value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Value will be present, if type of the variable is a string."
+            }
+        ]
+    },
+    {
+        "name": "observation_timestamp",
+        "type": "TIMESTAMP",
+        "mode": "NULLABLE",
+        "description": "The time at which the observation is generated."
+    }
+]

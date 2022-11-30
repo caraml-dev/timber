@@ -128,6 +128,8 @@ func NewObservationLogger(
 		producer, err = NewStdOutLogProducer()
 	case config.LoggerKafkaProducer:
 		producer, err = NewKafkaLogProducer(*producerConfig.KafkaConfig, metricService)
+	case config.LoggerFluentdProducer:
+		producer, err = NewFluentdLogProducer(*producerConfig.FluentdConfig)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}

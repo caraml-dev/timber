@@ -77,6 +77,9 @@ Observation service is written using Go, and the following describes how to setu
 We are using [golangci-lint](https://github.com/golangci/golangci-lint), and we can run the following commands for formatting.
 
 ```sh
+# Formatting for linting issues
+make format
+
 # Checking for linting issues
 make lint
 ```

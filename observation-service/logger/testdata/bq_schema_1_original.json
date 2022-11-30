@@ -1,0 +1,49 @@
+[
+    {
+        "mode": "REQUIRED",
+        "name": "prediction_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "row_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "observation_ts",
+        "type": "TIMESTAMP"
+    },
+    {
+        "name": "observation_values",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+            {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+            },
+            {
+                "name": "type",
+                "type": "STRING",
+                "mode": "NULLABLE"
+            },
+            {
+                "name": "double_value",
+                "type": "FLOAT",
+                "mode": "NULLABLE"
+            },
+            {
+                "name": "integer_value",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+            },
+            {
+                "name": "string_value",
+                "type": "STRING",
+                "mode": "NULLABLE"
+            }
+        ]
+    }
+]
