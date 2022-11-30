@@ -1,5 +1,6 @@
 export
 
+COMMON_MODULE_PATH=common
 OBSERVATION_SVC_PATH=observation-service
 
 # ==================================
@@ -44,6 +45,7 @@ lint: lint-go
 lint-go:
 	@echo "> Linting Observation Service code..."
 	cd ${OBSERVATION_SVC_PATH} && golangci-lint run --timeout 5m
+	cd ${COMMON_MODULE_PATH} && golangci-lint run --timeout 5m
 
 # ==================================
 # Test recipes

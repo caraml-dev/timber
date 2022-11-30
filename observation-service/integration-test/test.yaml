@@ -1,0 +1,14 @@
+LogConsumerConfig:
+  Kind: kafka
+  KafkaConfig:
+    Brokers: localhost:9092
+    Topic: integration-test-source
+    ConnectTimeoutMS: 20000
+    AutoOffsetReset: earliest
+
+LogProducerConfig:
+  Kind: kafka
+  KafkaConfig:
+    Brokers: localhost:9092
+    Topic: integration-test-sink
+    ConnectTimeoutMS: 20000

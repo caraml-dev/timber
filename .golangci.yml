@@ -17,6 +17,7 @@ linters:
     - misspell
     - staticcheck
     - unused
+    - revive
 
 linters-settings:
   gocyclo:
@@ -24,3 +25,12 @@ linters-settings:
     min-complexity: 25
   lll:
     line-length: 150
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - disableStutteringCheck
+issues:
+  include:
+    - EXC0012
+    - EXC0014
