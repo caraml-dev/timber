@@ -3,11 +3,13 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/google/uuid"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/monitoring"
+	"github.com/caraml-dev/observation-service/observation-service/services"
 	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
@@ -18,13 +20,15 @@ type kafkaProducer interface {
 
 // KafkaLogPublisher captures configs for publishing ObservationLog to a Kafka topic
 type KafkaLogPublisher struct {
-	topic    string
-	producer kafkaProducer
+	topic          string
+	producer       kafkaProducer
+	metricsService services.MetricService
 }
 
 // NewKafkaLogProducer initializes a KafkaLogPublisher struct
 func NewKafkaLogProducer(
 	cfg config.KafkaConfig,
+	metricsService services.MetricService,
 ) (*KafkaLogPublisher, error) {
 	// Create Kafka Producer
 	producer, err := newKafkaProducer(cfg.Brokers, cfg.MaxMessageBytes, cfg.CompressionType)
@@ -39,8 +43,9 @@ func NewKafkaLogProducer(
 	}
 	// Create Kafka Logger
 	return &KafkaLogPublisher{
-		topic:    cfg.Topic,
-		producer: producer,
+		topic:          cfg.Topic,
+		producer:       producer,
+		metricsService: metricsService,
 	}, nil
 }
 
@@ -88,9 +93,13 @@ func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 		event := <-deliveryChan
 		msg := event.(*kafka.Message)
 		if msg.TopicPartition.Error != nil {
+			// TODO: Send failed ObservationLog to deadletter sink
+			p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 			err = fmt.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 			return err
 		}
+		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
+		p.metricsService.LogLatencyHistogram(l.StartTime, http.StatusOK, monitoring.FlushDurationMs)
 	}
 
 	return nil
@@ -100,9 +109,8 @@ func newKafkaLogEntry(
 	log *types.ObservationLogEntry,
 ) (keyBytes []byte, valueBytes []byte, err error) {
 	// Create the Kafka key
-	batchID := uuid.New().String()
 	key := &types.ObservationLogKey{
-		ObservationBatchId: batchID,
+		ObservationBatchId: log.BatchID,
 		PredictionId:       log.PredictionId,
 		RowId:              log.RowId,
 	}

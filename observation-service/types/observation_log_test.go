@@ -91,12 +91,15 @@ func makeTestObservationLogEntry(t *testing.T) *ObservationLogEntry {
 	timestamp := time.Date(2000, 2, 1, 4, 5, 6, 7, time.UTC)
 
 	entry := &ObservationLogEntry{
-		PredictionId:         predictionID,
-		RowId:                rowID,
-		TargetName:           targetName,
-		ObservationContext:   observationContext,
-		ObservationValues:    observationValues,
-		ObservationTimestamp: timestamppb.New(timestamp),
+		ObservationLog: upiv1.ObservationLog{
+			PredictionId:         predictionID,
+			RowId:                rowID,
+			TargetName:           targetName,
+			ObservationContext:   observationContext,
+			ObservationValues:    observationValues,
+			ObservationTimestamp: timestamppb.New(timestamp),
+		},
+		StartTime: time.Now(),
 	}
 
 	return entry

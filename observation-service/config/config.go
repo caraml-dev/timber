@@ -18,11 +18,17 @@ type Config struct {
 	SentryConfig      sentry.Config
 	LogConsumerConfig LogConsumerConfig
 	LogProducerConfig LogProducerConfig
+	MonitoringConfig  MonitoringConfig
 }
 
 // DeploymentConfig captures the config related to the deployment of Observation Service
 type DeploymentConfig struct {
+	// EnvironmentType describes the environment Observation Service is deployed in
 	EnvironmentType string `default:"local"`
+	// ProjectName describes the CaraML project Observation Service is deployed for
+	ProjectName string `default:""`
+	// Maximum no. of go-routines that is allowed
+	MaxGoRoutines int `default:"100"`
 }
 
 // ObservationLoggerConsumerKind captures the consumer config for reading Observation Service logs
@@ -85,6 +91,22 @@ type LogProducerConfig struct {
 
 	// KafkaConfig captures the config related to initializing a Kafka Producer
 	KafkaConfig *KafkaConfig
+}
+
+// MetricSinkKind captures type of metrics sink
+type MetricSinkKind = string
+
+const (
+	// PrometheusMetricSink represents the Prometheus Metric Storage
+	PrometheusMetricSink MetricSinkKind = "prometheus"
+	// NoopMetricSink represents no Metric Storage
+	NoopMetricSink MetricSinkKind = ""
+)
+
+// MonitoringConfig captures the config for monitoring metrics
+type MonitoringConfig struct {
+	// The type of Metrics Sink for Observation logs
+	Kind MetricSinkKind `default:""`
 }
 
 // ListenAddress returns the Observation API port
