@@ -47,6 +47,7 @@ func NewMetricService(deploymentCfg config.DeploymentConfig, monitoringCfg confi
 	return svc, nil
 }
 
+// LogLatencyHistogram tracks histogram metrics
 func (ms *metricService) LogLatencyHistogram(begin time.Time, statusCode int, loggingMetric metrics.MetricName) {
 	baseLabels := map[string]string{
 		"response_code": strconv.Itoa(statusCode),
@@ -73,6 +74,7 @@ func (ms *metricService) LogLatencyHistogram(begin time.Time, statusCode int, lo
 	}
 }
 
+// LogLatencyHistogram tracks count metrics
 func (ms *metricService) LogRequestCount(statusCode int, loggingMetric metrics.MetricName) {
 	baseLabels := map[string]string{
 		"response_code": strconv.Itoa(statusCode),
@@ -103,11 +105,13 @@ func (ms *metricService) LogRequestCount(statusCode int, loggingMetric metrics.M
 	}
 }
 
+// GetLabels adds default system labels to provided labels
 func (ms *metricService) GetLabels(
 	labels map[string]string,
 ) map[string]string {
 	defaultLabels := map[string]string{
 		"project_name": ms.DeploymentConfig.ProjectName,
+		"service_name": ms.DeploymentConfig.ServiceName,
 	}
 	for k, v := range defaultLabels {
 		labels[k] = v

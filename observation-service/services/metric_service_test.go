@@ -25,6 +25,7 @@ func (s *MetricServiceTestSuite) SetupSuite() {
 	s.cfg = config.Config{
 		DeploymentConfig: config.DeploymentConfig{
 			ProjectName: "default",
+			ServiceName: "observation-service",
 		},
 		MonitoringConfig: config.MonitoringConfig{
 			Kind: config.PrometheusMetricSink,
@@ -52,6 +53,7 @@ func (s *MetricServiceTestSuite) TestGetLabels() {
 	expectedLabels := map[string]string{
 		"type":         "test",
 		"project_name": "default",
+		"service_name": "observation-service",
 	}
 
 	s.Suite.Require().Equal(expectedLabels, labels)

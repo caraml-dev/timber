@@ -18,7 +18,7 @@ func TestDefaultConfigs(t *testing.T) {
 		DeploymentConfig: DeploymentConfig{
 			EnvironmentType: "local",
 			LogLevel:        InfoLevel,
-			MaxGoRoutines:   100,
+			MaxGoRoutines:   1000,
 		},
 		NewRelicConfig: newrelic.Config{
 			Enabled:           false,
@@ -81,7 +81,7 @@ func TestLoadConfigFiles(t *testing.T) {
 				DeploymentConfig: DeploymentConfig{
 					EnvironmentType: "dev",
 					LogLevel:        InfoLevel,
-					MaxGoRoutines:   100,
+					MaxGoRoutines:   1000,
 				},
 				NewRelicConfig: newrelic.Config{
 					Enabled:           true,

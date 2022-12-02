@@ -7,7 +7,7 @@ import (
 
 const (
 	// Namespace is the Prometheus Namespace in all metrics published by the Observation Service
-	Namespace string = "mlp"
+	Namespace string = "caraml"
 	// Subsystem is the Prometheus Subsystem in all metrics published by the Observation Service
 	Subsystem string = "observation_service"
 	// FlushDurationMs is the key to measure duration for flushing observations from channel to configured Data sink

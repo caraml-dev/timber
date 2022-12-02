@@ -27,10 +27,12 @@ type DeploymentConfig struct {
 	EnvironmentType string `default:"local"`
 	// ProjectName describes the CaraML project Observation Service is deployed for
 	ProjectName string `default:""`
+	// ServiceName describes the CaraML Observation Service name
+	ServiceName string `default:""`
 	// LogLevel captures the selected supported logging level
 	LogLevel LogLevel `split_words:"false" default:"INFO"`
 	// Maximum no. of go-routines that is allowed
-	MaxGoRoutines int `default:"100"`
+	MaxGoRoutines int `default:"1000"`
 }
 
 // LogLevel type is used to capture the supported logging levels
