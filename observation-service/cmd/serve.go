@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/server"
 )
 
@@ -17,7 +16,7 @@ var serveCmd = &cobra.Command{
 
 		server, err := server.NewServer(cfgFile)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err)
 		}
 		server.Start()
 	},

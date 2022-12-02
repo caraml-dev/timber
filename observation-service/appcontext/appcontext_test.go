@@ -15,6 +15,7 @@ func TestNewAppContext(t *testing.T) {
 
 	expectedAppContext := &AppContext{
 		ObservationLogger: appCtx.ObservationLogger,
+		MetricService:     appCtx.MetricService,
 	}
 
 	require.NoError(t, err)

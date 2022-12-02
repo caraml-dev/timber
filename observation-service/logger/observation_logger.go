@@ -3,10 +3,13 @@ package logger
 import (
 	"context"
 	"fmt"
-	"log"
+	"net/http"
 	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
+	"github.com/caraml-dev/observation-service/observation-service/monitoring"
+	"github.com/caraml-dev/observation-service/observation-service/services"
 	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
@@ -47,11 +50,12 @@ func (batcherInfo *batcherInfo) InitializeInfo() {
 
 // ObservationLogger captures the config related to consume and produce ObservationLog to data sources and sinks respectively
 type ObservationLogger struct {
-	logsChannel chan *types.ObservationLogEntry
-	consumer    LogConsumer
-	producer    LogProducer
-	batcherInfo batcherInfo
+	logsChannel   chan *types.ObservationLogEntry
+	consumer      LogConsumer
+	producer      LogProducer
+	metricService services.MetricService
 
+	batcherInfo   batcherInfo
 	flushInterval time.Duration
 }
 
@@ -66,7 +70,7 @@ func (l *ObservationLogger) Consume(ctx context.Context) error {
 
 // worker is a goroutine that periodically calls Produce method
 func (l *ObservationLogger) worker() {
-	log.Printf("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
+	log.Infof("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
 	for {
 		select {
 		case log := <-l.logsChannel:
@@ -86,8 +90,9 @@ func (l *ObservationLogger) worker() {
 			// Reset batcherInfo after flush
 			l.batcherInfo.InitializeInfo()
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 			}
+			l.metricService.LogRequestCount(http.StatusOK, monitoring.FlushCount)
 		}
 	}
 }
@@ -96,6 +101,7 @@ func (l *ObservationLogger) worker() {
 func NewObservationLogger(
 	consumerConfig config.LogConsumerConfig,
 	producerConfig config.LogProducerConfig,
+	metricService services.MetricService,
 ) (*ObservationLogger, error) {
 	var err error
 	var consumer LogConsumer
@@ -104,7 +110,7 @@ func NewObservationLogger(
 	case config.LoggerNoopConsumer:
 		consumer, err = NewNoopLogConsumer()
 	case config.LoggerKafkaConsumer:
-		consumer, err = NewKafkaLogConsumer(*consumerConfig.KafkaConfig)
+		consumer, err = NewKafkaLogConsumer(*consumerConfig.KafkaConfig, metricService)
 	default:
 		return nil, fmt.Errorf("invalid consumer (%s) was provided", consumerConfig.Kind)
 	}
@@ -121,7 +127,7 @@ func NewObservationLogger(
 	case config.LoggerStdOutProducer:
 		producer, err = NewStdOutLogProducer()
 	case config.LoggerKafkaProducer:
-		producer, err = NewKafkaLogProducer(*producerConfig.KafkaConfig)
+		producer, err = NewKafkaLogProducer(*producerConfig.KafkaConfig, metricService)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}
@@ -133,6 +139,7 @@ func NewObservationLogger(
 		logsChannel:   c,
 		consumer:      consumer,
 		producer:      producer,
+		metricService: metricService,
 		flushInterval: time.Duration(producerConfig.FlushIntervalSeconds * BaseNanoseconds),
 	}
 	logger.batcherInfo.InitializeInfo()

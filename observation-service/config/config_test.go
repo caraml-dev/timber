@@ -17,6 +17,8 @@ func TestDefaultConfigs(t *testing.T) {
 		Port: 9001,
 		DeploymentConfig: DeploymentConfig{
 			EnvironmentType: "local",
+			LogLevel:        InfoLevel,
+			MaxGoRoutines:   1000,
 		},
 		NewRelicConfig: newrelic.Config{
 			Enabled:           false,
@@ -52,6 +54,9 @@ func TestDefaultConfigs(t *testing.T) {
 				AutoOffsetReset:  "latest",
 			},
 		},
+		MonitoringConfig: MonitoringConfig{
+			Kind: "",
+		},
 	}
 	cfg, err := Load()
 	require.NoError(t, err)
@@ -75,6 +80,8 @@ func TestLoadConfigFiles(t *testing.T) {
 				Port: 9002,
 				DeploymentConfig: DeploymentConfig{
 					EnvironmentType: "dev",
+					LogLevel:        InfoLevel,
+					MaxGoRoutines:   1000,
 				},
 				NewRelicConfig: newrelic.Config{
 					Enabled:           true,
@@ -109,6 +116,9 @@ func TestLoadConfigFiles(t *testing.T) {
 						PollInterval:     1000,
 						AutoOffsetReset:  "latest",
 					},
+				},
+				MonitoringConfig: MonitoringConfig{
+					Kind: "",
 				},
 			},
 		},

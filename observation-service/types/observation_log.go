@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"time"
 
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 	"github.com/google/uuid"
@@ -41,14 +42,19 @@ func (logEntry *ObservationLogKey) Value() (map[string]interface{}, error) {
 
 // ObservationLogEntry is an alias for upiv1.ObservationLog proto, to support extension of default
 // methods such as MarshalJSON and Value, to consolidate conversions required to write to different sinks
-type ObservationLogEntry upiv1.ObservationLog
+type ObservationLogEntry struct {
+	upiv1.ObservationLog
+
+	BatchID   string
+	StartTime time.Time
+}
 
 // MarshalJSON implements custom Marshaling for ObservationLogEntry, using the underlying proto def
 func (logEntry *ObservationLogEntry) MarshalJSON() ([]byte, error) {
 	m := &protojson.MarshalOptions{
 		UseProtoNames: true, // Use the json field name instead of the camel case struct field name
 	}
-	message := (*upiv1.ObservationLog)(logEntry)
+	message := (*upiv1.ObservationLog)(&logEntry.ObservationLog)
 	return m.Marshal(message)
 }
 
@@ -71,11 +77,15 @@ func (logEntry *ObservationLogEntry) Value() (map[string]interface{}, error) {
 // NewObservationLogEntry initializes a ObservationLogEntry struct
 func NewObservationLogEntry(rawObservation *upiv1.ObservationLog) *ObservationLogEntry {
 	return &ObservationLogEntry{
-		PredictionId:         rawObservation.GetPredictionId(),
-		RowId:                rawObservation.GetRowId(),
-		TargetName:           rawObservation.GetTargetName(),
-		ObservationContext:   rawObservation.GetObservationContext(),
-		ObservationValues:    rawObservation.GetObservationValues(),
-		ObservationTimestamp: rawObservation.GetObservationTimestamp(),
+		ObservationLog: upiv1.ObservationLog{
+			PredictionId:         rawObservation.GetPredictionId(),
+			RowId:                rawObservation.GetRowId(),
+			TargetName:           rawObservation.GetTargetName(),
+			ObservationContext:   rawObservation.GetObservationContext(),
+			ObservationValues:    rawObservation.GetObservationValues(),
+			ObservationTimestamp: rawObservation.GetObservationTimestamp(),
+		},
+		BatchID:   uuid.New().String(),
+		StartTime: time.Now(),
 	}
 }
