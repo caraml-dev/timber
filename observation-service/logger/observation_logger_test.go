@@ -3,7 +3,6 @@ package logger
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -32,19 +31,12 @@ func TestObservationLogger(t *testing.T) {
 	assert.NoError(t, nil, err)
 	logProducer, err := NewNoopLogProducer()
 	assert.NoError(t, nil, err)
-	expected := &ObservationLogger{
-		logsChannel:   observationLogger.logsChannel,
-		consumer:      logConsumer,
-		producer:      logProducer,
-		metricService: metricService,
-		flushInterval: time.Duration(producerConfig.FlushIntervalSeconds),
-	}
-	expected.batcherInfo = observationLogger.batcherInfo
 
-	assert.NoError(t, nil, err)
-	assert.Equal(t, expected, observationLogger)
+	assert.Equal(t, logConsumer, observationLogger.consumer)
+	assert.Equal(t, logProducer, observationLogger.producer)
+	assert.Equal(t, metricService, observationLogger.metricService)
 
 	ctx := context.Background()
-	err = expected.Consume(ctx)
+	err = observationLogger.Consume(ctx)
 	assert.NoError(t, nil, err)
 }
