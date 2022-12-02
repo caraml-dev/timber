@@ -27,7 +27,7 @@ type LogConsumer interface {
 
 // LogProducer captures the methods exposed by a ObservationLog producer
 type LogProducer interface {
-	Produce(log []*types.ObservationLogEntry) error
+	Produce(log []*types.ObservationLogEntry)
 }
 
 type batcherInfo struct {
@@ -86,12 +86,10 @@ func (l *ObservationLogger) worker() {
 		if l.batcherInfo.CurrentInputLen >= cap(l.logsChannel) ||
 			(l.batcherInfo.Now.Sub(l.batcherInfo.Start).Seconds() >= l.flushInterval.Seconds() &&
 				l.batcherInfo.CurrentInputLen > 0) {
-			err := l.producer.Produce(l.batcherInfo.Records)
+			l.producer.Produce(l.batcherInfo.Records)
 			// Reset batcherInfo after flush
 			l.batcherInfo.InitializeInfo()
-			if err != nil {
-				log.Error(err)
-			}
+			// Increment Flush count
 			l.metricService.LogRequestCount(http.StatusOK, monitoring.FlushCount)
 		}
 	}
@@ -129,7 +127,7 @@ func NewObservationLogger(
 	case config.LoggerKafkaProducer:
 		producer, err = NewKafkaLogProducer(*producerConfig.KafkaConfig, metricService)
 	case config.LoggerFluentdProducer:
-		producer, err = NewFluentdLogProducer(*producerConfig.FluentdConfig)
+		producer, err = NewFluentdLogProducer(*producerConfig.FluentdConfig, metricService)
 	default:
 		return nil, fmt.Errorf("invalid producer (%s) was provided", producerConfig.Kind)
 	}

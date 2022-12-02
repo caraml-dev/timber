@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"cloud.google.com/go/bigquery"
 	"go.einride.tech/protobuf-bigquery/encoding/protobq"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/types"
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 )
@@ -60,8 +60,7 @@ func (l *bigQueryLogger) getLogData(obsLogEntry *types.ObservationLogEntry) inte
 	entry := &types.BqLogEntry{ObservationLogEntry: obsLogEntry}
 	record, _, err := entry.Save()
 	if err != nil {
-		log.Printf("failed to create log entry %s", err)
-		// log.Glob().Warnf("failed to create log entry %s", err)
+		log.Errorf("failed to create log entry %s", err)
 	}
 	return record
 }
@@ -129,18 +128,11 @@ func checkBQTableWritePermissions(table *bigquery.Table) error {
 	perms, err := table.IAM().TestPermissions(context.Background(), requiredPerms)
 	if err != nil {
 		return err
-		// return errors.Newf(errors.BadConfig,
-		// 	"Error checking IAM permissions on the BQ table: %s", err.Error())
 	}
 	if len(perms) < len(requiredPerms) {
 		return fmt.Errorf("Insufficient permissions. Got: %s; Want: %s",
 			strings.Join(perms, ","),
 			strings.Join(requiredPerms, ","))
-		// return errors.Newf(errors.BadConfig,
-		// 	"Insufficient permissions. Got: %s; Want: %s",
-		// 	strings.Join(perms, ","),
-		// 	strings.Join(requiredPerms, ","),
-		// )
 	}
 	return nil
 }
@@ -220,15 +212,12 @@ func compareTableSchema(
 			return tableSchema, false, fmt.Errorf(
 				"Cannot add Required field %s to the existing BQ table", ef.Name,
 			)
-			// return tableSchema, false, errors.Newf(errors.BadConfig,
-			// 	"Cannot add Required field %s to the existing BQ table", ef.Name)
 		}
 	}
 
 	// At the end of any additions, the two schemas must have the same number of fields
 	if len(*tableSchema) != len(*expectedSchema) {
 		return tableSchema, false, errors.New("BigQuery schema mismatch")
-		// return tableSchema, false, errors.Newf(errors.BadConfig, "BigQuery schema mismatch")
 	}
 
 	return tableSchema, isUpdated, nil

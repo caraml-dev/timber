@@ -8,6 +8,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/monitoring"
 	"github.com/caraml-dev/observation-service/observation-service/services"
 	"github.com/caraml-dev/observation-service/observation-service/types"
@@ -68,14 +69,14 @@ func newKafkaProducer(
 }
 
 // Produce logs ObservationLog to a Kafka topic
-func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
+func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) {
 	deliveryChan := make(chan kafka.Event, 1)
 	defer close(deliveryChan)
 
 	for _, l := range logs {
 		keyBytes, valueBytes, err := newKafkaLogEntry(l)
 		if err != nil {
-			return err
+			log.Error(err)
 		}
 
 		err = p.producer.Produce(&kafka.Message{
@@ -86,7 +87,7 @@ func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 			Key:   keyBytes,
 		}, deliveryChan)
 		if err != nil {
-			return err
+			log.Error(err)
 		}
 
 		// Get delivery response
@@ -95,14 +96,11 @@ func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) error {
 		if msg.TopicPartition.Error != nil {
 			// TODO: Send failed ObservationLog to deadletter sink
 			p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-			err = fmt.Errorf("delivery failed: %v", msg.TopicPartition.Error)
-			return err
+			log.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 		}
 		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
 		p.metricsService.LogLatencyHistogram(l.StartTime, http.StatusOK, monitoring.FlushDurationMs)
 	}
-
-	return nil
 }
 
 func newKafkaLogEntry(

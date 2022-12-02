@@ -14,9 +14,8 @@ func NewStdOutLogProducer() (*StdOutLogProducer, error) {
 }
 
 // Produce logs ObservationLog to standard output
-func (p *StdOutLogProducer) Produce(logs []*types.ObservationLogEntry) error {
+func (p *StdOutLogProducer) Produce(logs []*types.ObservationLogEntry) {
 	for _, observationLog := range logs {
 		log.Info(observationLog)
 	}
-	return nil
 }
