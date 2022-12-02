@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/caraml-dev/observation-service/observation-service/log"
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -18,7 +19,7 @@ var RootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		log.Println(err)
+		log.Glob().Error(err)
 		os.Exit(1)
 	}
 }

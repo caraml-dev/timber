@@ -27,9 +27,25 @@ type DeploymentConfig struct {
 	EnvironmentType string `default:"local"`
 	// ProjectName describes the CaraML project Observation Service is deployed for
 	ProjectName string `default:""`
+	// LogLevel captures the selected supported logging level
+	LogLevel LogLevel `split_words:"false" default:"INFO"`
 	// Maximum no. of go-routines that is allowed
 	MaxGoRoutines int `default:"100"`
 }
+
+// LogLevel type is used to capture the supported logging levels
+type LogLevel string
+
+const (
+	// DebugLevel is used for verbose logs at debug level
+	DebugLevel LogLevel = "DEBUG"
+	// InfoLevel is used for logs that are info level and higher
+	InfoLevel LogLevel = "INFO"
+	// WarnLevel is used for logs that are warning level and higher
+	WarnLevel LogLevel = "WARN"
+	// ErrorLevel is used for logs that are error level and higher
+	ErrorLevel LogLevel = "ERROR"
+)
 
 // ObservationLoggerConsumerKind captures the consumer config for reading Observation Service logs
 type ObservationLoggerConsumerKind = string

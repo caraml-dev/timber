@@ -1,9 +1,8 @@
 package appcontext
 
 import (
-	"log"
-
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/logger"
 	"github.com/caraml-dev/observation-service/observation-service/services"
 )
@@ -17,13 +16,13 @@ type AppContext struct {
 
 // NewAppContext initializes a AppContext struct
 func NewAppContext(cfg *config.Config) (*AppContext, error) {
-	log.Println("Initializing metric service...")
+	log.Glob().Info("Initializing metric service...")
 	metricService, err := services.NewMetricService(cfg.DeploymentConfig, cfg.MonitoringConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("Initializing Observation Service logger...")
+	log.Glob().Info("Initializing Observation Service logger...")
 	var observationLogger *logger.ObservationLogger
 	observationLogger, err = logger.NewObservationLogger(
 		cfg.LogConsumerConfig,

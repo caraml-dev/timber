@@ -2,7 +2,6 @@ package logger
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +13,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/monitoring"
 	"github.com/caraml-dev/observation-service/observation-service/services"
 	"github.com/caraml-dev/observation-service/observation-service/types"
@@ -90,11 +90,11 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 		select {
 		case sig := <-sigchan:
 			// Capture Ctrl-C interrupt
-			log.Println("System interrupt detected:", sig)
+			log.Glob().Infof("System interrupt detected: %s", sig)
 
 			// Close consumer before exit
 			if err := k.consumer.Close(); err != nil {
-				log.Println("Failed to close consumer:", err)
+				log.Glob().Errorf("Failed to close consumer:", err)
 				return err
 			}
 			// Wait for awhile before close
@@ -108,7 +108,7 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 				decodedLogMessage := &upiv1.ObservationLog{}
 				err := proto.Unmarshal(e.Value, decodedLogMessage)
 				if err != nil {
-					log.Println(err)
+					log.Glob().Error(err)
 				}
 				convertedLogMessage := types.NewObservationLogEntry(decodedLogMessage)
 				k.metricsService.LogRequestCount(http.StatusOK, monitoring.ReadCount)
@@ -116,10 +116,10 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 				logsChannel <- convertedLogMessage
 			case kafka.PartitionEOF:
 				k.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.ReadCount)
-				log.Printf("%% Reached %v\n", e)
+				log.Glob().Errorf("%% Reached %v\n", e)
 			case kafka.Error:
 				k.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.ReadCount)
-				fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
+				log.Glob().Errorf("%% Error: %v\n", os.Stderr)
 			default:
 			}
 		}

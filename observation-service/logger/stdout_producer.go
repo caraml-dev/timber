@@ -1,8 +1,7 @@
 package logger
 
 import (
-	"log"
-
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/types"
 )
 
@@ -17,7 +16,7 @@ func NewStdOutLogProducer() (*StdOutLogProducer, error) {
 // Produce logs ObservationLog to standard output
 func (p *StdOutLogProducer) Produce(logs []*types.ObservationLogEntry) error {
 	for _, observationLog := range logs {
-		log.Println(observationLog)
+		log.Glob().Info(observationLog)
 	}
 	return nil
 }

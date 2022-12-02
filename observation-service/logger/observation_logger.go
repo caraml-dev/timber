@@ -3,11 +3,11 @@ package logger
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/monitoring"
 	"github.com/caraml-dev/observation-service/observation-service/services"
 	"github.com/caraml-dev/observation-service/observation-service/types"
@@ -70,7 +70,7 @@ func (l *ObservationLogger) Consume(ctx context.Context) error {
 
 // worker is a goroutine that periodically calls Produce method
 func (l *ObservationLogger) worker() {
-	log.Printf("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
+	log.Glob().Infof("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
 	for {
 		select {
 		case log := <-l.logsChannel:
@@ -90,7 +90,7 @@ func (l *ObservationLogger) worker() {
 			// Reset batcherInfo after flush
 			l.batcherInfo.InitializeInfo()
 			if err != nil {
-				log.Println(err)
+				log.Glob().Error(err)
 			}
 			l.metricService.LogRequestCount(http.StatusOK, monitoring.FlushCount)
 		}

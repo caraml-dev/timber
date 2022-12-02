@@ -17,6 +17,7 @@ func TestDefaultConfigs(t *testing.T) {
 		Port: 9001,
 		DeploymentConfig: DeploymentConfig{
 			EnvironmentType: "local",
+			LogLevel:        InfoLevel,
 			MaxGoRoutines:   100,
 		},
 		NewRelicConfig: newrelic.Config{
@@ -79,6 +80,7 @@ func TestLoadConfigFiles(t *testing.T) {
 				Port: 9002,
 				DeploymentConfig: DeploymentConfig{
 					EnvironmentType: "dev",
+					LogLevel:        InfoLevel,
 					MaxGoRoutines:   100,
 				},
 				NewRelicConfig: newrelic.Config{

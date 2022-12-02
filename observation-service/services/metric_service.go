@@ -2,13 +2,13 @@ package services
 
 import (
 	"errors"
-	"log"
 	"strconv"
 	"time"
 
 	"github.com/gojek/mlp/api/pkg/instrumentation/metrics"
 
 	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/observation-service/observation-service/log"
 	"github.com/caraml-dev/observation-service/observation-service/monitoring"
 )
 
@@ -68,7 +68,7 @@ func (ms *metricService) LogLatencyHistogram(begin time.Time, statusCode int, lo
 			)
 		}
 		if err != nil {
-			log.Printf("error while logging %s metrics (latency): %s", loggingMetric, err)
+			log.Glob().Errorf("error while logging %s metrics (latency): %s", loggingMetric, err)
 		}
 	}
 }
@@ -98,7 +98,7 @@ func (ms *metricService) LogRequestCount(statusCode int, loggingMetric metrics.M
 			)
 		}
 		if err != nil {
-			log.Printf("error while logging metrics (request_count): %s", err)
+			log.Glob().Errorf("error while logging metrics (request_count): %s", err)
 		}
 	}
 }
