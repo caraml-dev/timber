@@ -45,14 +45,14 @@ func NewServer(configFiles []string) (*Server, error) {
 
 	cfg, err := config.Load(configFiles...)
 	if err != nil {
-		log.Glob().Panicf("Failed initializing config: %v", err)
+		log.Panicf("Failed initializing config: %v", err)
 	}
 
 	// Init logger
 	log.InitGlobalLogger(&cfg.DeploymentConfig)
 	cleanup = append(cleanup, func() {
 		// Flushes any buffered log entries
-		_ = log.Glob().Sync()
+		_ = log.Sync()
 	})
 
 	// Init AppContext
@@ -73,14 +73,14 @@ func NewServer(configFiles []string) (*Server, error) {
 
 // Start initializes Observation Service server
 func (s *Server) Start() {
-	log.Glob().Info("Starting background services...")
+	log.Info("Starting background services...")
 	backgroundErrChannel := make(chan error, 1)
 	cancelBackgroundSvc := s.startBackgroundService(backgroundErrChannel)
 
 	// Bind to all interfaces at port cfg.port
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
 	if err != nil {
-		log.Glob().Errorf("failed to listen the port %d", s.config.Port)
+		log.Errorf("failed to listen the port %d", s.config.Port)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (s *Server) Start() {
 	stopCh := setupSignalHandler()
 	errCh := make(chan error, 1)
 	go func() {
-		log.Glob().Info("Starting gRPC server...")
+		log.Info("Starting gRPC server...")
 		if err := grpcServer.Serve(grpcLis); err != nil && !errors.Is(err, grpc.ErrServerStopped) {
 			errCh <- customErr.Wrapf(err, "gRPC server failed")
 		}
@@ -123,32 +123,32 @@ func (s *Server) Start() {
 			errCh <- customErr.Wrapf(err, "CMux server failed")
 		}
 	}()
-	fmt.Printf("Serving at port: %d\n", s.config.Port)
+	log.Infof("Serving at port: %d\n", s.config.Port)
 
 	select {
 	case <-stopCh:
-		log.Glob().Info("Got signal to stop server")
+		log.Info("Got signal to stop server")
 	case err := <-errCh:
-		log.Glob().Errorf("Failed to run server %v", err)
+		log.Errorf("Failed to run server %v", err)
 	case backgroundErr := <-backgroundErrChannel:
-		log.Glob().Errorf("Background services encounter an error", backgroundErr.Error())
+		log.Errorf("Background services encounter an error", backgroundErr.Error())
 	}
 
 	cancelBackgroundSvc()
 
 	// Execute clean up actions
 	for _, cleanupFunc := range s.cleanup {
-		log.Glob().Info("Cleaning up...")
+		log.Info("Cleaning up...")
 		cleanupFunc()
 	}
 	grpcServer.GracefulStop()
-	log.Glob().Info("Stopped gRPC server...")
+	log.Info("Stopped gRPC server...")
 }
 
 // LogObservations triggers eager logging of ObservationLog
 func (s *Server) LogObservations(ctx context.Context, in *upiv1.LogObservationsRequest) (*upiv1.LogObservationsResponse, error) {
 	// TODO: Implement eager observations logging
-	log.Glob().Info("Called caraml.upi.v1.ObservationService/LogObservations")
+	log.Info("Called caraml.upi.v1.ObservationService/LogObservations")
 	logObservationsResponse := &upiv1.LogObservationsResponse{}
 	return logObservationsResponse, nil
 }

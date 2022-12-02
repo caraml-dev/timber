@@ -90,11 +90,11 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 		select {
 		case sig := <-sigchan:
 			// Capture Ctrl-C interrupt
-			log.Glob().Infof("System interrupt detected: %s", sig)
+			log.Infof("System interrupt detected: %s", sig)
 
 			// Close consumer before exit
 			if err := k.consumer.Close(); err != nil {
-				log.Glob().Errorf("Failed to close consumer:", err)
+				log.Errorf("Failed to close consumer:", err)
 				return err
 			}
 			// Wait for awhile before close
@@ -108,7 +108,7 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 				decodedLogMessage := &upiv1.ObservationLog{}
 				err := proto.Unmarshal(e.Value, decodedLogMessage)
 				if err != nil {
-					log.Glob().Error(err)
+					log.Error(err)
 				}
 				convertedLogMessage := types.NewObservationLogEntry(decodedLogMessage)
 				k.metricsService.LogRequestCount(http.StatusOK, monitoring.ReadCount)
@@ -116,10 +116,10 @@ func (k *KafkaLogConsumer) Consume(logsChannel chan *types.ObservationLogEntry) 
 				logsChannel <- convertedLogMessage
 			case kafka.PartitionEOF:
 				k.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.ReadCount)
-				log.Glob().Errorf("%% Reached %v\n", e)
+				log.Errorf("%% Reached %v\n", e)
 			case kafka.Error:
 				k.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.ReadCount)
-				log.Glob().Errorf("%% Error: %v\n", os.Stderr)
+				log.Errorf("%% Error: %v\n", os.Stderr)
 			default:
 			}
 		}

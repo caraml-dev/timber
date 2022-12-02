@@ -58,7 +58,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 		},
 	)
 	if err != nil {
-		log.Glob().Error(err)
+		log.Error(err)
 	}
 
 	// Generate record
@@ -71,7 +71,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 	// Marshal the key
 	keyBytes := []byte(fmt.Sprintf("%v", key))
 	if err != nil {
-		log.Glob().Errorf("unable to marshal log entry key, %s", err)
+		log.Errorf("unable to marshal log entry key, %s", err)
 	}
 
 	// Create the Kafka message
@@ -98,7 +98,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 	// Marshal the message
 	valueBytes, err := proto.Marshal(message)
 	if err != nil {
-		log.Glob().Errorf("unable to marshal log entry value, %s", err)
+		log.Errorf("unable to marshal log entry value, %s", err)
 	}
 
 	err = producer.Produce(&kafka.Message{
@@ -109,7 +109,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 		Key:   keyBytes,
 	}, deliveryChan)
 	if err != nil {
-		log.Glob().Error(err)
+		log.Error(err)
 	}
 
 	// Get delivery response
@@ -117,7 +117,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 	msg := event.(*kafka.Message)
 	if msg.TopicPartition.Error != nil {
 		err = fmt.Errorf("delivery failed: %v", msg.TopicPartition.Error)
-		log.Glob().Error(err)
+		log.Error(err)
 	}
 	producer.Close()
 }
@@ -125,7 +125,7 @@ func produceToKafka(timestamp *timestamppb.Timestamp) {
 func setupObservationService() (chan bool, *server.Server) {
 	observationServer, err := server.NewServer([]string{"test.yaml"})
 	if err != nil {
-		log.Glob().Panicf("fail to instantiate observation service server: %s", err.Error())
+		log.Panicf("fail to instantiate observation service server: %s", err.Error())
 	}
 
 	c := make(chan bool, 1)

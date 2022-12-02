@@ -70,7 +70,7 @@ func (l *ObservationLogger) Consume(ctx context.Context) error {
 
 // worker is a goroutine that periodically calls Produce method
 func (l *ObservationLogger) worker() {
-	log.Glob().Infof("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
+	log.Infof("starting periodic flush: Max Flush Duration %s / Max Queue Size %d", l.flushInterval, cap(l.logsChannel))
 	for {
 		select {
 		case log := <-l.logsChannel:
@@ -90,7 +90,7 @@ func (l *ObservationLogger) worker() {
 			// Reset batcherInfo after flush
 			l.batcherInfo.InitializeInfo()
 			if err != nil {
-				log.Glob().Error(err)
+				log.Error(err)
 			}
 			l.metricService.LogRequestCount(http.StatusOK, monitoring.FlushCount)
 		}

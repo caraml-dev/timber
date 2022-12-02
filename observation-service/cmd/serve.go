@@ -16,7 +16,7 @@ var serveCmd = &cobra.Command{
 
 		server, err := server.NewServer(cfgFile)
 		if err != nil {
-			log.Glob().Panic(err)
+			log.Panic(err)
 		}
 		server.Start()
 	},

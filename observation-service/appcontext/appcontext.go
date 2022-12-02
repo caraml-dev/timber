@@ -16,13 +16,13 @@ type AppContext struct {
 
 // NewAppContext initializes a AppContext struct
 func NewAppContext(cfg *config.Config) (*AppContext, error) {
-	log.Glob().Info("Initializing metric service...")
+	log.Info("Initializing metric service...")
 	metricService, err := services.NewMetricService(cfg.DeploymentConfig, cfg.MonitoringConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Glob().Info("Initializing Observation Service logger...")
+	log.Info("Initializing Observation Service logger...")
 	var observationLogger *logger.ObservationLogger
 	observationLogger, err = logger.NewObservationLogger(
 		cfg.LogConsumerConfig,

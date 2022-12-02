@@ -30,7 +30,7 @@ var GaugeMap = map[metrics.MetricName]metrics.PrometheusGaugeVec{}
 
 // GetCounterMap configures counter metrics
 func GetCounterMap() map[metrics.MetricName]metrics.PrometheusCounterVec {
-	allLabels := []string{"project_name", "response_code"}
+	allLabels := []string{"project_name", "service_name", "response_code"}
 
 	counterMap := map[metrics.MetricName]metrics.PrometheusCounterVec{
 		ReadCount: prometheus.NewCounterVec(prometheus.CounterOpts{
@@ -64,7 +64,7 @@ func GetCounterMap() map[metrics.MetricName]metrics.PrometheusCounterVec {
 
 // GetHistogramMap configures histogram metrics
 func GetHistogramMap() map[metrics.MetricName]metrics.PrometheusHistogramVec {
-	allLabels := []string{"project_name", "response_code"}
+	allLabels := []string{"project_name", "service_name", "response_code"}
 
 	histogramMap := map[metrics.MetricName]metrics.PrometheusHistogramVec{
 		RequestDurationMs: prometheus.NewHistogramVec(prometheus.HistogramOpts{

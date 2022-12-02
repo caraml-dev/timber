@@ -19,7 +19,7 @@ var RootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		log.Glob().Error(err)
+		log.Error(err)
 		os.Exit(1)
 	}
 }

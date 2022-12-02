@@ -69,7 +69,7 @@ func (ms *metricService) LogLatencyHistogram(begin time.Time, statusCode int, lo
 			)
 		}
 		if err != nil {
-			log.Glob().Errorf("error while logging %s metrics (latency): %s", loggingMetric, err)
+			log.Errorf("error while logging %s metrics (latency): %s", loggingMetric, err)
 		}
 	}
 }
@@ -100,7 +100,7 @@ func (ms *metricService) LogRequestCount(statusCode int, loggingMetric metrics.M
 			)
 		}
 		if err != nil {
-			log.Glob().Errorf("error while logging metrics (request_count): %s", err)
+			log.Errorf("error while logging metrics (request_count): %s", err)
 		}
 	}
 }
