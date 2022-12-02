@@ -23,9 +23,7 @@ const (
 )
 
 // requestLatencyBuckets defines the buckets used in the custom Histogram metrics
-var requestLatencyBuckets = []float64{
-	1000, 3000, 5000, 10000,
-}
+var requestLatencyBuckets = prometheus.ExponentialBuckets(1000, 2, 10)
 
 // GaugeMap configures gauge metrics
 var GaugeMap = map[metrics.MetricName]metrics.PrometheusGaugeVec{}
