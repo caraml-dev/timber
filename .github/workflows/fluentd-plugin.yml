@@ -9,7 +9,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/fluentd-plugin.yaml"
+      - ".github/workflows/fluentd-plugin.yml"
       - "images/fluentd/**"
 
   # To make it possible to trigger e2e CI workflow for any arbitrary git ref

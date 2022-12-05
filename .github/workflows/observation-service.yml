@@ -67,4 +67,57 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       
       - name: Run Observation Service test
+        working-directory: observation-service
         run: make test-observation-service
+  
+  publish-artifacts:
+    runs-on: ubuntu-latest
+    env:
+      GOPATH: ${{ github.workspace }}/api/.go
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Build binaries
+        working-directory: observation-service
+        run: make build
+
+      - name: Publish Observation Service Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: observation-service-binary
+          path: observation-service/bin/
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  release-rules:
+    runs-on: ubuntu-latest
+    outputs:
+      release-type: ${{ steps.release-rules.outputs.release-type }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: release-rules
+        uses: ./.github/actions/release-rules
+
+  release:
+   # Automatically publish release and pre-release artifacts.
+   #
+   # As for dev releases, make it possible to publish artifacts
+   # manually by approving 'deployment' in the 'manual' environment.
+   #
+   # Dev build can be released either from the 'main' branch or
+   # by running this workflow manually with `workflow_dispatch` event.
+    if: >-
+      contains('release,pre-release', needs.release-rules.outputs.release-type)
+        || ( github.event_name != 'pull_request' )
+        || ( github.event.pull_request.head.repo.full_name == github.repository )
+    needs:
+      - lint-go
+      - unit-tests-observation-service
+      - release-rules
+    uses: ./.github/workflows/release.yml
+    with:
+      environment: ${{ needs.release-rules.outputs.release-type == 'dev' && 'manual' || '' }}
+    secrets:
+      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
