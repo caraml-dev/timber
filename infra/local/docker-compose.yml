@@ -39,7 +39,7 @@ services:
       FLUENTD_FLUSH_INTERVAL_SECONDS: 60
       FLUENTD_BUFFER_LIMIT: 1g
       FLUENTD_LOG_PATH: /fluentd/cache/log
-      FLUENTD_TAG: observation-service.access
+      FLUENTD_TAG: observation-service
       # BQ configurations
       FLUENTD_GCP_JSON_KEY_PATH: /etc/gcp_service_account/service-account.json
       FLUENTD_GCP_PROJECT: gods-dev

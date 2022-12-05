@@ -95,7 +95,7 @@ type FluentdConfig struct {
 	// Fluentd Port to connect to
 	Port int `default:"24224"`
 	// Fluentd Tag to match messages
-	Tag string `default:"observation-service.access"`
+	Tag string `default:"observation-service"`
 
 	// BQConfig captures the config related to initializing a BQ Sink
 	BQConfig *BQConfig

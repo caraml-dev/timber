@@ -57,7 +57,7 @@ func TestDefaultConfigs(t *testing.T) {
 				Kind: "",
 				Host: "localhost",
 				Port: 24224,
-				Tag:  "observation-service.access",
+				Tag:  "observation-service",
 				BQConfig: &BQConfig{
 					Project: "",
 					Dataset: "",
@@ -131,7 +131,7 @@ func TestLoadConfigFiles(t *testing.T) {
 						Kind: "",
 						Host: "localhost",
 						Port: 24224,
-						Tag:  "observation-service.access",
+						Tag:  "observation-service",
 						BQConfig: &BQConfig{
 							Project: "",
 							Dataset: "",
