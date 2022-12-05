@@ -53,6 +53,17 @@ func TestDefaultConfigs(t *testing.T) {
 				PollInterval:     1000,
 				AutoOffsetReset:  "latest",
 			},
+			FluentdConfig: &FluentdConfig{
+				Kind: "",
+				Host: "localhost",
+				Port: 24224,
+				Tag:  "observation-service",
+				BQConfig: &BQConfig{
+					Project: "",
+					Dataset: "",
+					Table:   "",
+				},
+			},
 		},
 		MonitoringConfig: MonitoringConfig{
 			Kind: "",
@@ -115,6 +126,17 @@ func TestLoadConfigFiles(t *testing.T) {
 						ConnectTimeoutMS: 1000,
 						PollInterval:     1000,
 						AutoOffsetReset:  "latest",
+					},
+					FluentdConfig: &FluentdConfig{
+						Kind: "",
+						Host: "localhost",
+						Port: 24224,
+						Tag:  "observation-service",
+						BQConfig: &BQConfig{
+							Project: "",
+							Dataset: "",
+							Table:   "",
+						},
 					},
 				},
 				MonitoringConfig: MonitoringConfig{

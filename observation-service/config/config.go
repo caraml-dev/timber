@@ -86,6 +86,31 @@ type KafkaConfig struct {
 	AutoOffsetReset string `default:"latest"`
 }
 
+// FluentdConfig captures necessary configuration to flush ObservationLog to multiple sinks
+type FluentdConfig struct {
+	// The type of Data Sink for Observation logs flushed via Fluentd
+	Kind FluentdProducerSinkKind `default:""`
+	// Fluentd Host to connect to
+	Host string `default:"localhost"`
+	// Fluentd Port to connect to
+	Port int `default:"24224"`
+	// Fluentd Tag to match messages
+	Tag string `default:"observation-service"`
+
+	// BQConfig captures the config related to initializing a BQ Sink
+	BQConfig *BQConfig
+}
+
+// BQConfig captures GCP BigQuery information for writing Observation Service logs to
+type BQConfig struct {
+	// GCP Project
+	Project string
+	// GCP Dataset
+	Dataset string
+	// GCP Table
+	Table string
+}
+
 // ObservationLoggerProducerKind captures the producer config for flushing Observation Service logs
 type ObservationLoggerProducerKind = string
 
@@ -96,6 +121,18 @@ const (
 	LoggerStdOutProducer ObservationLoggerProducerKind = "stdout"
 	// LoggerKafkaProducer is a Kafka ObservationLog Producer
 	LoggerKafkaProducer ObservationLoggerProducerKind = "kafka"
+	// LoggerFluentdProducer is a Fluentd ObservationLog Producer
+	LoggerFluentdProducer ObservationLoggerProducerKind = "fluentd"
+)
+
+// FluentdProducerSinkKind captures the sink config for flushing Observation Service logs via Fluentd
+type FluentdProducerSinkKind = string
+
+const (
+	// LoggerNoopSinkFluentdProducer is a Fluentd No-Op ObservationLog Producer
+	LoggerNoopSinkFluentdProducer FluentdProducerSinkKind = ""
+	// LoggerBQSinkFluentdProducer is a Fluentd ObservationLog BigQuery Producer
+	LoggerBQSinkFluentdProducer FluentdProducerSinkKind = "bq"
 )
 
 // LogProducerConfig captures the config related to producing ObservationLog
@@ -109,6 +146,8 @@ type LogProducerConfig struct {
 
 	// KafkaConfig captures the config related to initializing a Kafka Producer
 	KafkaConfig *KafkaConfig
+	// FluentdConfig captures the config related to initializing a Fluentd instance
+	FluentdConfig *FluentdConfig
 }
 
 // MetricSinkKind captures type of metrics sink
