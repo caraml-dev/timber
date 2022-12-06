@@ -27,7 +27,7 @@ make dependency-services
 
 #### c. Setup Observation Service
 ```bash
-make observation-service
+cd observation-service && make observation-service
 ```
 
 #### d. Sample Requests
