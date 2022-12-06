@@ -69,27 +69,6 @@ jobs:
       - name: Run Observation Service test
         working-directory: observation-service
         run: make test-observation-service
-  
-  publish-artifacts:
-    runs-on: ubuntu-latest
-    env:
-      GOPATH: ${{ github.workspace }}/api/.go
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
-      - name: Build binaries
-        working-directory: observation-service
-        run: make build
-
-      - name: Publish Observation Service Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: observation-service-binary
-          path: observation-service/bin/
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   release-rules:
     runs-on: ubuntu-latest

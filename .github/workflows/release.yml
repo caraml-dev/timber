@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_NAME: observation-service
+      DOCKER_FILE: Dockerfile.observation_service
     outputs:
       api-version: ${{ steps.build-image.outputs.api-version }}
     steps:
@@ -29,20 +30,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-    
-      - name: Download Observation Service binary
-        uses: actions/download-artifact@v2
-        with:
-          name: observation-service-binary
-          path: observation-service/bin/
 
       - name: Build Docker image
         id: build-image
-        working-directory: observation-service
         run: |
           set -o pipefail
-          make BIN_NAME=$APP_NAME build-image | tee output.log
-          echo "::set-output name=api-version::$(sed -n 's%observation-service version: \(.*\)%\1%p' output.log)"
+          make BIN_NAME=$APP_NAME DOCKER_FILE=$DOCKER_FILE build-image | tee output.log
+          echo "::set-output name=api-version::$(sed -n 's%API version: \(.*\)%\1%p' output.log)"
 
       - name: Save Docker image
         run: |
