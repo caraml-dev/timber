@@ -1,9 +1,10 @@
+ARG SERVICE_DIRECTORY=observation-service
 # ============================================================
 # Build stage 1: Build API
 # ============================================================
 FROM golang:1.18-alpine as go-builder
-ARG API_BIN_NAME=observation_service
-ARG SERVICE_DIRECTORY=observation-service
+ARG API_BIN_NAME=observation-service
+ARG SERVICE_DIRECTORY
 
 RUN apk update && apk add build-base
 
@@ -21,10 +22,11 @@ RUN go build \
 # Build stage 2: Copy binary
 # ============================================================
 FROM alpine:latest
+ARG SERVICE_DIRECTORY
 
 RUN mkdir -p /opt/observation_service
 
-COPY --from=go-builder ./bin/* /opt/observation_service/
+COPY --from=go-builder /app/${SERVICE_DIRECTORY}/bin/* /opt/observation_service/
 
 WORKDIR /opt/observation_service
 ENTRYPOINT [ "./observation-service" ]
