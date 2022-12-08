@@ -1,0 +1,28 @@
+{{- if .Values.observationService.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "observation-service.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.observationService.ingress.class }}
+    ingress.class: {{ . }}
+    {{- end }}
+  labels:
+    app: {{ template "observation-service.fullname" . }}
+    {{- include "observation-service.labels" . | nindent 4 }}
+{{- if .Values.observationService.labels }}
+{{ toYaml .Values.observationService.labels | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - {{- with .Values.observationService.ingress.host }}
+    host: {{ . }}
+    {{- end }} 
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: {{ template "observation-service.fullname" . }}
+            servicePort: {{ .Values.observationService.service.externalPort }}
+{{- end }}
