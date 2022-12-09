@@ -4,7 +4,7 @@
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
 ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
-Observation Service: Logging system for actual ML outcomes
+Observation Service - Logging system for collecting ground truth observation result from ML prediction
 
 ## Introduction
 
@@ -35,8 +35,6 @@ The following table lists the configurable parameters of the Observation Service
 | fluentd.enabled | bool | `false` | Flag to toggle deployment of Observation Service fluentd |
 | fluentd.extraEnvs | list | `[]` | List of extra environment variables to add to Observation Service fluentd container |
 | fluentd.extraLabels | object | `{}` | List of extra labels to add to Observation Service fluentd K8s resources |
-| fluentd.extraVolumeMounts | list | `[]` | Extra volume mounts to attach to Observation Service fluentd container. For example to mount the extra volume containing secrets |
-| fluentd.extraVolumes | list | `[]` | Extra volumes to attach to the Pod. For example, you can mount  additional secrets to these volumes |
 | fluentd.gcpServiceAccount.account | string | `""` |  |
 | fluentd.gcpServiceAccount.enabled | bool | `false` | Flag to toggle flushing Observation logs to BQ |
 | fluentd.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
@@ -60,8 +58,6 @@ The following table lists the configurable parameters of the Observation Service
 | observationService.autoscaling.targetMemoryUtilizationPercentage | int | `80` | Memory utilization percentage threshold to activate HPA scaling |
 | observationService.extraEnvs | list | `[]` | List of extra environment variables to add to Observation Service server container |
 | observationService.extraLabels | object | `{}` | List of extra labels to add to Observation Service K8s resources |
-| observationService.extraVolumeMounts | list | `[]` | Extra volume mounts to attach to Observation Service server container. For example to mount the extra volume containing secrets |
-| observationService.extraVolumes | list | `[]` | Extra volumes to attach to the Pod. For example, you can mount  additional secrets to these volumes |
 | observationService.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | observationService.image.registry | string | `"ghcr.io"` | Docker registry for Observation Service image |
 | observationService.image.repository | string | `"caraml-dev/observation-service/observation-service"` | Docker image repository for Observation Service |

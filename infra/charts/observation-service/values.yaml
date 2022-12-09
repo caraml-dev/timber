@@ -49,11 +49,11 @@ observationService:
     enabled: false
     # -- Set host value to enable name based virtual hosting. This allows routing
     # HTTP traffic to multiple host names at the same IP address. If no host is
-    # specified, the ingress rule applies to all inbound HTTP traffic through 
+    # specified, the ingress rule applies to all inbound HTTP traffic through
     # the IP address specified.
     # https://kubernetes.io/docs/concepts/services-networking/ingress/#name-based-virtual-hosting
     host: ""
-    # -- Ingress class annotation to add to this Ingress rule, 
+    # -- Ingress class annotation to add to this Ingress rule,
     # useful when there are multiple ingress controllers installed
     class: ""
 
@@ -62,20 +62,6 @@ observationService:
 
   # -- List of extra labels to add to Observation Service K8s resources
   extraLabels: {}
-
-  # -- Extra volumes to attach to the Pod. For example, you can mount 
-  # additional secrets to these volumes
-  extraVolumes: []
-  # # Example
-  # - name: varlog
-  #   emptyDir: {}
-
-  # -- Extra volume mounts to attach to Observation Service server container. For example
-  # to mount the extra volume containing secrets
-  extraVolumeMounts: []
-  # # Example
-  # - name: varlog
-  #   mountPath: /var/log
 
   # -- Define which nodes the pods are scheduled on.
   # ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -121,10 +107,6 @@ fluentd:
   # Reference: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
 
-  service:
-    internalPort: &internalPort 9880
-    externalPort: &externalPort 24224
-
   # GCP configurations for flushing Observation logs to BQ
   gcpServiceAccount:
     # -- Flag to toggle flushing Observation logs to BQ
@@ -140,7 +122,8 @@ fluentd:
   # -- Kubernetes Service for fluentd StatefulSet
   service:
     type: ClusterIP
-    internalPort: 9880
+    internalPort: &internalPort 9880
+    externalPort: &externalPort 24224
     multiPort:
       enabled: true
     multiPorts:
@@ -156,20 +139,6 @@ fluentd:
 
   # -- List of extra labels to add to Observation Service fluentd K8s resources
   extraLabels: {}
-
-  # -- Extra volumes to attach to the Pod. For example, you can mount 
-  # additional secrets to these volumes
-  extraVolumes: []
-  # # Example
-  # - name: varlog
-  #   emptyDir: {}
-
-  # -- Extra volume mounts to attach to Observation Service fluentd container. For example
-  # to mount the extra volume containing secrets
-  extraVolumeMounts: []
-  # # Example
-  # - name: varlog
-  #   mountPath: /var/log
 
   # -- HPA scaling configuration for Observation Service fluentd
   autoscaling:

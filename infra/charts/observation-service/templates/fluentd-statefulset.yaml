@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "observation-service.fullname" . }}-fluentd-{{ .Release.Revision }}
+  name: {{ include "observation-service.fullname" . }}-fluentd
   labels:
     {{- include "observation-service.labels" . | nindent 4 }}
 {{ if .Values.fluentd.extraLabels -}}
@@ -28,7 +28,6 @@ spec:
           {{- toYaml .Values.global.extraPodLabels | nindent 8 }}
         {{- end }}
     spec:
-      terminationGracePeriodSeconds: 10
       containers:
         - name: logger
           image: "{{ .Values.fluentd.image.registry }}/{{ .Values.fluentd.image.repository }}:{{ .Values.fluentd.image.tag | default .Chart.AppVersion }}"
@@ -52,17 +51,11 @@ spec:
           - mountPath: {{ .Values.fluentd.pvcConfig.mountPath }}
             name: {{ .Values.fluentd.pvcConfig.name }}
           {{- end }}
-          {{- with .Values.fluentd.extraVolumeMounts }}
-          {{- toYaml . | nindent 8 }}
-          {{- end }}
       volumes:
       {{- if .Values.fluentd.gcpServiceAccount.enabled }}
       - name: gcp-service-account
         secret:
           secretName: {{ .Release.Name }}-fluentd-secret
-      {{- end }}
-      {{- with .Values.fluentd.extraVolumes }}
-      {{- toYaml . | nindent 6 }}
       {{- end }}
   {{- if .Values.fluentd.pvcConfig }}
   volumeClaimTemplates:
