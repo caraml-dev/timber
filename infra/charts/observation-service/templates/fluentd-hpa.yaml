@@ -1,5 +1,5 @@
 {{- if .Values.fluentd.autoscaling.enabled }}
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "observation-service.fullname" . }}-fluentd
@@ -19,11 +19,5 @@ spec:
       resource:
         name: cpu
         targetAverageUtilization: {{ .Values.fluentd.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.fluentd.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: {{ .Values.fluentd.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

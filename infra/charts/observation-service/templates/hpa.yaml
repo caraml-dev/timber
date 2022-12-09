@@ -1,5 +1,5 @@
 {{- if .Values.observationService.autoscaling.enabled }}
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "observation-service.fullname" . }}
@@ -19,11 +19,5 @@ spec:
       resource:
         name: cpu
         targetAverageUtilization: {{ .Values.observationService.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.observationService.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        targetAverageUtilization: {{ .Values.observationService.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

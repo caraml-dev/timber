@@ -83,8 +83,6 @@ observationService:
     maxReplicas: 2
     # -- CPU utilization percentage threshold to activate HPA scaling
     targetCPUUtilizationPercentage: 80
-    # -- Memory utilization percentage threshold to activate HPA scaling
-    targetMemoryUtilizationPercentage: 80
 
 fluentd:
   # -- Flag to toggle deployment of Observation Service fluentd
@@ -150,8 +148,6 @@ fluentd:
     maxReplicas: 2
     # -- CPU utilization percentage threshold to activate HPA scaling
     targetCPUUtilizationPercentage: 80
-    # -- Memory utilization percentage threshold to activate HPA scaling
-    targetMemoryUtilizationPercentage: 80
 
 global:
   # -- Extra pod labels in a map[string]string format, most likely to be used for the costing labels.

@@ -26,12 +26,11 @@ The following table lists the configurable parameters of the Observation Service
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| fluentd.autoscaling | object | `{"enabled":false,"maxReplicas":2,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | HPA scaling configuration for Observation Service fluentd |
+| fluentd.autoscaling | object | `{"enabled":false,"maxReplicas":2,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | HPA scaling configuration for Observation Service fluentd |
 | fluentd.autoscaling.enabled | bool | `false` | Toggle to enable HPA scaling |
 | fluentd.autoscaling.maxReplicas | int | `2` | Maximum replicas for HPA scaling |
 | fluentd.autoscaling.minReplicas | int | `1` | Minimum replicas for HPA scaling |
 | fluentd.autoscaling.targetCPUUtilizationPercentage | int | `80` | CPU utilization percentage threshold to activate HPA scaling |
-| fluentd.autoscaling.targetMemoryUtilizationPercentage | int | `80` | Memory utilization percentage threshold to activate HPA scaling |
 | fluentd.enabled | bool | `false` | Flag to toggle deployment of Observation Service fluentd |
 | fluentd.extraEnvs | list | `[]` | List of extra environment variables to add to Observation Service fluentd container |
 | fluentd.extraLabels | object | `{}` | List of extra labels to add to Observation Service fluentd K8s resources |
@@ -44,27 +43,24 @@ The following table lists the configurable parameters of the Observation Service
 | fluentd.pvcConfig | object | `{"mountPath":"/cache","name":"cache-volume","storage":"3Gi"}` | PVC configurations for fluentd StatefulSet storage |
 | fluentd.replicaCount | int | `1` |  |
 | fluentd.resources | object | `{}` | Resources requests and limits for Observation Service fluentd StatefulSet. This should be set according to your cluster capacity and service level objectives. Reference: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ |
-| fluentd.service | object | `{"internalPort":9880,"multiPort":{"enabled":true},"multiPorts":[{"name":"tcp-input","port":24224,"targetPort":24224},{"name":"http-input","port":9880,"targetPort":9880}],"type":"ClusterIP"}` | Kubernetes Service for fluentd StatefulSet |
-| fluentd.service.externalPort | int | `24224` |  |
-| fluentd.service.internalPort | int | `9880` |  |
+| fluentd.service | object | `{"externalPort":24224,"internalPort":9880,"multiPort":{"enabled":true},"multiPorts":[{"name":"tcp-input","port":24224,"targetPort":24224},{"name":"http-input","port":9880,"targetPort":9880}],"type":"ClusterIP"}` | Kubernetes Service for fluentd StatefulSet |
 | global.extraPodLabels | object | `{}` | Extra pod labels in a map[string]string format, most likely to be used for the costing labels. |
 | observationService.affinity | object | `{}` | Assign custom affinity rules to constrain pods to nodes. ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/ |
 | observationService.apiConfig | object | `{}` | Observation Service server configuration. |
-| observationService.autoscaling | object | `{"enabled":false,"maxReplicas":2,"minReplicas":1,"targetCPUUtilizationPercentage":80,"targetMemoryUtilizationPercentage":80}` | HPA scaling configuration for Observation Service |
+| observationService.autoscaling | object | `{"enabled":false,"maxReplicas":2,"minReplicas":1,"targetCPUUtilizationPercentage":80}` | HPA scaling configuration for Observation Service |
 | observationService.autoscaling.enabled | bool | `false` | Toggle to enable HPA scaling |
 | observationService.autoscaling.maxReplicas | int | `2` | Maximum replicas for HPA scaling |
 | observationService.autoscaling.minReplicas | int | `1` | Minimum replicas for HPA scaling |
 | observationService.autoscaling.targetCPUUtilizationPercentage | int | `80` | CPU utilization percentage threshold to activate HPA scaling |
-| observationService.autoscaling.targetMemoryUtilizationPercentage | int | `80` | Memory utilization percentage threshold to activate HPA scaling |
 | observationService.extraEnvs | list | `[]` | List of extra environment variables to add to Observation Service server container |
 | observationService.extraLabels | object | `{}` | List of extra labels to add to Observation Service K8s resources |
 | observationService.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | observationService.image.registry | string | `"ghcr.io"` | Docker registry for Observation Service image |
 | observationService.image.repository | string | `"caraml-dev/observation-service/observation-service"` | Docker image repository for Observation Service |
 | observationService.image.tag | string | `"v0.1.0"` | Docker image tag for Observation Service |
-| observationService.ingress.class | string | `""` | Ingress class annotation to add to this Ingress rule,  useful when there are multiple ingress controllers installed |
+| observationService.ingress.class | string | `""` | Ingress class annotation to add to this Ingress rule, useful when there are multiple ingress controllers installed |
 | observationService.ingress.enabled | bool | `false` | Enable ingress to provision Ingress resource for external access to Observation Service |
-| observationService.ingress.host | string | `""` | Set host value to enable name based virtual hosting. This allows routing HTTP traffic to multiple host names at the same IP address. If no host is specified, the ingress rule applies to all inbound HTTP traffic through  the IP address specified. https://kubernetes.io/docs/concepts/services-networking/ingress/#name-based-virtual-hosting |
+| observationService.ingress.host | string | `""` | Set host value to enable name based virtual hosting. This allows routing HTTP traffic to multiple host names at the same IP address. If no host is specified, the ingress rule applies to all inbound HTTP traffic through the IP address specified. https://kubernetes.io/docs/concepts/services-networking/ingress/#name-based-virtual-hosting |
 | observationService.livenessProbe.initialDelaySeconds | int | `60` | Liveness probe delay and thresholds |
 | observationService.livenessProbe.path | string | `"/v1/internal/health/live"` | HTTP path for liveness check |
 | observationService.livenessProbe.periodSeconds | int | `10` |  |
