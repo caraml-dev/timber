@@ -1,7 +1,7 @@
 # observation-service
 
 ---
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square)
 ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Observation Service - Logging system for collecting ground truth observation result from ML prediction
@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the Observation Service
 | fluentd.gcpServiceAccount.enabled | bool | `false` | Flag to toggle flushing Observation logs to BQ |
 | fluentd.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | fluentd.image.registry | string | `"ghcr.io"` | Docker registry for Observation Service fluentd image |
-| fluentd.image.repository | string | `"caraml-dev/observation-service/fluentd"` | Docker image repository for Observation Service fluentd |
+| fluentd.image.repository | string | `"caraml-dev/timber/fluentd"` | Docker image repository for Observation Service fluentd |
 | fluentd.image.tag | string | `"v0.1.0"` | Docker image tag for Observation Service fluentd |
 | fluentd.pvcConfig | object | `{"mountPath":"/cache","name":"cache-volume","storage":"3Gi"}` | PVC configurations for fluentd StatefulSet storage |
 | fluentd.replicaCount | int | `1` |  |
@@ -56,7 +56,7 @@ The following table lists the configurable parameters of the Observation Service
 | observationService.extraLabels | object | `{}` | List of extra labels to add to Observation Service K8s resources |
 | observationService.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | observationService.image.registry | string | `"ghcr.io"` | Docker registry for Observation Service image |
-| observationService.image.repository | string | `"caraml-dev/observation-service/observation-service"` | Docker image repository for Observation Service |
+| observationService.image.repository | string | `"caraml-dev/timber/observation-service"` | Docker image repository for Observation Service |
 | observationService.image.tag | string | `"v0.1.0"` | Docker image tag for Observation Service |
 | observationService.ingress.class | string | `""` | Ingress class annotation to add to this Ingress rule, useful when there are multiple ingress controllers installed |
 | observationService.ingress.enabled | bool | `false` | Enable ingress to provision Ingress resource for external access to Observation Service |

@@ -1,15 +1,15 @@
-# Development Guide: Contributing to Observation Service
+# Development Guide: Contributing to Timber
 
-Thank you for your interest in contributing to Observation Service. This document provides some suggestions and guidelines on how you can get involved.
+Thank you for your interest in contributing to Timber. This document provides some suggestions and guidelines on how you can get involved.
 
 ## Become a contributor
 
-You can contribute to Observation Service in several ways:
+You can contribute to Timber in several ways:
 
-- Contribute to feature development for the Observation Service codebase
+- Contribute to feature development for the Timber codebase
 - Report bugs
 - Create articles and documentation for users and contributors
-- Help others answer questions about Observation Service
+- Help others answer questions about Timber
 
 ### Report bugs
 
@@ -21,8 +21,8 @@ with a similar bug report. You can search the existing issues for similar issues
 
 ### Suggest features
 
-If you have an idea to improve Observation Service, submit a feature request. It will be good
-to describe the use cases and how it will benefit Observation Service users in your feature
+If you have an idea to improve Timber, submit a feature request. It will be good
+to describe the use cases and how it will benefit Timber users in your feature
 request.
 
 ## Making a pull request
@@ -32,7 +32,7 @@ You can submit pull requests to fix bugs, add new features or improve our docume
 Here are some considerations you should keep in mind when making changes:
 
 - While making changes
-  - Make your changes in a [forked repo](#forking-the-repo) (instead of making a branch on the main Observation Service repo)
+  - Make your changes in a [forked repo](#forking-the-repo) (instead of making a branch on the main Timber repo)
   - [Rebase from master](#incorporating-upstream-changes-from-master) instead of using `git pull` on your PR branch
   - Install [pre-commit hooks](#pre-commit-hooks) to ensure all the default linters / formatters are run when you push.
 - When making the PR
@@ -43,7 +43,7 @@ Here are some considerations you should keep in mind when making changes:
 
 ### Forking the repo
 
-Fork the Observation Service Github repo and clone your fork locally. Then make changes to a local branch to the fork.
+Fork the Timber Github repo and clone your fork locally. Then make changes to a local branch to the fork.
 
 See [Creating a pull request from a fork](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
 
@@ -64,9 +64,9 @@ Setup [`pre-commit`](https://pre-commit.com/) to automatically lint and format t
 
 3. On push, the pre-commit hook will run. This runs `make format` and `make lint`.
 
-## Observation Service using Go
+## Timber using Go
 
-Observation service is written using Go, and the following describes how to setup your development environment.
+Timber is written using Go, and the following describes how to setup your development environment.
 
 ### Environment Setup
 
