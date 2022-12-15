@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Protocol Documentation</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic"/>
+    <style>
+      body {
+        width: 60em;
+        margin: 1em auto;
+        color: #222;
+        font-family: "Ubuntu", sans-serif;
+        padding-bottom: 4em;
+      }
+
+      h1 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      h2 {
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+        margin: 1.5em 0;
+      }
+
+      h3 {
+        font-weight: normal;
+        border-bottom: 1px solid #aaa;
+        padding-bottom: 0.5ex;
+      }
+
+      a {
+        text-decoration: none;
+        color: #567e25;
+      }
+
+      table {
+        width: 100%;
+        font-size: 80%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        font-weight: 700;
+        background-color: #dcdcdc;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fbfbfb;
+      }
+
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5ex 2ex;
+      }
+
+      td p {
+        text-indent: 1em;
+        margin: 0;
+      }
+
+      td p:nth-child(1) {
+        text-indent: 0;  
+      }
+
+       
+      .field-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .field-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .field-table td:nth-child(3) {  
+        width: 6em;
+      }
+      .field-table td:nth-child(4) {  
+        width: auto;
+      }
+
+       
+      .extension-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(3) {  
+        width: 10em;
+      }
+      .extension-table td:nth-child(4) {  
+        width: 5em;
+      }
+      .extension-table td:nth-child(5) {  
+        width: auto;
+      }
+
+       
+      .enum-table td:nth-child(1) {  
+        width: 10em;
+      }
+      .enum-table td:nth-child(2) {  
+        width: 10em;
+      }
+      .enum-table td:nth-child(3) {  
+        width: auto;
+      }
+
+       
+      .scalar-value-types-table tr {
+        height: 3em;
+      }
+
+       
+      #toc-container ul {
+        list-style-type: none;
+        padding-left: 1em;
+        line-height: 180%;
+        margin: 0;
+      }
+      #toc > li > a {
+        font-weight: bold;
+      }
+
+       
+      .file-heading {
+        width: 100%;
+        display: table;
+        border-bottom: 1px solid #aaa;
+        margin: 4em 0 1.5em 0;
+      }
+      .file-heading h2 {
+        border: none;
+        display: table-cell;
+      }
+      .file-heading a {
+        text-align: right;
+        display: table-cell;
+      }
+
+       
+      .badge {
+        width: 1.6em;
+        height: 1.6em;
+        display: inline-block;
+
+        line-height: 1.6em;
+        text-align: center;
+        font-weight: bold;
+        font-size: 60%;
+
+        color: #89ba48;
+        background-color: #dff0c8;
+
+        margin: 0.5ex 1em 0.5ex -1em;
+        border: 1px solid #fbfbfb;
+        border-radius: 1ex;
+      }
+    </style>
+
+    
+    <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+  </head>
+
+  <body>
+
+    <h1 id="title">Protocol Documentation</h1>
+
+    <h2>Table of Contents</h2>
+
+    <div id="toc-container">
+      <ul id="toc">
+        
+          
+          <li>
+            <a href="#caraml%2ftimber%2fv1%2flog.proto">caraml/timber/v1/log.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#caraml.timber.v1.FluentdConfig"><span class="badge">M</span>FluentdConfig</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.FluentdOutputBQConfig"><span class="badge">M</span>FluentdOutputBQConfig</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.KafkaConfig"><span class="badge">M</span>KafkaConfig</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.Log"><span class="badge">M</span>Log</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.LogProducer"><span class="badge">M</span>LogProducer</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#caraml.timber.v1.FluentdOutputType"><span class="badge">E</span>FluentdOutputType</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.KafkaInitialOffset"><span class="badge">E</span>KafkaInitialOffset</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.LogType"><span class="badge">E</span>LogType</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#caraml%2ftimber%2fv1%2flog_writer.proto">caraml/timber/v1/log_writer.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#caraml.timber.v1.LogWriter"><span class="badge">M</span>LogWriter</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#caraml.timber.v1.LogWriterType"><span class="badge">E</span>LogWriterType</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#caraml%2ftimber%2fv1%2fobservation_service.proto">caraml/timber/v1/observation_service.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceConfig"><span class="badge">M</span>ObservationServiceConfig</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceDataSink"><span class="badge">M</span>ObservationServiceDataSink</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceDataSource"><span class="badge">M</span>ObservationServiceDataSource</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceDataSinkType"><span class="badge">E</span>ObservationServiceDataSinkType</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceDataSourceType"><span class="badge">E</span>ObservationServiceDataSourceType</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#caraml%2ftimber%2fv1%2fdataset_service.proto">caraml/timber/v1/dataset_service.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#caraml.timber.v1.CreateLogWriterRequest"><span class="badge">M</span>CreateLogWriterRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.CreateLogWriterResponse"><span class="badge">M</span>CreateLogWriterResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.CreateObservationServiceRequest"><span class="badge">M</span>CreateObservationServiceRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.CreateObservationServiceResponse"><span class="badge">M</span>CreateObservationServiceResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetLogRequest"><span class="badge">M</span>GetLogRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetLogResponse"><span class="badge">M</span>GetLogResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetLogWriterRequest"><span class="badge">M</span>GetLogWriterRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetLogWriterResponse"><span class="badge">M</span>GetLogWriterResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetObservationServiceRequest"><span class="badge">M</span>GetObservationServiceRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.GetObservationServiceResponse"><span class="badge">M</span>GetObservationServiceResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListLogWritersRequest"><span class="badge">M</span>ListLogWritersRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListLogWritersResponse"><span class="badge">M</span>ListLogWritersResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListLogsRequest"><span class="badge">M</span>ListLogsRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListLogsResponse"><span class="badge">M</span>ListLogsResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListObservationServicesRequest"><span class="badge">M</span>ListObservationServicesRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListObservationServicesResponse"><span class="badge">M</span>ListObservationServicesResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.UpdateLogWriterRequest"><span class="badge">M</span>UpdateLogWriterRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.UpdateLogWriterResponse"><span class="badge">M</span>UpdateLogWriterResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.UpdateObservationServiceRequest"><span class="badge">M</span>UpdateObservationServiceRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.UpdateObservationServiceResponse"><span class="badge">M</span>UpdateObservationServiceResponse</a>
+                </li>
+              
+              
+              
+              
+                <li>
+                  <a href="#caraml.timber.v1.DatasetService"><span class="badge">S</span>DatasetService</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+        <li><a href="#scalar-value-types">Scalar Value Types</a></li>
+      </ul>
+    </div>
+
+    
+      
+      <div class="file-heading">
+        <h2 id="caraml/timber/v1/log.proto">caraml/timber/v1/log.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="caraml.timber.v1.FluentdConfig">FluentdConfig</h3>
+        <p>Fluentd Data sink configurations</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#caraml.timber.v1.FluentdOutputType">FluentdOutputType</a></td>
+                  <td></td>
+                  <td><p>The type of Data Sink where Observation logs would be flushed to </p></td>
+                </tr>
+              
+                <tr>
+                  <td>host</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fluentd Host to connect to </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Fluentd Port to connect to </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tag</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fluentd Tag to match messages </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config</td>
+                  <td><a href="#caraml.timber.v1.FluentdOutputBQConfig">FluentdOutputBQConfig</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.FluentdOutputBQConfig">FluentdOutputBQConfig</h3>
+        <p>Fluentd BQ Data sink configurations</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>GCP Project </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dataset</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>GCP Dataset </p></td>
+                </tr>
+              
+                <tr>
+                  <td>table</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>GCP Table </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.KafkaConfig">KafkaConfig</h3>
+        <p>Kafka configurations</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>brokers</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Kafka Brokers to connect to, comma-delimited, in the form of &#34;&lt;broker_host&gt;:&lt;broker_port&gt;&#34; </p></td>
+                </tr>
+              
+                <tr>
+                  <td>topic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Kafka Topic to produce to/consume from </p></td>
+                </tr>
+              
+                <tr>
+                  <td>max_message_bytes</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Largest record batch size allowed by Kafka (after compression if compression is enabled) </p></td>
+                </tr>
+              
+                <tr>
+                  <td>compression_type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The compression type for all data generated by the Producer </p></td>
+                </tr>
+              
+                <tr>
+                  <td>connection_timeout</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>ConnectTimeoutMS is the maximum duration (ms) the Kafka Producer/Consumer will block for to get Metadata, before timing out </p></td>
+                </tr>
+              
+                <tr>
+                  <td>poll_interval</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>PollInterval is the maximum duration (ms) the Kafka Consumer will block for, before timing out </p></td>
+                </tr>
+              
+                <tr>
+                  <td>offset_reset</td>
+                  <td><a href="#caraml.timber.v1.KafkaInitialOffset">KafkaInitialOffset</a></td>
+                  <td></td>
+                  <td><p>What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.Log">Log</h3>
+        <p>Log is an entity/metadata in Dataset Service that represents an append-only</p><p>data produced by ingesting the observation, prediction, or router logs</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Unique identifier of a log generated by a LogProducer. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Name of the log, generated by Dataset Service. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#caraml.timber.v1.LogType">LogType</a></td>
+                  <td></td>
+                  <td><p>Source of the log. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>target_names</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>List of target names associated with a log. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>bq_table</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>BQ table ID where the data is stored. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>log_producer</td>
+                  <td><a href="#caraml.timber.v1.LogProducer">LogProducer</a></td>
+                  <td></td>
+                  <td><p>Details of LogProducer that generated a log. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.LogProducer">LogProducer</h3>
+        <p>LogProducer describes the service that generates the log</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Unique identifier of the producer. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Name of the producer, dependent on the type of the log. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>project</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Name of the CaraML project that hosts the producer. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="caraml.timber.v1.FluentdOutputType">FluentdOutputType</h3>
+        <p>Data sink where logs would be flushed to via Fluentd</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>FLUENTD_OUTPUT_TYPE_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>FLUENTD_OUTPUT_TYPE_STDOUT</td>
+                <td>1</td>
+                <td><p>Fluentd will publish logs to standard output</p></td>
+              </tr>
+            
+              <tr>
+                <td>FLUENTD_OUTPUT_TYPE_BQ</td>
+                <td>2</td>
+                <td><p>Fluentd will flush logs to BigQuery</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="caraml.timber.v1.KafkaInitialOffset">KafkaInitialOffset</h3>
+        <p>Kafka initial offset config</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>KAFKA_INITIAL_OFFSET_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>KAFKA_INITIAL_OFFSET_EARLIEST</td>
+                <td>1</td>
+                <td><p>Automatically reset the offset to the earliest offset</p></td>
+              </tr>
+            
+              <tr>
+                <td>KAFKA_INITIAL_OFFSET_LATEST</td>
+                <td>2</td>
+                <td><p>Automatically reset the offset to the latest offset</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="caraml.timber.v1.LogType">LogType</h3>
+        <p>LogType supported by UPI</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>LOG_TYPE_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>LOG_TYPE_PREDICTION</td>
+                <td>1</td>
+                <td><p>Log from Prediction service</p></td>
+              </tr>
+            
+              <tr>
+                <td>LOG_TYPE_OBSERVATION</td>
+                <td>2</td>
+                <td><p>Log from Observation service</p></td>
+              </tr>
+            
+              <tr>
+                <td>LOG_TYPE_ROUTER</td>
+                <td>3</td>
+                <td><p>Log from Router service</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="caraml/timber/v1/log_writer.proto">caraml/timber/v1/log_writer.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="caraml.timber.v1.LogWriter">LogWriter</h3>
+        <p>LogWriter describes details of a Log Writer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#caraml.timber.v1.LogWriterType">LogWriterType</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fluentd_config</td>
+                  <td><a href="#caraml.timber.v1.FluentdConfig">FluentdConfig</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="caraml.timber.v1.LogWriterType">LogWriterType</h3>
+        <p>Type of logging application for specified log</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>LOG_WRITER_TYPE_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>LOG_WRITER_TYPE_FLUENTD</td>
+                <td>1</td>
+                <td><p>Fluentd will be used for logging</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="caraml/timber/v1/observation_service.proto">caraml/timber/v1/observation_service.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</h3>
+        <p>ObservationService describes details of a Observation Service</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Unique identifier of an Observation Service deployed by Dataset Service. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>source</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceDataSource">ObservationServiceDataSource</a></td>
+                  <td></td>
+                  <td><p>Configuration for pull-based Observation Service data source. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sink</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceDataSink">ObservationServiceDataSink</a></td>
+                  <td></td>
+                  <td><p>Configuration for Observation Service data sink. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ObservationServiceDataSink">ObservationServiceDataSink</h3>
+        <p>Configurations of Data sink where Observation logs would be flushed to</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceDataSinkType">ObservationServiceDataSinkType</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>kafka_config</td>
+                  <td><a href="#caraml.timber.v1.KafkaConfig">KafkaConfig</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fluentd_config</td>
+                  <td><a href="#caraml.timber.v1.FluentdConfig">FluentdConfig</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ObservationServiceDataSource">ObservationServiceDataSource</h3>
+        <p>Configurations of Data source where Observation logs should be retrieved from</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceDataSourceType">ObservationServiceDataSourceType</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>kafka_config</td>
+                  <td><a href="#caraml.timber.v1.KafkaConfig">KafkaConfig</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="caraml.timber.v1.ObservationServiceDataSinkType">ObservationServiceDataSinkType</h3>
+        <p>Data sink where Observation logs would be flushed to</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SINK_TYPE_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SINK_TYPE_NOOP</td>
+                <td>1</td>
+                <td><p>No-Op represents no need to flush logs to any data sink</p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT</td>
+                <td>2</td>
+                <td><p>Observation Service will publish logs to standard output</p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA</td>
+                <td>3</td>
+                <td><p>Observation Service will flush logs to a Kafka sink</p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD</td>
+                <td>4</td>
+                <td><p>Observation Service will flush logs to Fluentd</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="caraml.timber.v1.ObservationServiceDataSourceType">ObservationServiceDataSourceType</h3>
+        <p>Data source where Observation logs should be retrieved from</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER</td>
+                <td>1</td>
+                <td><p>No-Op represents no need to fetch logs from any data source, this should be selected if
+Observation Service should be deployed for just the eager API</p></td>
+              </tr>
+            
+              <tr>
+                <td>OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA</td>
+                <td>2</td>
+                <td><p>Observation Service will poll logs from a Kafka source</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="caraml/timber/v1/dataset_service.proto">caraml/timber/v1/dataset_service.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="caraml.timber.v1.CreateLogWriterRequest">CreateLogWriterRequest</h3>
+        <p>Request message for CreateLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to write log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>log_writer</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td></td>
+                  <td><p>Details of single Log Writer to be deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.CreateLogWriterResponse">CreateLogWriterResponse</h3>
+        <p>Response message for CreateLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log_writer</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td></td>
+                  <td><p>Details of single Log Writer deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.CreateObservationServiceRequest">CreateObservationServiceRequest</h3>
+        <p>Request message for CreateObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>observation_service</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td></td>
+                  <td><p>Details of single Observation Service to be deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.CreateObservationServiceResponse">CreateObservationServiceResponse</h3>
+        <p>Response message for CreateObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>observation_service</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td></td>
+                  <td><p>Details of single Observation Service deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetLogRequest">GetLogRequest</h3>
+        <p>Request message for GetLog method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The ID of the log resource to retrieve. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetLogResponse">GetLogResponse</h3>
+        <p>Response message for GetLog method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log</td>
+                  <td><a href="#caraml.timber.v1.Log">Log</a></td>
+                  <td></td>
+                  <td><p>Single log stored in configured Dataset Service storage sink. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetLogWriterRequest">GetLogWriterRequest</h3>
+        <p>Request message for GetLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to write log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The ID of the Log Writer resource to retrieve. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetLogWriterResponse">GetLogWriterResponse</h3>
+        <p>Response message for GetLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log_writer</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td></td>
+                  <td><p>Details of single Log Writer deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetObservationServiceRequest">GetObservationServiceRequest</h3>
+        <p>Request message for GetObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The ID of the Observation Service resource to retrieve. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.GetObservationServiceResponse">GetObservationServiceResponse</h3>
+        <p>Response message for GetObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>observation_service</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td></td>
+                  <td><p>Details of single Observation Service deployed by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListLogWritersRequest">ListLogWritersRequest</h3>
+        <p>Request message for ListLogWriters method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListLogWritersResponse">ListLogWritersResponse</h3>
+        <p>Response message for ListLogWriters method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log_writers</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td>repeated</td>
+                  <td><p>Log Writers deployed by Dataset Service for a particular CaraML project. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListLogsRequest">ListLogsRequest</h3>
+        <p>Request message for ListLogs method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListLogsResponse">ListLogsResponse</h3>
+        <p>Response message for ListLogs method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>logs</td>
+                  <td><a href="#caraml.timber.v1.Log">Log</a></td>
+                  <td>repeated</td>
+                  <td><p>Logs stored in configured Dataset Service storage sink. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListObservationServicesRequest">ListObservationServicesRequest</h3>
+        <p>Request message for ListObservationServices method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListObservationServicesResponse">ListObservationServicesResponse</h3>
+        <p>Response message for ListObservationServices method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>observation_services</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td>repeated</td>
+                  <td><p>Observation Services deployed by Dataset Service for a particular CaraML project. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.UpdateLogWriterRequest">UpdateLogWriterRequest</h3>
+        <p>Request message for UpdateLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to write log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The ID of Log Writer to update. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>log_writer</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td></td>
+                  <td><p>Details of single Log Writer to be updated by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.UpdateLogWriterResponse">UpdateLogWriterResponse</h3>
+        <p>Response message for UpdateLogWriter method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log_writer</td>
+                  <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
+                  <td></td>
+                  <td><p>Details of single Log Writer updated by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.UpdateObservationServiceRequest">UpdateObservationServiceRequest</h3>
+        <p>Request message for UpdateObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The ID of Observation Service to update. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>observation_service</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td></td>
+                  <td><p>Details of single Observation Service to be updated by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.UpdateObservationServiceResponse">UpdateObservationServiceResponse</h3>
+        <p>Response message for UpdateObservationService method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>observation_service</td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td></td>
+                  <td><p>Details of single Observation Service updated by Dataset Service. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+        <h3 id="caraml.timber.v1.DatasetService">DatasetService</h3>
+        <p>Service for performing:</p><p>1. Deploy/undeploy log writer deployment based on the availability of model and router deployment. </p><p>2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset. .</p><p>3. Store and provide access to the log table metadata produced in CaraML. </p><p>4. Store and provide read only access to the list of log writers it manages.</p><p>5. Store and provide read only access to the list of observation services it manages.</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>ListLogs</td>
+                <td><a href="#caraml.timber.v1.ListLogsRequest">ListLogsRequest</a></td>
+                <td><a href="#caraml.timber.v1.ListLogsResponse">ListLogsResponse</a></td>
+                <td><p>ListLogs return paginated list of logs under a project and filtered by query string.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLog</td>
+                <td><a href="#caraml.timber.v1.GetLogRequest">GetLogRequest</a></td>
+                <td><a href="#caraml.timber.v1.GetLogResponse">GetLogResponse</a></td>
+                <td><p>GetLog return details of a log.</p></td>
+              </tr>
+            
+              <tr>
+                <td>ListLogWriters</td>
+                <td><a href="#caraml.timber.v1.ListLogWritersRequest">ListLogWritersRequest</a></td>
+                <td><a href="#caraml.timber.v1.ListLogWritersResponse">ListLogWritersResponse</a></td>
+                <td><p>ListLogWriters return paginated list of log writers under a project and filtered by query string.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLogWriter</td>
+                <td><a href="#caraml.timber.v1.GetLogWriterRequest">GetLogWriterRequest</a></td>
+                <td><a href="#caraml.timber.v1.GetLogWriterResponse">GetLogWriterResponse</a></td>
+                <td><p>GetLogWriter return details of the log writer deployment.</p></td>
+              </tr>
+            
+              <tr>
+                <td>CreateLogWriter</td>
+                <td><a href="#caraml.timber.v1.CreateLogWriterRequest">CreateLogWriterRequest</a></td>
+                <td><a href="#caraml.timber.v1.CreateLogWriterResponse">CreateLogWriterResponse</a></td>
+                <td><p>CreateLogWriter creates a new log writer deployment as specified by the details given in the request body.</p></td>
+              </tr>
+            
+              <tr>
+                <td>UpdateLogWriter</td>
+                <td><a href="#caraml.timber.v1.UpdateLogWriterRequest">UpdateLogWriterRequest</a></td>
+                <td><a href="#caraml.timber.v1.UpdateLogWriterResponse">UpdateLogWriterResponse</a></td>
+                <td><p>UpdateLogWriter updates an existing log writer deployment as specified by the details given in the request body.</p></td>
+              </tr>
+            
+              <tr>
+                <td>ListObservationServices</td>
+                <td><a href="#caraml.timber.v1.ListObservationServicesRequest">ListObservationServicesRequest</a></td>
+                <td><a href="#caraml.timber.v1.ListObservationServicesResponse">ListObservationServicesResponse</a></td>
+                <td><p>ListObservationServices return paginated list of observation services under a project and filtered by query string.</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetObservationService</td>
+                <td><a href="#caraml.timber.v1.GetObservationServiceRequest">GetObservationServiceRequest</a></td>
+                <td><a href="#caraml.timber.v1.GetObservationServiceResponse">GetObservationServiceResponse</a></td>
+                <td><p>GetObservationService return details of the observation service deployment.</p></td>
+              </tr>
+            
+              <tr>
+                <td>CreateObservationService</td>
+                <td><a href="#caraml.timber.v1.CreateObservationServiceRequest">CreateObservationServiceRequest</a></td>
+                <td><a href="#caraml.timber.v1.CreateObservationServiceResponse">CreateObservationServiceResponse</a></td>
+                <td><p>CreateObservationService creates a new observation service deployment as specified by the details given in the request body.</p></td>
+              </tr>
+            
+              <tr>
+                <td>UpdateObservationService</td>
+                <td><a href="#caraml.timber.v1.UpdateObservationServiceRequest">UpdateObservationServiceRequest</a></td>
+                <td><a href="#caraml.timber.v1.UpdateObservationServiceResponse">UpdateObservationServiceResponse</a></td>
+                <td><p>UpdateObservationService updates an existing observation service deployment as specified by the details given in the request body.</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        
+          
+          
+          <h4>Methods with HTTP bindings</h4>
+          <table>
+            <thead>
+              <tr>
+                <td>Method Name</td>
+                <td>Method</td>
+                <td>Pattern</td>
+                <td>Body</td>
+              </tr>
+            </thead>
+            <tbody>
+            
+              
+              
+              <tr>
+                <td>ListLogs</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/logs</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetLog</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/logs/{id}</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>ListLogWriters</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/log_writers</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetLogWriter</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/log_writers/{id}</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>CreateLogWriter</td>
+                <td>POST</td>
+                <td>/v1/projects/{project_id}/log_writers</td>
+                <td>*</td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>UpdateLogWriter</td>
+                <td>PUT</td>
+                <td>/v1/projects/{project_id}/log_writers/{id}</td>
+                <td>*</td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>ListObservationServices</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/observation_services</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetObservationService</td>
+                <td>GET</td>
+                <td>/v1/projects/{project_id}/observation_services/{id}</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>CreateObservationService</td>
+                <td>POST</td>
+                <td>/v1/projects/{project_id}/observation_services</td>
+                <td>*</td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>UpdateObservationService</td>
+                <td>PUT</td>
+                <td>/v1/projects/{project_id}/observation_services/{id}</td>
+                <td>*</td>
+              </tr>
+              
+            
+            </tbody>
+          </table>
+          
+        
+    
+
+    <h2 id="scalar-value-types">Scalar Value Types</h2>
+    <table class="scalar-value-types-table">
+      <thead>
+        <tr><td>.proto Type</td><td>Notes</td><td>C++</td><td>Java</td><td>Python</td><td>Go</td><td>C#</td><td>PHP</td><td>Ruby</td></tr>
+      </thead>
+      <tbody>
+        
+          <tr id="double">
+            <td>double</td>
+            <td></td>
+            <td>double</td>
+            <td>double</td>
+            <td>float</td>
+            <td>float64</td>
+            <td>double</td>
+            <td>float</td>
+            <td>Float</td>
+          </tr>
+        
+          <tr id="float">
+            <td>float</td>
+            <td></td>
+            <td>float</td>
+            <td>float</td>
+            <td>float</td>
+            <td>float32</td>
+            <td>float</td>
+            <td>float</td>
+            <td>Float</td>
+          </tr>
+        
+          <tr id="int32">
+            <td>int32</td>
+            <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>integer</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="int64">
+            <td>int64</td>
+            <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>integer/string</td>
+            <td>Bignum</td>
+          </tr>
+        
+          <tr id="uint32">
+            <td>uint32</td>
+            <td>Uses variable-length encoding.</td>
+            <td>uint32</td>
+            <td>int</td>
+            <td>int/long</td>
+            <td>uint32</td>
+            <td>uint</td>
+            <td>integer</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="uint64">
+            <td>uint64</td>
+            <td>Uses variable-length encoding.</td>
+            <td>uint64</td>
+            <td>long</td>
+            <td>int/long</td>
+            <td>uint64</td>
+            <td>ulong</td>
+            <td>integer/string</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="sint32">
+            <td>sint32</td>
+            <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>integer</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="sint64">
+            <td>sint64</td>
+            <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>integer/string</td>
+            <td>Bignum</td>
+          </tr>
+        
+          <tr id="fixed32">
+            <td>fixed32</td>
+            <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
+            <td>uint32</td>
+            <td>int</td>
+            <td>int</td>
+            <td>uint32</td>
+            <td>uint</td>
+            <td>integer</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="fixed64">
+            <td>fixed64</td>
+            <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
+            <td>uint64</td>
+            <td>long</td>
+            <td>int/long</td>
+            <td>uint64</td>
+            <td>ulong</td>
+            <td>integer/string</td>
+            <td>Bignum</td>
+          </tr>
+        
+          <tr id="sfixed32">
+            <td>sfixed32</td>
+            <td>Always four bytes.</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>int</td>
+            <td>int32</td>
+            <td>int</td>
+            <td>integer</td>
+            <td>Bignum or Fixnum (as required)</td>
+          </tr>
+        
+          <tr id="sfixed64">
+            <td>sfixed64</td>
+            <td>Always eight bytes.</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>int/long</td>
+            <td>int64</td>
+            <td>long</td>
+            <td>integer/string</td>
+            <td>Bignum</td>
+          </tr>
+        
+          <tr id="bool">
+            <td>bool</td>
+            <td></td>
+            <td>bool</td>
+            <td>boolean</td>
+            <td>boolean</td>
+            <td>bool</td>
+            <td>bool</td>
+            <td>boolean</td>
+            <td>TrueClass/FalseClass</td>
+          </tr>
+        
+          <tr id="string">
+            <td>string</td>
+            <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
+            <td>string</td>
+            <td>String</td>
+            <td>str/unicode</td>
+            <td>string</td>
+            <td>string</td>
+            <td>string</td>
+            <td>String (UTF-8)</td>
+          </tr>
+        
+          <tr id="bytes">
+            <td>bytes</td>
+            <td>May contain any arbitrary sequence of bytes.</td>
+            <td>string</td>
+            <td>ByteString</td>
+            <td>str</td>
+            <td>[]byte</td>
+            <td>ByteString</td>
+            <td>string</td>
+            <td>String (ASCII-8BIT)</td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </body>
+</html>
+
