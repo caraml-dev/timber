@@ -3,7 +3,7 @@ observationService:
     # -- Docker registry for Observation Service image
     registry: ghcr.io
     # -- Docker image repository for Observation Service
-    repository: caraml-dev/observation-service/observation-service
+    repository: caraml-dev/timber/observation-service
     # -- Docker image tag for Observation Service
     tag: v0.1.0
     # -- Docker image pull policy
@@ -92,7 +92,7 @@ fluentd:
     # -- Docker registry for Observation Service fluentd image
     registry: ghcr.io
     # -- Docker image repository for Observation Service fluentd
-    repository: caraml-dev/observation-service/fluentd
+    repository: caraml-dev/timber/fluentd
     # -- Docker image tag for Observation Service fluentd
     tag: v0.1.0
     # -- Docker image pull policy

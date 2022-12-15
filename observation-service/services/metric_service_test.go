@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/internal/testutils"
-	"github.com/caraml-dev/observation-service/observation-service/monitoring"
+	"github.com/caraml-dev/timber/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/internal/testutils"
+	"github.com/caraml-dev/timber/observation-service/monitoring"
 )
 
 type MetricServiceTestSuite struct {

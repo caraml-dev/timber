@@ -1,4 +1,4 @@
-module github.com/caraml-dev/observation-service/common
+module github.com/caraml-dev/timber/common
 
 go 1.18
 

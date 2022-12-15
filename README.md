@@ -1,8 +1,10 @@
-# observation-service
+# timber
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://github.com/caraml-dev/observation-service/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://github.com/caraml-dev/timber/blob/master/LICENSE)
 
 ## Overview
+
+Timber comprises of multiple services, central to logging in CaraML ecosystem.
 
 Observation Service provides an interface for reporting observations from Client-owned systems back to CaraML platform. The logged observations will be used for evaluating the effectiveness of a given prediction instance.
 
@@ -50,6 +52,6 @@ grpcurl -plaintext localhost:9001 describe
 
 ## Contributing
 
-Observation Service is still under active development. Please have a look at our contributing and development guides if you want to contribute to the project:
+Timber is still under active development. Please have a look at our contributing and development guides if you want to contribute to the project:
 
-- [Contribution Process for Observation Service](https://github.com/caraml-dev/observation-service/blob/main/CONTRIBUTING.md)
+- [Contribution Process for Timber](https://github.com/caraml-dev/timber/blob/main/CONTRIBUTING.md)

@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/services"
+	"github.com/caraml-dev/timber/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/services"
 )
 
 func TestObservationLogger(t *testing.T) {

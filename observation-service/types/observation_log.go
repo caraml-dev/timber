@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/caraml-dev/observation-service/observation-service/errors"
+	"github.com/caraml-dev/timber/observation-service/errors"
 )
 
 // ObservationLogKey is an alias for upiv1.ObservationLogKey proto, to support extension of default

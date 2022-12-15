@@ -5,7 +5,7 @@ import (
 
 	"github.com/heptiolabs/healthcheck"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/config"
 )
 
 // InternalController captures internal endpoints for service health/debugging purposes

@@ -7,11 +7,11 @@ import (
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/log"
-	"github.com/caraml-dev/observation-service/observation-service/monitoring"
-	"github.com/caraml-dev/observation-service/observation-service/services"
-	"github.com/caraml-dev/observation-service/observation-service/types"
+	"github.com/caraml-dev/timber/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/observation-service/monitoring"
+	"github.com/caraml-dev/timber/observation-service/services"
+	"github.com/caraml-dev/timber/observation-service/types"
 )
 
 type kafkaProducer interface {

@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	tu "github.com/caraml-dev/observation-service/observation-service/internal/testutils"
-	"github.com/caraml-dev/observation-service/observation-service/types"
+	tu "github.com/caraml-dev/timber/observation-service/internal/testutils"
+	"github.com/caraml-dev/timber/observation-service/types"
 )
 
 type testSuiteBQSchema struct {
