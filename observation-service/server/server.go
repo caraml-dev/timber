@@ -17,11 +17,11 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/caraml-dev/observation-service/observation-service/appcontext"
-	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/controller"
-	customErr "github.com/caraml-dev/observation-service/observation-service/errors"
-	"github.com/caraml-dev/observation-service/observation-service/log"
+	"github.com/caraml-dev/timber/observation-service/appcontext"
+	"github.com/caraml-dev/timber/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/controller"
+	customErr "github.com/caraml-dev/timber/observation-service/errors"
+	"github.com/caraml-dev/timber/observation-service/log"
 )
 
 var (

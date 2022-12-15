@@ -6,7 +6,7 @@ import (
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 
-	common_config "github.com/caraml-dev/observation-service/common/config"
+	common_config "github.com/caraml-dev/timber/common/config"
 )
 
 // Config captures the config related to starting Observation Service

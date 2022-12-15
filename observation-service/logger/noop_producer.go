@@ -1,6 +1,6 @@
 package logger
 
-import "github.com/caraml-dev/observation-service/observation-service/types"
+import "github.com/caraml-dev/timber/observation-service/types"
 
 // NoopLogProducer is the struct for no operation to ObservationLog
 type NoopLogProducer struct{}

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/config"
 )
 
 func TestNewAppContext(t *testing.T) {

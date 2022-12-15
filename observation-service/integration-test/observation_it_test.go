@@ -18,8 +18,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/caraml-dev/observation-service/observation-service/log"
-	"github.com/caraml-dev/observation-service/observation-service/server"
+	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/observation-service/server"
 )
 
 type KafkaTopic string

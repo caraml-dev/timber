@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/caraml-dev/observation-service/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

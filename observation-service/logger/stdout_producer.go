@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"github.com/caraml-dev/observation-service/observation-service/log"
-	"github.com/caraml-dev/observation-service/observation-service/types"
+	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/observation-service/types"
 )
 
 // StdOutLogProducer captures configs for logging ObservationLog to standard output

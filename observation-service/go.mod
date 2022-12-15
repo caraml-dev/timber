@@ -1,10 +1,10 @@
-module github.com/caraml-dev/observation-service/observation-service
+module github.com/caraml-dev/timber/observation-service
 
 go 1.18
 
 require (
 	cloud.google.com/go/bigquery v1.43.0
-	github.com/caraml-dev/observation-service/common v0.0.0-00010101000000-000000000000
+	github.com/caraml-dev/timber/common v0.0.0-00010101000000-000000000000
 	github.com/caraml-dev/universal-prediction-interface v0.0.0-20221128075513-0b87b176b580
 	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/fluent/fluent-logger-golang v1.9.0
@@ -97,4 +97,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/caraml-dev/observation-service/common => ../common
+replace github.com/caraml-dev/timber/common => ../common

@@ -3,7 +3,7 @@ package logger
 import (
 	"testing"
 
-	"github.com/caraml-dev/observation-service/observation-service/types"
+	"github.com/caraml-dev/timber/observation-service/types"
 	"github.com/stretchr/testify/assert"
 )
 

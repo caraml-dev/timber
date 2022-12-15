@@ -7,9 +7,9 @@ import (
 
 	"github.com/gojek/mlp/api/pkg/instrumentation/metrics"
 
-	"github.com/caraml-dev/observation-service/observation-service/config"
-	"github.com/caraml-dev/observation-service/observation-service/log"
-	"github.com/caraml-dev/observation-service/observation-service/monitoring"
+	"github.com/caraml-dev/timber/observation-service/config"
+	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/observation-service/monitoring"
 )
 
 // MetricService captures the exposed methods for logging performance/health metrics
