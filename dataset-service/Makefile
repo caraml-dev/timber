@@ -3,12 +3,10 @@
 # ==================================
 
 .PHONY: generate
-generate: export OPENAPI_GENERATOR_VERSION=6.0.1
-generate: lint 
+generate: lint
 	@buf generate
-	@tools/openapi-generator-cli generate -i docs/openapiv2/caraml/timber/v1/dataset_service.swagger.json -g go-server -o ./gen/go/openapi -p enumClassPrefix=true
 
-.PHONY: 
+.PHONY: setup
 setup:
 	@go mod tidy
 	@go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
