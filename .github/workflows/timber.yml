@@ -51,11 +51,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-dataset-
       - uses: bufbuild/buf-lint-action@v1
+        with:
+          input: proto
       - name: generate
         working-directory: dataset-service
         run: make setup generate
-        with:
-          input: proto
   lint-go:
     runs-on: ubuntu-latest
     steps:
