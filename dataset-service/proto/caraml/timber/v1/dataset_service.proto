@@ -11,7 +11,7 @@ import "caraml/timber/v1/observation_service.proto";
 
 // Service for performing:
 // 1. Deploy/undeploy log writer deployment based on the availability of model and router deployment. 
-// 2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset. .
+// 2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset.
 // 3. Store and provide access to the log table metadata produced in CaraML. 
 // 4. Store and provide read only access to the list of log writers it manages.
 // 5. Store and provide read only access to the list of observation services it manages.

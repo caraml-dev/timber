@@ -1,4 +1,4 @@
-module github.com/caraml-dev/timber
+module github.com/caraml-dev/timber/dataset-service
 
 go 1.18
 
@@ -7,6 +7,8 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.9.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
+	google.golang.org/genproto v0.0.0-20221202195650-67e5cbc046fd
+	google.golang.org/grpc v1.50.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.28.2-0.20220831092852-f930b1dc76e8
 )
@@ -81,7 +83,5 @@ require (
 	golang.org/x/term v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/tools v0.3.0 // indirect
-	google.golang.org/genproto v0.0.0-20221202195650-67e5cbc046fd // indirect
-	google.golang.org/grpc v1.50.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
