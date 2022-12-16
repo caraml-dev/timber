@@ -2,11 +2,11 @@
 // source: caraml/timber/v1/dataset_service.proto
 
 /*
-Package timberv1 is a reverse proxy.
+Package api is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package timberv1
+package api
 
 import (
 	"context"

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package caraml.timber.v1;
+option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1;api";
 
 /******************************************
 ************        Log        ************
