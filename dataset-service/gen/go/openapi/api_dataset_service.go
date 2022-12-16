@@ -261,27 +261,27 @@ func (a *DatasetServiceApiService) DatasetServiceCreateObservationServiceExecute
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDatasetServiceGetLogRequest struct {
+type ApiDatasetServiceGetLogMetadataRequest struct {
 	ctx context.Context
 	ApiService *DatasetServiceApiService
 	projectId string
 	id string
 }
 
-func (r ApiDatasetServiceGetLogRequest) Execute() (*V1GetLogResponse, *http.Response, error) {
-	return r.ApiService.DatasetServiceGetLogExecute(r)
+func (r ApiDatasetServiceGetLogMetadataRequest) Execute() (*V1GetLogMetadataResponse, *http.Response, error) {
+	return r.ApiService.DatasetServiceGetLogMetadataExecute(r)
 }
 
 /*
-DatasetServiceGetLog GetLog return details of a log.
+DatasetServiceGetLogMetadata GetLogMetadata returns metadata of a log.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param projectId The CaraML project ID to retrieve log resource from.
- @param id The ID of the log resource to retrieve.
- @return ApiDatasetServiceGetLogRequest
+ @param projectId The CaraML project ID to retrieve log metadata from.
+ @param id The ID of the log metadata to retrieve.
+ @return ApiDatasetServiceGetLogMetadataRequest
 */
-func (a *DatasetServiceApiService) DatasetServiceGetLog(ctx context.Context, projectId string, id string) ApiDatasetServiceGetLogRequest {
-	return ApiDatasetServiceGetLogRequest{
+func (a *DatasetServiceApiService) DatasetServiceGetLogMetadata(ctx context.Context, projectId string, id string) ApiDatasetServiceGetLogMetadataRequest {
+	return ApiDatasetServiceGetLogMetadataRequest{
 		ApiService: a,
 		ctx: ctx,
 		projectId: projectId,
@@ -290,21 +290,21 @@ func (a *DatasetServiceApiService) DatasetServiceGetLog(ctx context.Context, pro
 }
 
 // Execute executes the request
-//  @return V1GetLogResponse
-func (a *DatasetServiceApiService) DatasetServiceGetLogExecute(r ApiDatasetServiceGetLogRequest) (*V1GetLogResponse, *http.Response, error) {
+//  @return V1GetLogMetadataResponse
+func (a *DatasetServiceApiService) DatasetServiceGetLogMetadataExecute(r ApiDatasetServiceGetLogMetadataRequest) (*V1GetLogMetadataResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *V1GetLogResponse
+		localVarReturnValue  *V1GetLogMetadataResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceGetLog")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceGetLogMetadata")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/projects/{projectId}/logs/{id}"
+	localVarPath := localBasePath + "/v1/projects/{projectId}/log_metadata/{id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"projectId"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", url.PathEscape(parameterToString(r.id, "")), -1)
 
@@ -597,25 +597,25 @@ func (a *DatasetServiceApiService) DatasetServiceGetObservationServiceExecute(r 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDatasetServiceListLogWritersRequest struct {
+type ApiDatasetServiceListLogMetadataRequest struct {
 	ctx context.Context
 	ApiService *DatasetServiceApiService
 	projectId string
 }
 
-func (r ApiDatasetServiceListLogWritersRequest) Execute() (*V1ListLogWritersResponse, *http.Response, error) {
-	return r.ApiService.DatasetServiceListLogWritersExecute(r)
+func (r ApiDatasetServiceListLogMetadataRequest) Execute() (*V1ListLogMetadataResponse, *http.Response, error) {
+	return r.ApiService.DatasetServiceListLogMetadataExecute(r)
 }
 
 /*
-DatasetServiceListLogWriters ListLogWriters return paginated list of log writers under a project and filtered by query string.
+DatasetServiceListLogMetadata ListLogs return paginated list of log metadata under a project and filtered by query string.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param projectId The CaraML project ID to retrieve log resource from.
- @return ApiDatasetServiceListLogWritersRequest
+ @param projectId The CaraML project ID to retrieve log metadata from.
+ @return ApiDatasetServiceListLogMetadataRequest
 */
-func (a *DatasetServiceApiService) DatasetServiceListLogWriters(ctx context.Context, projectId string) ApiDatasetServiceListLogWritersRequest {
-	return ApiDatasetServiceListLogWritersRequest{
+func (a *DatasetServiceApiService) DatasetServiceListLogMetadata(ctx context.Context, projectId string) ApiDatasetServiceListLogMetadataRequest {
+	return ApiDatasetServiceListLogMetadataRequest{
 		ApiService: a,
 		ctx: ctx,
 		projectId: projectId,
@@ -623,21 +623,21 @@ func (a *DatasetServiceApiService) DatasetServiceListLogWriters(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return V1ListLogWritersResponse
-func (a *DatasetServiceApiService) DatasetServiceListLogWritersExecute(r ApiDatasetServiceListLogWritersRequest) (*V1ListLogWritersResponse, *http.Response, error) {
+//  @return V1ListLogMetadataResponse
+func (a *DatasetServiceApiService) DatasetServiceListLogMetadataExecute(r ApiDatasetServiceListLogMetadataRequest) (*V1ListLogMetadataResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *V1ListLogWritersResponse
+		localVarReturnValue  *V1ListLogMetadataResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceListLogWriters")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceListLogMetadata")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/projects/{projectId}/log_writers"
+	localVarPath := localBasePath + "/v1/projects/{projectId}/log_metadata"
 	localVarPath = strings.Replace(localVarPath, "{"+"projectId"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -705,25 +705,25 @@ func (a *DatasetServiceApiService) DatasetServiceListLogWritersExecute(r ApiData
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDatasetServiceListLogsRequest struct {
+type ApiDatasetServiceListLogWritersRequest struct {
 	ctx context.Context
 	ApiService *DatasetServiceApiService
 	projectId string
 }
 
-func (r ApiDatasetServiceListLogsRequest) Execute() (*V1ListLogsResponse, *http.Response, error) {
-	return r.ApiService.DatasetServiceListLogsExecute(r)
+func (r ApiDatasetServiceListLogWritersRequest) Execute() (*V1ListLogWritersResponse, *http.Response, error) {
+	return r.ApiService.DatasetServiceListLogWritersExecute(r)
 }
 
 /*
-DatasetServiceListLogs ListLogs return paginated list of logs under a project and filtered by query string.
+DatasetServiceListLogWriters ListLogWriters return paginated list of log writers under a project and filtered by query string.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param projectId The CaraML project ID to retrieve log resource from.
- @return ApiDatasetServiceListLogsRequest
+ @return ApiDatasetServiceListLogWritersRequest
 */
-func (a *DatasetServiceApiService) DatasetServiceListLogs(ctx context.Context, projectId string) ApiDatasetServiceListLogsRequest {
-	return ApiDatasetServiceListLogsRequest{
+func (a *DatasetServiceApiService) DatasetServiceListLogWriters(ctx context.Context, projectId string) ApiDatasetServiceListLogWritersRequest {
+	return ApiDatasetServiceListLogWritersRequest{
 		ApiService: a,
 		ctx: ctx,
 		projectId: projectId,
@@ -731,21 +731,21 @@ func (a *DatasetServiceApiService) DatasetServiceListLogs(ctx context.Context, p
 }
 
 // Execute executes the request
-//  @return V1ListLogsResponse
-func (a *DatasetServiceApiService) DatasetServiceListLogsExecute(r ApiDatasetServiceListLogsRequest) (*V1ListLogsResponse, *http.Response, error) {
+//  @return V1ListLogWritersResponse
+func (a *DatasetServiceApiService) DatasetServiceListLogWritersExecute(r ApiDatasetServiceListLogWritersRequest) (*V1ListLogWritersResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *V1ListLogsResponse
+		localVarReturnValue  *V1ListLogWritersResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceListLogs")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DatasetServiceApiService.DatasetServiceListLogWriters")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/v1/projects/{projectId}/logs"
+	localVarPath := localBasePath + "/v1/projects/{projectId}/log_writers"
 	localVarPath = strings.Replace(localVarPath, "{"+"projectId"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)

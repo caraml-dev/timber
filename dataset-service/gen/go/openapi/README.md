@@ -80,11 +80,11 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DatasetServiceApi* | [**DatasetServiceCreateLogWriter**](docs/DatasetServiceApi.md#datasetservicecreatelogwriter) | **Post** /v1/projects/{projectId}/log_writers | CreateLogWriter creates a new log writer deployment as specified by the details given in the request body.
 *DatasetServiceApi* | [**DatasetServiceCreateObservationService**](docs/DatasetServiceApi.md#datasetservicecreateobservationservice) | **Post** /v1/projects/{projectId}/observation_services | CreateObservationService creates a new observation service deployment as specified by the details given in the request body.
-*DatasetServiceApi* | [**DatasetServiceGetLog**](docs/DatasetServiceApi.md#datasetservicegetlog) | **Get** /v1/projects/{projectId}/logs/{id} | GetLog return details of a log.
+*DatasetServiceApi* | [**DatasetServiceGetLogMetadata**](docs/DatasetServiceApi.md#datasetservicegetlogmetadata) | **Get** /v1/projects/{projectId}/log_metadata/{id} | GetLogMetadata returns metadata of a log.
 *DatasetServiceApi* | [**DatasetServiceGetLogWriter**](docs/DatasetServiceApi.md#datasetservicegetlogwriter) | **Get** /v1/projects/{projectId}/log_writers/{id} | GetLogWriter return details of the log writer deployment.
 *DatasetServiceApi* | [**DatasetServiceGetObservationService**](docs/DatasetServiceApi.md#datasetservicegetobservationservice) | **Get** /v1/projects/{projectId}/observation_services/{id} | GetObservationService return details of the observation service deployment.
+*DatasetServiceApi* | [**DatasetServiceListLogMetadata**](docs/DatasetServiceApi.md#datasetservicelistlogmetadata) | **Get** /v1/projects/{projectId}/log_metadata | ListLogs return paginated list of log metadata under a project and filtered by query string.
 *DatasetServiceApi* | [**DatasetServiceListLogWriters**](docs/DatasetServiceApi.md#datasetservicelistlogwriters) | **Get** /v1/projects/{projectId}/log_writers | ListLogWriters return paginated list of log writers under a project and filtered by query string.
-*DatasetServiceApi* | [**DatasetServiceListLogs**](docs/DatasetServiceApi.md#datasetservicelistlogs) | **Get** /v1/projects/{projectId}/logs | ListLogs return paginated list of logs under a project and filtered by query string.
 *DatasetServiceApi* | [**DatasetServiceListObservationServices**](docs/DatasetServiceApi.md#datasetservicelistobservationservices) | **Get** /v1/projects/{projectId}/observation_services | ListObservationServices return paginated list of observation services under a project and filtered by query string.
 *DatasetServiceApi* | [**DatasetServiceUpdateLogWriter**](docs/DatasetServiceApi.md#datasetserviceupdatelogwriter) | **Put** /v1/projects/{projectId}/log_writers/{id} | UpdateLogWriter updates an existing log writer deployment as specified by the details given in the request body.
 *DatasetServiceApi* | [**DatasetServiceUpdateObservationService**](docs/DatasetServiceApi.md#datasetserviceupdateobservationservice) | **Put** /v1/projects/{projectId}/observation_services/{id} | UpdateObservationService updates an existing observation service deployment as specified by the details given in the request body.
@@ -103,15 +103,15 @@ Class | Method | HTTP request | Description
  - [V1FluentdConfig](docs/V1FluentdConfig.md)
  - [V1FluentdOutputBQConfig](docs/V1FluentdOutputBQConfig.md)
  - [V1FluentdOutputType](docs/V1FluentdOutputType.md)
- - [V1GetLogResponse](docs/V1GetLogResponse.md)
+ - [V1GetLogMetadataResponse](docs/V1GetLogMetadataResponse.md)
  - [V1GetLogWriterResponse](docs/V1GetLogWriterResponse.md)
  - [V1GetObservationServiceResponse](docs/V1GetObservationServiceResponse.md)
  - [V1KafkaConfig](docs/V1KafkaConfig.md)
  - [V1KafkaInitialOffset](docs/V1KafkaInitialOffset.md)
+ - [V1ListLogMetadataResponse](docs/V1ListLogMetadataResponse.md)
  - [V1ListLogWritersResponse](docs/V1ListLogWritersResponse.md)
- - [V1ListLogsResponse](docs/V1ListLogsResponse.md)
  - [V1ListObservationServicesResponse](docs/V1ListObservationServicesResponse.md)
- - [V1Log](docs/V1Log.md)
+ - [V1LogMetadata](docs/V1LogMetadata.md)
  - [V1LogProducer](docs/V1LogProducer.md)
  - [V1LogType](docs/V1LogType.md)
  - [V1LogWriter](docs/V1LogWriter.md)

@@ -191,7 +191,7 @@
                 </li>
               
                 <li>
-                  <a href="#caraml.timber.v1.Log"><span class="badge">M</span>Log</a>
+                  <a href="#caraml.timber.v1.LogMetadata"><span class="badge">M</span>LogMetadata</a>
                 </li>
               
                 <li>
@@ -288,11 +288,11 @@
                 </li>
               
                 <li>
-                  <a href="#caraml.timber.v1.GetLogRequest"><span class="badge">M</span>GetLogRequest</a>
+                  <a href="#caraml.timber.v1.GetLogMetadataRequest"><span class="badge">M</span>GetLogMetadataRequest</a>
                 </li>
               
                 <li>
-                  <a href="#caraml.timber.v1.GetLogResponse"><span class="badge">M</span>GetLogResponse</a>
+                  <a href="#caraml.timber.v1.GetLogMetadataResponse"><span class="badge">M</span>GetLogMetadataResponse</a>
                 </li>
               
                 <li>
@@ -312,19 +312,19 @@
                 </li>
               
                 <li>
+                  <a href="#caraml.timber.v1.ListLogMetadataRequest"><span class="badge">M</span>ListLogMetadataRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#caraml.timber.v1.ListLogMetadataResponse"><span class="badge">M</span>ListLogMetadataResponse</a>
+                </li>
+              
+                <li>
                   <a href="#caraml.timber.v1.ListLogWritersRequest"><span class="badge">M</span>ListLogWritersRequest</a>
                 </li>
               
                 <li>
                   <a href="#caraml.timber.v1.ListLogWritersResponse"><span class="badge">M</span>ListLogWritersResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#caraml.timber.v1.ListLogsRequest"><span class="badge">M</span>ListLogsRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#caraml.timber.v1.ListLogsResponse"><span class="badge">M</span>ListLogsResponse</a>
                 </li>
               
                 <li>
@@ -529,8 +529,8 @@
 
         
       
-        <h3 id="caraml.timber.v1.Log">Log</h3>
-        <p>Log is an entity/metadata in Dataset Service that represents an append-only</p><p>data produced by ingesting the observation, prediction, or router logs</p>
+        <h3 id="caraml.timber.v1.LogMetadata">LogMetadata</h3>
+        <p>LogMetadata is an entity/metadata in Dataset Service that represents an append-only</p><p>data produced by ingesting the observation, prediction, or router logs</p>
 
         
           <table class="field-table">
@@ -1103,8 +1103,8 @@ Observation Service should be deployed for just the eager API</p></td>
 
         
       
-        <h3 id="caraml.timber.v1.GetLogRequest">GetLogRequest</h3>
-        <p>Request message for GetLog method.</p>
+        <h3 id="caraml.timber.v1.GetLogMetadataRequest">GetLogMetadataRequest</h3>
+        <p>Request message for GetLogMetadata method.</p>
 
         
           <table class="field-table">
@@ -1117,14 +1117,14 @@ Observation Service should be deployed for just the eager API</p></td>
                   <td>project_id</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
+                  <td><p>The CaraML project ID to retrieve log metadata from. </p></td>
                 </tr>
               
                 <tr>
                   <td>id</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>The ID of the log resource to retrieve. </p></td>
+                  <td><p>The ID of the log metadata to retrieve. </p></td>
                 </tr>
               
             </tbody>
@@ -1134,8 +1134,8 @@ Observation Service should be deployed for just the eager API</p></td>
 
         
       
-        <h3 id="caraml.timber.v1.GetLogResponse">GetLogResponse</h3>
-        <p>Response message for GetLog method.</p>
+        <h3 id="caraml.timber.v1.GetLogMetadataResponse">GetLogMetadataResponse</h3>
+        <p>Response message for GetLogMetadata method.</p>
 
         
           <table class="field-table">
@@ -1145,10 +1145,10 @@ Observation Service should be deployed for just the eager API</p></td>
             <tbody>
               
                 <tr>
-                  <td>log</td>
-                  <td><a href="#caraml.timber.v1.Log">Log</a></td>
+                  <td>log_metadata</td>
+                  <td><a href="#caraml.timber.v1.LogMetadata">LogMetadata</a></td>
                   <td></td>
-                  <td><p>Single log stored in configured Dataset Service storage sink. </p></td>
+                  <td><p>Single log metadata stored in configured Dataset Service storage sink. </p></td>
                 </tr>
               
             </tbody>
@@ -1268,6 +1268,54 @@ Observation Service should be deployed for just the eager API</p></td>
 
         
       
+        <h3 id="caraml.timber.v1.ListLogMetadataRequest">ListLogMetadataRequest</h3>
+        <p>Request message for ListLogMetadata method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>project_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>The CaraML project ID to retrieve log metadata from. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListLogMetadataResponse">ListLogMetadataResponse</h3>
+        <p>Response message for ListLogMetadata method.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>log_metadata</td>
+                  <td><a href="#caraml.timber.v1.LogMetadata">LogMetadata</a></td>
+                  <td>repeated</td>
+                  <td><p>Log metadata stored in configured Dataset Service storage sink. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="caraml.timber.v1.ListLogWritersRequest">ListLogWritersRequest</h3>
         <p>Request message for ListLogWriters method.</p>
 
@@ -1307,54 +1355,6 @@ Observation Service should be deployed for just the eager API</p></td>
                   <td><a href="#caraml.timber.v1.LogWriter">LogWriter</a></td>
                   <td>repeated</td>
                   <td><p>Log Writers deployed by Dataset Service for a particular CaraML project. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="caraml.timber.v1.ListLogsRequest">ListLogsRequest</h3>
-        <p>Request message for ListLogs method.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>project_id</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>The CaraML project ID to retrieve log resource from. </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="caraml.timber.v1.ListLogsResponse">ListLogsResponse</h3>
-        <p>Response message for ListLogs method.</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>logs</td>
-                  <td><a href="#caraml.timber.v1.Log">Log</a></td>
-                  <td>repeated</td>
-                  <td><p>Logs stored in configured Dataset Service storage sink. </p></td>
                 </tr>
               
             </tbody>
@@ -1543,7 +1543,7 @@ Observation Service should be deployed for just the eager API</p></td>
 
       
         <h3 id="caraml.timber.v1.DatasetService">DatasetService</h3>
-        <p>Service for performing:</p><p>1. Deploy/undeploy log writer deployment based on the availability of model and router deployment. </p><p>2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset. .</p><p>3. Store and provide access to the log table metadata produced in CaraML. </p><p>4. Store and provide read only access to the list of log writers it manages.</p><p>5. Store and provide read only access to the list of observation services it manages.</p>
+        <p>Service for performing:</p><p>1. Deploy/undeploy log writer deployment based on the availability of model and router deployment. </p><p>2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset.</p><p>3. Store and provide access to the log table metadata produced in CaraML. </p><p>4. Store and provide read only access to the list of log writers it manages.</p><p>5. Store and provide read only access to the list of observation services it manages.</p>
         <table class="enum-table">
           <thead>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
@@ -1551,17 +1551,17 @@ Observation Service should be deployed for just the eager API</p></td>
           <tbody>
             
               <tr>
-                <td>ListLogs</td>
-                <td><a href="#caraml.timber.v1.ListLogsRequest">ListLogsRequest</a></td>
-                <td><a href="#caraml.timber.v1.ListLogsResponse">ListLogsResponse</a></td>
-                <td><p>ListLogs return paginated list of logs under a project and filtered by query string.</p></td>
+                <td>ListLogMetadata</td>
+                <td><a href="#caraml.timber.v1.ListLogMetadataRequest">ListLogMetadataRequest</a></td>
+                <td><a href="#caraml.timber.v1.ListLogMetadataResponse">ListLogMetadataResponse</a></td>
+                <td><p>ListLogs return paginated list of log metadata under a project and filtered by query string.</p></td>
               </tr>
             
               <tr>
-                <td>GetLog</td>
-                <td><a href="#caraml.timber.v1.GetLogRequest">GetLogRequest</a></td>
-                <td><a href="#caraml.timber.v1.GetLogResponse">GetLogResponse</a></td>
-                <td><p>GetLog return details of a log.</p></td>
+                <td>GetLogMetadata</td>
+                <td><a href="#caraml.timber.v1.GetLogMetadataRequest">GetLogMetadataRequest</a></td>
+                <td><a href="#caraml.timber.v1.GetLogMetadataResponse">GetLogMetadataResponse</a></td>
+                <td><p>GetLogMetadata returns metadata of a log.</p></td>
               </tr>
             
               <tr>
@@ -1641,9 +1641,9 @@ Observation Service should be deployed for just the eager API</p></td>
               
               
               <tr>
-                <td>ListLogs</td>
+                <td>ListLogMetadata</td>
                 <td>GET</td>
-                <td>/v1/projects/{project_id}/logs</td>
+                <td>/v1/projects/{project_id}/log_metadata</td>
                 <td></td>
               </tr>
               
@@ -1651,9 +1651,9 @@ Observation Service should be deployed for just the eager API</p></td>
               
               
               <tr>
-                <td>GetLog</td>
+                <td>GetLogMetadata</td>
                 <td>GET</td>
-                <td>/v1/projects/{project_id}/logs/{id}</td>
+                <td>/v1/projects/{project_id}/log_metadata/{id}</td>
                 <td></td>
               </tr>
               

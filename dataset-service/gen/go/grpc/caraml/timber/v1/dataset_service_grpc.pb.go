@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DatasetServiceClient interface {
-	// ListLogs return paginated list of logs under a project and filtered by query string.
-	ListLogs(ctx context.Context, in *ListLogsRequest, opts ...grpc.CallOption) (*ListLogsResponse, error)
-	// GetLog return details of a log.
-	GetLog(ctx context.Context, in *GetLogRequest, opts ...grpc.CallOption) (*GetLogResponse, error)
+	// ListLogs return paginated list of log metadata under a project and filtered by query string.
+	ListLogMetadata(ctx context.Context, in *ListLogMetadataRequest, opts ...grpc.CallOption) (*ListLogMetadataResponse, error)
+	// GetLogMetadata returns metadata of a log.
+	GetLogMetadata(ctx context.Context, in *GetLogMetadataRequest, opts ...grpc.CallOption) (*GetLogMetadataResponse, error)
 	// ListLogWriters return paginated list of log writers under a project and filtered by query string.
 	ListLogWriters(ctx context.Context, in *ListLogWritersRequest, opts ...grpc.CallOption) (*ListLogWritersResponse, error)
 	// GetLogWriter return details of the log writer deployment.
@@ -52,18 +52,18 @@ func NewDatasetServiceClient(cc grpc.ClientConnInterface) DatasetServiceClient {
 	return &datasetServiceClient{cc}
 }
 
-func (c *datasetServiceClient) ListLogs(ctx context.Context, in *ListLogsRequest, opts ...grpc.CallOption) (*ListLogsResponse, error) {
-	out := new(ListLogsResponse)
-	err := c.cc.Invoke(ctx, "/caraml.timber.v1.DatasetService/ListLogs", in, out, opts...)
+func (c *datasetServiceClient) ListLogMetadata(ctx context.Context, in *ListLogMetadataRequest, opts ...grpc.CallOption) (*ListLogMetadataResponse, error) {
+	out := new(ListLogMetadataResponse)
+	err := c.cc.Invoke(ctx, "/caraml.timber.v1.DatasetService/ListLogMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *datasetServiceClient) GetLog(ctx context.Context, in *GetLogRequest, opts ...grpc.CallOption) (*GetLogResponse, error) {
-	out := new(GetLogResponse)
-	err := c.cc.Invoke(ctx, "/caraml.timber.v1.DatasetService/GetLog", in, out, opts...)
+func (c *datasetServiceClient) GetLogMetadata(ctx context.Context, in *GetLogMetadataRequest, opts ...grpc.CallOption) (*GetLogMetadataResponse, error) {
+	out := new(GetLogMetadataResponse)
+	err := c.cc.Invoke(ctx, "/caraml.timber.v1.DatasetService/GetLogMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -146,10 +146,10 @@ func (c *datasetServiceClient) UpdateObservationService(ctx context.Context, in 
 // All implementations should embed UnimplementedDatasetServiceServer
 // for forward compatibility
 type DatasetServiceServer interface {
-	// ListLogs return paginated list of logs under a project and filtered by query string.
-	ListLogs(context.Context, *ListLogsRequest) (*ListLogsResponse, error)
-	// GetLog return details of a log.
-	GetLog(context.Context, *GetLogRequest) (*GetLogResponse, error)
+	// ListLogs return paginated list of log metadata under a project and filtered by query string.
+	ListLogMetadata(context.Context, *ListLogMetadataRequest) (*ListLogMetadataResponse, error)
+	// GetLogMetadata returns metadata of a log.
+	GetLogMetadata(context.Context, *GetLogMetadataRequest) (*GetLogMetadataResponse, error)
 	// ListLogWriters return paginated list of log writers under a project and filtered by query string.
 	ListLogWriters(context.Context, *ListLogWritersRequest) (*ListLogWritersResponse, error)
 	// GetLogWriter return details of the log writer deployment.
@@ -172,11 +172,11 @@ type DatasetServiceServer interface {
 type UnimplementedDatasetServiceServer struct {
 }
 
-func (UnimplementedDatasetServiceServer) ListLogs(context.Context, *ListLogsRequest) (*ListLogsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListLogs not implemented")
+func (UnimplementedDatasetServiceServer) ListLogMetadata(context.Context, *ListLogMetadataRequest) (*ListLogMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListLogMetadata not implemented")
 }
-func (UnimplementedDatasetServiceServer) GetLog(context.Context, *GetLogRequest) (*GetLogResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLog not implemented")
+func (UnimplementedDatasetServiceServer) GetLogMetadata(context.Context, *GetLogMetadataRequest) (*GetLogMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogMetadata not implemented")
 }
 func (UnimplementedDatasetServiceServer) ListLogWriters(context.Context, *ListLogWritersRequest) (*ListLogWritersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLogWriters not implemented")
@@ -214,38 +214,38 @@ func RegisterDatasetServiceServer(s grpc.ServiceRegistrar, srv DatasetServiceSer
 	s.RegisterService(&DatasetService_ServiceDesc, srv)
 }
 
-func _DatasetService_ListLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListLogsRequest)
+func _DatasetService_ListLogMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListLogMetadataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DatasetServiceServer).ListLogs(ctx, in)
+		return srv.(DatasetServiceServer).ListLogMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/caraml.timber.v1.DatasetService/ListLogs",
+		FullMethod: "/caraml.timber.v1.DatasetService/ListLogMetadata",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatasetServiceServer).ListLogs(ctx, req.(*ListLogsRequest))
+		return srv.(DatasetServiceServer).ListLogMetadata(ctx, req.(*ListLogMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DatasetService_GetLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLogRequest)
+func _DatasetService_GetLogMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLogMetadataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DatasetServiceServer).GetLog(ctx, in)
+		return srv.(DatasetServiceServer).GetLogMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/caraml.timber.v1.DatasetService/GetLog",
+		FullMethod: "/caraml.timber.v1.DatasetService/GetLogMetadata",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatasetServiceServer).GetLog(ctx, req.(*GetLogRequest))
+		return srv.(DatasetServiceServer).GetLogMetadata(ctx, req.(*GetLogMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -402,12 +402,12 @@ var DatasetService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DatasetServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ListLogs",
-			Handler:    _DatasetService_ListLogs_Handler,
+			MethodName: "ListLogMetadata",
+			Handler:    _DatasetService_ListLogMetadata_Handler,
 		},
 		{
-			MethodName: "GetLog",
-			Handler:    _DatasetService_GetLog_Handler,
+			MethodName: "GetLogMetadata",
+			Handler:    _DatasetService_GetLogMetadata_Handler,
 		},
 		{
 			MethodName: "ListLogWriters",

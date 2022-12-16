@@ -7,7 +7,7 @@
     - [FluentdConfig](#caraml-timber-v1-FluentdConfig)
     - [FluentdOutputBQConfig](#caraml-timber-v1-FluentdOutputBQConfig)
     - [KafkaConfig](#caraml-timber-v1-KafkaConfig)
-    - [Log](#caraml-timber-v1-Log)
+    - [LogMetadata](#caraml-timber-v1-LogMetadata)
     - [LogProducer](#caraml-timber-v1-LogProducer)
   
     - [FluentdOutputType](#caraml-timber-v1-FluentdOutputType)
@@ -32,16 +32,16 @@
     - [CreateLogWriterResponse](#caraml-timber-v1-CreateLogWriterResponse)
     - [CreateObservationServiceRequest](#caraml-timber-v1-CreateObservationServiceRequest)
     - [CreateObservationServiceResponse](#caraml-timber-v1-CreateObservationServiceResponse)
-    - [GetLogRequest](#caraml-timber-v1-GetLogRequest)
-    - [GetLogResponse](#caraml-timber-v1-GetLogResponse)
+    - [GetLogMetadataRequest](#caraml-timber-v1-GetLogMetadataRequest)
+    - [GetLogMetadataResponse](#caraml-timber-v1-GetLogMetadataResponse)
     - [GetLogWriterRequest](#caraml-timber-v1-GetLogWriterRequest)
     - [GetLogWriterResponse](#caraml-timber-v1-GetLogWriterResponse)
     - [GetObservationServiceRequest](#caraml-timber-v1-GetObservationServiceRequest)
     - [GetObservationServiceResponse](#caraml-timber-v1-GetObservationServiceResponse)
+    - [ListLogMetadataRequest](#caraml-timber-v1-ListLogMetadataRequest)
+    - [ListLogMetadataResponse](#caraml-timber-v1-ListLogMetadataResponse)
     - [ListLogWritersRequest](#caraml-timber-v1-ListLogWritersRequest)
     - [ListLogWritersResponse](#caraml-timber-v1-ListLogWritersResponse)
-    - [ListLogsRequest](#caraml-timber-v1-ListLogsRequest)
-    - [ListLogsResponse](#caraml-timber-v1-ListLogsResponse)
     - [ListObservationServicesRequest](#caraml-timber-v1-ListObservationServicesRequest)
     - [ListObservationServicesResponse](#caraml-timber-v1-ListObservationServicesResponse)
     - [UpdateLogWriterRequest](#caraml-timber-v1-UpdateLogWriterRequest)
@@ -119,10 +119,10 @@ Kafka configurations
 
 
 
-<a name="caraml-timber-v1-Log"></a>
+<a name="caraml-timber-v1-LogMetadata"></a>
 
-### Log
-Log is an entity/metadata in Dataset Service that represents an append-only
+### LogMetadata
+LogMetadata is an entity/metadata in Dataset Service that represents an append-only
 data produced by ingesting the observation, prediction, or router logs
 
 
@@ -413,31 +413,31 @@ Response message for CreateObservationService method.
 
 
 
-<a name="caraml-timber-v1-GetLogRequest"></a>
+<a name="caraml-timber-v1-GetLogMetadataRequest"></a>
 
-### GetLogRequest
-Request message for GetLog method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log resource from. |
-| id | [int64](#int64) |  | The ID of the log resource to retrieve. |
-
-
-
-
-
-
-<a name="caraml-timber-v1-GetLogResponse"></a>
-
-### GetLogResponse
-Response message for GetLog method.
+### GetLogMetadataRequest
+Request message for GetLogMetadata method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| log | [Log](#caraml-timber-v1-Log) |  | Single log stored in configured Dataset Service storage sink. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log metadata from. |
+| id | [int64](#int64) |  | The ID of the log metadata to retrieve. |
+
+
+
+
+
+
+<a name="caraml-timber-v1-GetLogMetadataResponse"></a>
+
+### GetLogMetadataResponse
+Response message for GetLogMetadata method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| log_metadata | [LogMetadata](#caraml-timber-v1-LogMetadata) |  | Single log metadata stored in configured Dataset Service storage sink. |
 
 
 
@@ -506,6 +506,36 @@ Response message for GetObservationService method.
 
 
 
+<a name="caraml-timber-v1-ListLogMetadataRequest"></a>
+
+### ListLogMetadataRequest
+Request message for ListLogMetadata method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log metadata from. |
+
+
+
+
+
+
+<a name="caraml-timber-v1-ListLogMetadataResponse"></a>
+
+### ListLogMetadataResponse
+Response message for ListLogMetadata method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| log_metadata | [LogMetadata](#caraml-timber-v1-LogMetadata) | repeated | Log metadata stored in configured Dataset Service storage sink. |
+
+
+
+
+
+
 <a name="caraml-timber-v1-ListLogWritersRequest"></a>
 
 ### ListLogWritersRequest
@@ -530,36 +560,6 @@ Response message for ListLogWriters method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | log_writers | [LogWriter](#caraml-timber-v1-LogWriter) | repeated | Log Writers deployed by Dataset Service for a particular CaraML project. |
-
-
-
-
-
-
-<a name="caraml-timber-v1-ListLogsRequest"></a>
-
-### ListLogsRequest
-Request message for ListLogs method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log resource from. |
-
-
-
-
-
-
-<a name="caraml-timber-v1-ListLogsResponse"></a>
-
-### ListLogsResponse
-Response message for ListLogs method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| logs | [Log](#caraml-timber-v1-Log) | repeated | Logs stored in configured Dataset Service storage sink. |
 
 
 
@@ -671,15 +671,15 @@ Response message for UpdateObservationService method.
 ### DatasetService
 Service for performing:
 1. Deploy/undeploy log writer deployment based on the availability of model and router deployment. 
-2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset. .
+2. Synchronize the access control list of CaraML projects to the corresponding BQ dataset to avoid maintaining separate processes to obtain access to the dataset.
 3. Store and provide access to the log table metadata produced in CaraML. 
 4. Store and provide read only access to the list of log writers it manages.
 5. Store and provide read only access to the list of observation services it manages.
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| ListLogs | [ListLogsRequest](#caraml-timber-v1-ListLogsRequest) | [ListLogsResponse](#caraml-timber-v1-ListLogsResponse) | ListLogs return paginated list of logs under a project and filtered by query string. |
-| GetLog | [GetLogRequest](#caraml-timber-v1-GetLogRequest) | [GetLogResponse](#caraml-timber-v1-GetLogResponse) | GetLog return details of a log. |
+| ListLogMetadata | [ListLogMetadataRequest](#caraml-timber-v1-ListLogMetadataRequest) | [ListLogMetadataResponse](#caraml-timber-v1-ListLogMetadataResponse) | ListLogs return paginated list of log metadata under a project and filtered by query string. |
+| GetLogMetadata | [GetLogMetadataRequest](#caraml-timber-v1-GetLogMetadataRequest) | [GetLogMetadataResponse](#caraml-timber-v1-GetLogMetadataResponse) | GetLogMetadata returns metadata of a log. |
 | ListLogWriters | [ListLogWritersRequest](#caraml-timber-v1-ListLogWritersRequest) | [ListLogWritersResponse](#caraml-timber-v1-ListLogWritersResponse) | ListLogWriters return paginated list of log writers under a project and filtered by query string. |
 | GetLogWriter | [GetLogWriterRequest](#caraml-timber-v1-GetLogWriterRequest) | [GetLogWriterResponse](#caraml-timber-v1-GetLogWriterResponse) | GetLogWriter return details of the log writer deployment. |
 | CreateLogWriter | [CreateLogWriterRequest](#caraml-timber-v1-CreateLogWriterRequest) | [CreateLogWriterResponse](#caraml-timber-v1-CreateLogWriterResponse) | CreateLogWriter creates a new log writer deployment as specified by the details given in the request body. |

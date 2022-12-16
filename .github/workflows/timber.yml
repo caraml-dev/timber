@@ -52,7 +52,7 @@ jobs:
             ${{ runner.os }}-go-dataset-
       - uses: bufbuild/buf-lint-action@v1
         with:
-          input: proto
+          input: dataset-service/proto
       - name: generate
         working-directory: dataset-service
         run: make setup generate

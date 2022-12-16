@@ -16,6 +16,80 @@
     "application/json"
   ],
   "paths": {
+    "/v1/projects/{projectId}/log_metadata": {
+      "get": {
+        "summary": "ListLogs return paginated list of log metadata under a project and filtered by query string.",
+        "operationId": "DatasetService_ListLogMetadata",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListLogMetadataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "description": "The CaraML project ID to retrieve log metadata from.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "DatasetService"
+        ]
+      }
+    },
+    "/v1/projects/{projectId}/log_metadata/{id}": {
+      "get": {
+        "summary": "GetLogMetadata returns metadata of a log.",
+        "operationId": "DatasetService_GetLogMetadata",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetLogMetadataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "description": "The CaraML project ID to retrieve log metadata from.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "id",
+            "description": "The ID of the log metadata to retrieve.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "DatasetService"
+        ]
+      }
+    },
     "/v1/projects/{projectId}/log_writers": {
       "get": {
         "summary": "ListLogWriters return paginated list of log writers under a project and filtered by query string.",
@@ -183,80 +257,6 @@
               },
               "description": "Request message for UpdateLogWriter method."
             }
-          }
-        ],
-        "tags": [
-          "DatasetService"
-        ]
-      }
-    },
-    "/v1/projects/{projectId}/logs": {
-      "get": {
-        "summary": "ListLogs return paginated list of logs under a project and filtered by query string.",
-        "operationId": "DatasetService_ListLogs",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ListLogsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "DatasetService"
-        ]
-      }
-    },
-    "/v1/projects/{projectId}/logs/{id}": {
-      "get": {
-        "summary": "GetLog return details of a log.",
-        "operationId": "DatasetService_GetLog",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetLogResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "id",
-            "description": "The ID of the log resource to retrieve.",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
           }
         ],
         "tags": [
@@ -542,15 +542,15 @@
       "description": "- FLUENTD_OUTPUT_TYPE_STDOUT: Fluentd will publish logs to standard output\n - FLUENTD_OUTPUT_TYPE_BQ: Fluentd will flush logs to BigQuery",
       "title": "Data sink where logs would be flushed to via Fluentd"
     },
-    "v1GetLogResponse": {
+    "v1GetLogMetadataResponse": {
       "type": "object",
       "properties": {
-        "log": {
-          "$ref": "#/definitions/v1Log",
-          "description": "Single log stored in configured Dataset Service storage sink."
+        "logMetadata": {
+          "$ref": "#/definitions/v1LogMetadata",
+          "description": "Single log metadata stored in configured Dataset Service storage sink."
         }
       },
-      "description": "Response message for GetLog method."
+      "description": "Response message for GetLogMetadata method."
     },
     "v1GetLogWriterResponse": {
       "type": "object",
@@ -620,6 +620,19 @@
       "description": "- KAFKA_INITIAL_OFFSET_EARLIEST: Automatically reset the offset to the earliest offset\n - KAFKA_INITIAL_OFFSET_LATEST: Automatically reset the offset to the latest offset",
       "title": "Kafka initial offset config"
     },
+    "v1ListLogMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "logMetadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1LogMetadata"
+          },
+          "description": "Log metadata stored in configured Dataset Service storage sink."
+        }
+      },
+      "description": "Response message for ListLogMetadata method."
+    },
     "v1ListLogWritersResponse": {
       "type": "object",
       "properties": {
@@ -632,19 +645,6 @@
         }
       },
       "description": "Response message for ListLogWriters method."
-    },
-    "v1ListLogsResponse": {
-      "type": "object",
-      "properties": {
-        "logs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Log"
-          },
-          "description": "Logs stored in configured Dataset Service storage sink."
-        }
-      },
-      "description": "Response message for ListLogs method."
     },
     "v1ListObservationServicesResponse": {
       "type": "object",
@@ -659,7 +659,7 @@
       },
       "description": "Response message for ListObservationServices method."
     },
-    "v1Log": {
+    "v1LogMetadata": {
       "type": "object",
       "properties": {
         "id": {
@@ -690,7 +690,7 @@
           "description": "Details of LogProducer that generated a log."
         }
       },
-      "title": "Log is an entity/metadata in Dataset Service that represents an append-only\ndata produced by ingesting the observation, prediction, or router logs"
+      "title": "LogMetadata is an entity/metadata in Dataset Service that represents an append-only\ndata produced by ingesting the observation, prediction, or router logs"
     },
     "v1LogProducer": {
       "type": "object",

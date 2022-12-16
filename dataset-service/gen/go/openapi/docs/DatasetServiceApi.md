@@ -6,11 +6,11 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**DatasetServiceCreateLogWriter**](DatasetServiceApi.md#DatasetServiceCreateLogWriter) | **Post** /v1/projects/{projectId}/log_writers | CreateLogWriter creates a new log writer deployment as specified by the details given in the request body.
 [**DatasetServiceCreateObservationService**](DatasetServiceApi.md#DatasetServiceCreateObservationService) | **Post** /v1/projects/{projectId}/observation_services | CreateObservationService creates a new observation service deployment as specified by the details given in the request body.
-[**DatasetServiceGetLog**](DatasetServiceApi.md#DatasetServiceGetLog) | **Get** /v1/projects/{projectId}/logs/{id} | GetLog return details of a log.
+[**DatasetServiceGetLogMetadata**](DatasetServiceApi.md#DatasetServiceGetLogMetadata) | **Get** /v1/projects/{projectId}/log_metadata/{id} | GetLogMetadata returns metadata of a log.
 [**DatasetServiceGetLogWriter**](DatasetServiceApi.md#DatasetServiceGetLogWriter) | **Get** /v1/projects/{projectId}/log_writers/{id} | GetLogWriter return details of the log writer deployment.
 [**DatasetServiceGetObservationService**](DatasetServiceApi.md#DatasetServiceGetObservationService) | **Get** /v1/projects/{projectId}/observation_services/{id} | GetObservationService return details of the observation service deployment.
+[**DatasetServiceListLogMetadata**](DatasetServiceApi.md#DatasetServiceListLogMetadata) | **Get** /v1/projects/{projectId}/log_metadata | ListLogs return paginated list of log metadata under a project and filtered by query string.
 [**DatasetServiceListLogWriters**](DatasetServiceApi.md#DatasetServiceListLogWriters) | **Get** /v1/projects/{projectId}/log_writers | ListLogWriters return paginated list of log writers under a project and filtered by query string.
-[**DatasetServiceListLogs**](DatasetServiceApi.md#DatasetServiceListLogs) | **Get** /v1/projects/{projectId}/logs | ListLogs return paginated list of logs under a project and filtered by query string.
 [**DatasetServiceListObservationServices**](DatasetServiceApi.md#DatasetServiceListObservationServices) | **Get** /v1/projects/{projectId}/observation_services | ListObservationServices return paginated list of observation services under a project and filtered by query string.
 [**DatasetServiceUpdateLogWriter**](DatasetServiceApi.md#DatasetServiceUpdateLogWriter) | **Put** /v1/projects/{projectId}/log_writers/{id} | UpdateLogWriter updates an existing log writer deployment as specified by the details given in the request body.
 [**DatasetServiceUpdateObservationService**](DatasetServiceApi.md#DatasetServiceUpdateObservationService) | **Put** /v1/projects/{projectId}/observation_services/{id} | UpdateObservationService updates an existing observation service deployment as specified by the details given in the request body.
@@ -157,11 +157,11 @@ No authorization required
 [[Back to README]](../README.md)
 
 
-## DatasetServiceGetLog
+## DatasetServiceGetLogMetadata
 
-> V1GetLogResponse DatasetServiceGetLog(ctx, projectId, id).Execute()
+> V1GetLogMetadataResponse DatasetServiceGetLogMetadata(ctx, projectId, id).Execute()
 
-GetLog return details of a log.
+GetLogMetadata returns metadata of a log.
 
 ### Example
 
@@ -176,18 +176,18 @@ import (
 )
 
 func main() {
-    projectId := "projectId_example" // string | The CaraML project ID to retrieve log resource from.
-    id := "id_example" // string | The ID of the log resource to retrieve.
+    projectId := "projectId_example" // string | The CaraML project ID to retrieve log metadata from.
+    id := "id_example" // string | The ID of the log metadata to retrieve.
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.DatasetServiceApi.DatasetServiceGetLog(context.Background(), projectId, id).Execute()
+    resp, r, err := apiClient.DatasetServiceApi.DatasetServiceGetLogMetadata(context.Background(), projectId, id).Execute()
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `DatasetServiceApi.DatasetServiceGetLog``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Error when calling `DatasetServiceApi.DatasetServiceGetLogMetadata``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `DatasetServiceGetLog`: V1GetLogResponse
-    fmt.Fprintf(os.Stdout, "Response from `DatasetServiceApi.DatasetServiceGetLog`: %v\n", resp)
+    // response from `DatasetServiceGetLogMetadata`: V1GetLogMetadataResponse
+    fmt.Fprintf(os.Stdout, "Response from `DatasetServiceApi.DatasetServiceGetLogMetadata`: %v\n", resp)
 }
 ```
 
@@ -197,12 +197,12 @@ func main() {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**projectId** | **string** | The CaraML project ID to retrieve log resource from. | 
-**id** | **string** | The ID of the log resource to retrieve. | 
+**projectId** | **string** | The CaraML project ID to retrieve log metadata from. | 
+**id** | **string** | The ID of the log metadata to retrieve. | 
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiDatasetServiceGetLogRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiDatasetServiceGetLogMetadataRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
@@ -212,7 +212,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**V1GetLogResponse**](V1GetLogResponse.md)
+[**V1GetLogMetadataResponse**](V1GetLogMetadataResponse.md)
 
 ### Authorization
 
@@ -370,6 +370,74 @@ No authorization required
 [[Back to README]](../README.md)
 
 
+## DatasetServiceListLogMetadata
+
+> V1ListLogMetadataResponse DatasetServiceListLogMetadata(ctx, projectId).Execute()
+
+ListLogs return paginated list of log metadata under a project and filtered by query string.
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    projectId := "projectId_example" // string | The CaraML project ID to retrieve log metadata from.
+
+    configuration := openapiclient.NewConfiguration()
+    apiClient := openapiclient.NewAPIClient(configuration)
+    resp, r, err := apiClient.DatasetServiceApi.DatasetServiceListLogMetadata(context.Background(), projectId).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `DatasetServiceApi.DatasetServiceListLogMetadata``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `DatasetServiceListLogMetadata`: V1ListLogMetadataResponse
+    fmt.Fprintf(os.Stdout, "Response from `DatasetServiceApi.DatasetServiceListLogMetadata`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**projectId** | **string** | The CaraML project ID to retrieve log metadata from. | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDatasetServiceListLogMetadataRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+[**V1ListLogMetadataResponse**](V1ListLogMetadataResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## DatasetServiceListLogWriters
 
 > V1ListLogWritersResponse DatasetServiceListLogWriters(ctx, projectId).Execute()
@@ -423,74 +491,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**V1ListLogWritersResponse**](V1ListLogWritersResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## DatasetServiceListLogs
-
-> V1ListLogsResponse DatasetServiceListLogs(ctx, projectId).Execute()
-
-ListLogs return paginated list of logs under a project and filtered by query string.
-
-### Example
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
-)
-
-func main() {
-    projectId := "projectId_example" // string | The CaraML project ID to retrieve log resource from.
-
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.DatasetServiceApi.DatasetServiceListLogs(context.Background(), projectId).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `DatasetServiceApi.DatasetServiceListLogs``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `DatasetServiceListLogs`: V1ListLogsResponse
-    fmt.Fprintf(os.Stdout, "Response from `DatasetServiceApi.DatasetServiceListLogs`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-**projectId** | **string** | The CaraML project ID to retrieve log resource from. | 
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiDatasetServiceListLogsRequest struct via the builder pattern
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-
-
-### Return type
-
-[**V1ListLogsResponse**](V1ListLogsResponse.md)
 
 ### Authorization
 

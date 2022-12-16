@@ -16,16 +16,16 @@ import "caraml/timber/v1/observation_service.proto";
 // 4. Store and provide read only access to the list of log writers it manages.
 // 5. Store and provide read only access to the list of observation services it manages.
 service DatasetService {
-    // ListLogs return paginated list of logs under a project and filtered by query string.
-    rpc ListLogs(ListLogsRequest) returns (ListLogsResponse) {
+    // ListLogs return paginated list of log metadata under a project and filtered by query string.
+    rpc ListLogMetadata(ListLogMetadataRequest) returns (ListLogMetadataResponse) {
         option (google.api.http) = {
-            get: "/v1/projects/{project_id}/logs"
+            get: "/v1/projects/{project_id}/log_metadata"
         };
     };
-    // GetLog return details of a log.
-    rpc GetLog(GetLogRequest) returns (GetLogResponse) {
+    // GetLogMetadata returns metadata of a log.
+    rpc GetLogMetadata(GetLogMetadataRequest) returns (GetLogMetadataResponse) {
         option (google.api.http) = {
-            get: "/v1/projects/{project_id}/logs/{id}"
+            get: "/v1/projects/{project_id}/log_metadata/{id}"
         };
     };
     // ListLogWriters return paginated list of log writers under a project and filtered by query string.
@@ -82,30 +82,30 @@ service DatasetService {
     };
 };
 
-// Request message for ListLogs method.
-message ListLogsRequest {
-    // The CaraML project ID to retrieve log resource from.
+// Request message for ListLogMetadata method.
+message ListLogMetadataRequest {
+    // The CaraML project ID to retrieve log metadata from.
     int64 project_id = 1;
 }
 
-// Response message for ListLogs method.
-message ListLogsResponse {
-    // Logs stored in configured Dataset Service storage sink.
-    repeated Log logs = 1;
+// Response message for ListLogMetadata method.
+message ListLogMetadataResponse {
+    // Log metadata stored in configured Dataset Service storage sink.
+    repeated LogMetadata log_metadata = 1;
 }
 
-// Request message for GetLog method.
-message GetLogRequest {
-    // The CaraML project ID to retrieve log resource from.
+// Request message for GetLogMetadata method.
+message GetLogMetadataRequest {
+    // The CaraML project ID to retrieve log metadata from.
     int64 project_id = 1;
-    // The ID of the log resource to retrieve.
+    // The ID of the log metadata to retrieve.
     int64 id = 2;
 }
 
-// Response message for GetLog method.
-message GetLogResponse {
-    // Single log stored in configured Dataset Service storage sink.
-    Log log = 1;
+// Response message for GetLogMetadata method.
+message GetLogMetadataResponse {
+    // Single log metadata stored in configured Dataset Service storage sink.
+    LogMetadata log_metadata = 1;
 }
 
 /******************************************

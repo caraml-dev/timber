@@ -7,6 +7,68 @@ servers:
 tags:
 - name: DatasetService
 paths:
+  /v1/projects/{projectId}/log_metadata:
+    get:
+      operationId: DatasetService_ListLogMetadata
+      parameters:
+      - description: The CaraML project ID to retrieve log metadata from.
+        in: path
+        name: projectId
+        required: true
+        schema:
+          format: int64
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1ListLogMetadataResponse'
+          description: A successful response.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpcStatus'
+          description: An unexpected error response.
+      summary: ListLogs return paginated list of log metadata under a project and
+        filtered by query string.
+      tags:
+      - DatasetService
+  /v1/projects/{projectId}/log_metadata/{id}:
+    get:
+      operationId: DatasetService_GetLogMetadata
+      parameters:
+      - description: The CaraML project ID to retrieve log metadata from.
+        in: path
+        name: projectId
+        required: true
+        schema:
+          format: int64
+          type: string
+      - description: The ID of the log metadata to retrieve.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetLogMetadataResponse'
+          description: A successful response.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpcStatus'
+          description: An unexpected error response.
+      summary: GetLogMetadata returns metadata of a log.
+      tags:
+      - DatasetService
   /v1/projects/{projectId}/log_writers:
     get:
       operationId: DatasetService_ListLogWriters
@@ -144,68 +206,6 @@ paths:
       tags:
       - DatasetService
       x-codegen-request-body-name: body
-  /v1/projects/{projectId}/logs:
-    get:
-      operationId: DatasetService_ListLogs
-      parameters:
-      - description: The CaraML project ID to retrieve log resource from.
-        in: path
-        name: projectId
-        required: true
-        schema:
-          format: int64
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/v1ListLogsResponse'
-          description: A successful response.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/rpcStatus'
-          description: An unexpected error response.
-      summary: ListLogs return paginated list of logs under a project and filtered
-        by query string.
-      tags:
-      - DatasetService
-  /v1/projects/{projectId}/logs/{id}:
-    get:
-      operationId: DatasetService_GetLog
-      parameters:
-      - description: The CaraML project ID to retrieve log resource from.
-        in: path
-        name: projectId
-        required: true
-        schema:
-          format: int64
-          type: string
-      - description: The ID of the log resource to retrieve.
-        in: path
-        name: id
-        required: true
-        schema:
-          format: int64
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/v1GetLogResponse'
-          description: A successful response.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/rpcStatus'
-          description: An unexpected error response.
-      summary: GetLog return details of a log.
-      tags:
-      - DatasetService
   /v1/projects/{projectId}/observation_services:
     get:
       operationId: DatasetService_ListObservationServices
@@ -474,10 +474,10 @@ components:
       - FLUENTD_OUTPUT_TYPE_BQ
       title: Data sink where logs would be flushed to via Fluentd
       type: string
-    v1GetLogResponse:
-      description: Response message for GetLog method.
+    v1GetLogMetadataResponse:
+      description: Response message for GetLogMetadata method.
       example:
-        log:
+        logMetadata:
           targetNames:
           - targetNames
           - targetNames
@@ -490,8 +490,8 @@ components:
           type: null
           bqTable: bqTable
       properties:
-        log:
-          $ref: '#/components/schemas/v1Log'
+        logMetadata:
+          $ref: '#/components/schemas/v1LogMetadata'
       type: object
     v1GetLogWriterResponse:
       description: Response message for GetLogWriter method.
@@ -599,6 +599,39 @@ components:
       - KAFKA_INITIAL_OFFSET_LATEST
       title: Kafka initial offset config
       type: string
+    v1ListLogMetadataResponse:
+      description: Response message for ListLogMetadata method.
+      example:
+        logMetadata:
+        - targetNames:
+          - targetNames
+          - targetNames
+          logProducer:
+            name: name
+            project: project
+            id: id
+          name: name
+          id: id
+          type: null
+          bqTable: bqTable
+        - targetNames:
+          - targetNames
+          - targetNames
+          logProducer:
+            name: name
+            project: project
+            id: id
+          name: name
+          id: id
+          type: null
+          bqTable: bqTable
+      properties:
+        logMetadata:
+          description: Log metadata stored in configured Dataset Service storage sink.
+          items:
+            $ref: '#/components/schemas/v1LogMetadata'
+          type: array
+      type: object
     v1ListLogWritersResponse:
       description: Response message for ListLogWriters method.
       example:
@@ -629,39 +662,6 @@ components:
             project.
           items:
             $ref: '#/components/schemas/v1LogWriter'
-          type: array
-      type: object
-    v1ListLogsResponse:
-      description: Response message for ListLogs method.
-      example:
-        logs:
-        - targetNames:
-          - targetNames
-          - targetNames
-          logProducer:
-            name: name
-            project: project
-            id: id
-          name: name
-          id: id
-          type: null
-          bqTable: bqTable
-        - targetNames:
-          - targetNames
-          - targetNames
-          logProducer:
-            name: name
-            project: project
-            id: id
-          name: name
-          id: id
-          type: null
-          bqTable: bqTable
-      properties:
-        logs:
-          description: Logs stored in configured Dataset Service storage sink.
-          items:
-            $ref: '#/components/schemas/v1Log'
           type: array
       type: object
     v1ListObservationServicesResponse:
@@ -736,7 +736,7 @@ components:
             $ref: '#/components/schemas/v1ObservationServiceConfig'
           type: array
       type: object
-    v1Log:
+    v1LogMetadata:
       example:
         targetNames:
         - targetNames
@@ -768,8 +768,9 @@ components:
           type: string
         logProducer:
           $ref: '#/components/schemas/v1LogProducer'
-      title: "Log is an entity/metadata in Dataset Service that represents an append-only\n\
-        data produced by ingesting the observation, prediction, or router logs"
+      title: "LogMetadata is an entity/metadata in Dataset Service that represents\
+        \ an append-only\ndata produced by ingesting the observation, prediction,\
+        \ or router logs"
       type: object
     v1LogProducer:
       example:
