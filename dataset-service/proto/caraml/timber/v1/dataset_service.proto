@@ -17,7 +17,7 @@ import "caraml/timber/v1/observation_service.proto";
 // 4. Store and provide read only access to the list of log writers it manages.
 // 5. Store and provide read only access to the list of observation services it manages.
 service DatasetService {
-    // ListLogs return paginated list of log metadata under a project and filtered by query string.
+    // ListLogMetadata return paginated list of log metadata under a project and filtered by query string.
     rpc ListLogMetadata(ListLogMetadataRequest) returns (ListLogMetadataResponse) {
         option (google.api.http) = {
             get: "/v1/projects/{project_id}/log_metadata"

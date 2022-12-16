@@ -18,7 +18,7 @@
   "paths": {
     "/v1/projects/{projectId}/log_metadata": {
       "get": {
-        "summary": "ListLogs return paginated list of log metadata under a project and filtered by query string.",
+        "summary": "ListLogMetadata return paginated list of log metadata under a project and filtered by query string.",
         "operationId": "DatasetService_ListLogMetadata",
         "responses": {
           "200": {

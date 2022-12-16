@@ -678,7 +678,7 @@ Service for performing:
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| ListLogMetadata | [ListLogMetadataRequest](#caraml-timber-v1-ListLogMetadataRequest) | [ListLogMetadataResponse](#caraml-timber-v1-ListLogMetadataResponse) | ListLogs return paginated list of log metadata under a project and filtered by query string. |
+| ListLogMetadata | [ListLogMetadataRequest](#caraml-timber-v1-ListLogMetadataRequest) | [ListLogMetadataResponse](#caraml-timber-v1-ListLogMetadataResponse) | ListLogMetadata return paginated list of log metadata under a project and filtered by query string. |
 | GetLogMetadata | [GetLogMetadataRequest](#caraml-timber-v1-GetLogMetadataRequest) | [GetLogMetadataResponse](#caraml-timber-v1-GetLogMetadataResponse) | GetLogMetadata returns metadata of a log. |
 | ListLogWriters | [ListLogWritersRequest](#caraml-timber-v1-ListLogWritersRequest) | [ListLogWritersResponse](#caraml-timber-v1-ListLogWritersResponse) | ListLogWriters return paginated list of log writers under a project and filtered by query string. |
 | GetLogWriter | [GetLogWriterRequest](#caraml-timber-v1-GetLogWriterRequest) | [GetLogWriterResponse](#caraml-timber-v1-GetLogWriterResponse) | GetLogWriter return details of the log writer deployment. |
