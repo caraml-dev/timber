@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package caraml.timber.v1;
+option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1;api";
+
+import "caraml/timber/v1/log.proto";
+
+// Type of logging application for specified log
+enum LogWriterType {
+    LOG_WRITER_TYPE_UNSPECIFIED = 0;
+    // Fluentd will be used for logging
+    LOG_WRITER_TYPE_FLUENTD = 1;
+}
+
+// LogWriter describes details of a Log Writer
+message LogWriter {
+    LogWriterType type = 1;
+    FluentdConfig fluentd_config = 2;
+}
