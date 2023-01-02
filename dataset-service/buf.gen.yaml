@@ -6,6 +6,11 @@ plugins:
   - name: go
     out: api
     opt: paths=import,module=github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1
+  - name: go-grpc
+    out: api
+    opt:
+      - paths=import,module=github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1
+      - require_unimplemented_servers=false
   - name: grpc-gateway
     out: api
     opt: paths=import,module=github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1
