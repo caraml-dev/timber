@@ -8,6 +8,8 @@ import (
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	common_config "github.com/caraml-dev/timber/common/config"
 )
 
 func TestDefaultConfigs(t *testing.T) {
@@ -15,9 +17,9 @@ func TestDefaultConfigs(t *testing.T) {
 	emptyStringMap := make(map[string]string)
 	defaultCfg := Config{
 		Port: 9001,
-		DeploymentConfig: DeploymentConfig{
+		DeploymentConfig: common_config.DeploymentConfig{
 			EnvironmentType: "local",
-			LogLevel:        InfoLevel,
+			LogLevel:        common_config.InfoLevel,
 			MaxGoRoutines:   1000,
 		},
 		NewRelicConfig: newrelic.Config{
@@ -89,9 +91,9 @@ func TestLoadConfigFiles(t *testing.T) {
 			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
 			expected: Config{
 				Port: 9002,
-				DeploymentConfig: DeploymentConfig{
+				DeploymentConfig: common_config.DeploymentConfig{
 					EnvironmentType: "dev",
-					LogLevel:        InfoLevel,
+					LogLevel:        common_config.InfoLevel,
 					MaxGoRoutines:   1000,
 				},
 				NewRelicConfig: newrelic.Config{

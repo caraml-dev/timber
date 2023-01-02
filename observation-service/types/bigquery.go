@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"cloud.google.com/go/bigquery"
-	"github.com/caraml-dev/timber/observation-service/errors"
+	"github.com/caraml-dev/timber/common/errors"
 )
 
 // BqLogEntry wraps a ObservationLogEntry and implements the bigquery.ValueSaver interface

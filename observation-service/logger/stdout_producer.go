@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/types"
 )
 

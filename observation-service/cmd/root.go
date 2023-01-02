@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/common/log"
 )
 
 // RootCmd represents the base command when called without any subcommands

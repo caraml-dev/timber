@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/server"
 )
 

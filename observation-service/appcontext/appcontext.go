@@ -1,8 +1,8 @@
 package appcontext
 
 import (
+	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/config"
-	"github.com/caraml-dev/timber/observation-service/log"
 	"github.com/caraml-dev/timber/observation-service/logger"
 	"github.com/caraml-dev/timber/observation-service/services"
 )

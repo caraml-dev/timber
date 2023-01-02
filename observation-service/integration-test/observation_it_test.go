@@ -18,7 +18,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/caraml-dev/timber/observation-service/log"
+	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/server"
 )
 

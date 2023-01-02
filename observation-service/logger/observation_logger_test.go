@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	common_config "github.com/caraml-dev/timber/common/config"
 	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/caraml-dev/timber/observation-service/services"
 )
@@ -14,7 +15,7 @@ func TestObservationLogger(t *testing.T) {
 	// Configs
 	consumerConfig := config.LogConsumerConfig{}
 	producerConfig := config.LogProducerConfig{}
-	deploymentConfig := config.DeploymentConfig{}
+	deploymentConfig := common_config.DeploymentConfig{}
 	metricConfig := config.MonitoringConfig{}
 	metricService, err := services.NewMetricService(deploymentConfig, metricConfig)
 	assert.NoError(t, nil, err)
