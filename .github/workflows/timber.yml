@@ -79,6 +79,14 @@ jobs:
           skip-pkg-cache: true
           skip-build-cache: true
           args: --timeout 3m --verbose
+      - name: Lint Dataset Service module
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: ${{ env.GO_LINT_VERSION }}
+          working-directory: dataset-service
+          skip-pkg-cache: true
+          skip-build-cache: true
+          args: --timeout 3m --verbose
 
   unit-tests-observation-service:
     runs-on: ubuntu-latest
@@ -98,6 +106,25 @@ jobs:
       - name: Run Observation Service test
         working-directory: observation-service
         run: make test-observation-service
+  
+  unit-tests-dataset-service:
+    runs-on: ubuntu-latest
+    env:
+      GOPATH: ${{ github.workspace }}/api/.go
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Test Dependencies
+        uses: ./.github/actions/setup-tests
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      
+      - name: Run Dataset Service test
+        working-directory: dataset-service
+        run: make test-dataset-service
 
   release-rules:
     runs-on: ubuntu-latest
@@ -123,6 +150,7 @@ jobs:
     needs:
       - lint-go
       - unit-tests-observation-service
+      - unit-tests-dataset-service
       - release-rules
     uses: ./.github/workflows/release.yml
     with:
