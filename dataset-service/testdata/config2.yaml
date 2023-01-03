@@ -1,0 +1,4 @@
+SentryConfig:
+  Labels:
+    app: dataset-service
+    env: dev

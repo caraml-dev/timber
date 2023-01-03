@@ -1,0 +1,19 @@
+Port: 8081
+
+NewRelicConfig:
+  Enabled: true
+  AppName: dataset-service
+  License: amazing-license
+  IgnoreStatusCodes:
+    - 403
+    - 404
+    - 405
+  Labels:
+    env: dev
+
+SentryConfig:
+  Labels:
+    app: dataset-service
+
+DeploymentConfig:
+  EnvironmentType: dev

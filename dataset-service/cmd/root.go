@@ -10,9 +10,9 @@ import (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "observation-service",
-	Short: "Observation Service CMux Server",
-	Long:  `Observation Service CMux Server for logging ML ground-truth observations`,
+	Use:   "dataset-service",
+	Short: "Dataset Service HTTP Server",
+	Long:  `Dataset Service HTTP Server for deployment of logging infrastructure and generation of ML datasets.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

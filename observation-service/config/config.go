@@ -13,41 +13,13 @@ import (
 type Config struct {
 	Port int `envconfig:"PORT" default:"9001"`
 
-	DeploymentConfig  DeploymentConfig
+	DeploymentConfig  common_config.DeploymentConfig
 	NewRelicConfig    newrelic.Config
 	SentryConfig      sentry.Config
 	LogConsumerConfig LogConsumerConfig
 	LogProducerConfig LogProducerConfig
 	MonitoringConfig  MonitoringConfig
 }
-
-// DeploymentConfig captures the config related to the deployment of Observation Service
-type DeploymentConfig struct {
-	// EnvironmentType describes the environment Observation Service is deployed in
-	EnvironmentType string `default:"local"`
-	// ProjectName describes the CaraML project Observation Service is deployed for
-	ProjectName string `default:""`
-	// ServiceName describes the CaraML Observation Service name
-	ServiceName string `default:""`
-	// LogLevel captures the selected supported logging level
-	LogLevel LogLevel `split_words:"false" default:"INFO"`
-	// Maximum no. of go-routines that is allowed
-	MaxGoRoutines int `default:"1000"`
-}
-
-// LogLevel type is used to capture the supported logging levels
-type LogLevel string
-
-const (
-	// DebugLevel is used for verbose logs at debug level
-	DebugLevel LogLevel = "DEBUG"
-	// InfoLevel is used for logs that are info level and higher
-	InfoLevel LogLevel = "INFO"
-	// WarnLevel is used for logs that are warning level and higher
-	WarnLevel LogLevel = "WARN"
-	// ErrorLevel is used for logs that are error level and higher
-	ErrorLevel LogLevel = "ERROR"
-)
 
 // ObservationLoggerConsumerKind captures the consumer config for reading Observation Service logs
 type ObservationLoggerConsumerKind = string
@@ -171,12 +143,12 @@ func (c *Config) ListenAddress() string {
 	return fmt.Sprintf(":%d", c.Port)
 }
 
-// Load parses multiple file configs specified via filepaths using Viper and returns a Config struct
+// Load parses multiple file configs specified via filepaths and returns a Config struct
 func Load(filepaths ...string) (*Config, error) {
 	var cfg Config
 	err := common_config.ParseConfig(&cfg, filepaths)
 	if err != nil {
-		return nil, fmt.Errorf("failed to update viper config: %s", err)
+		return nil, fmt.Errorf("failed to update config: %s", err)
 	}
 
 	return &cfg, nil

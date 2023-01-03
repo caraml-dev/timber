@@ -4,14 +4,14 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/caraml-dev/timber/common/log"
-	"github.com/caraml-dev/timber/observation-service/server"
+	"github.com/caraml-dev/timber/dataset-service/server"
 )
 
 var cfgFile []string
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Starts Observation Service CMux server with configured API",
+	Short: "Starts Dataset Service HTTP server with configured API",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		server, err := server.NewServer(cfgFile)

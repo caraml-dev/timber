@@ -1,0 +1,22 @@
+Port: 8080
+
+DeploymentConfig:
+  EnvironmentType: local
+
+NewRelicConfig:
+  Enabled: false
+  AppName: dataset-service
+  License: newrelic-license-secret
+  IgnoreStatusCodes:
+    - 400
+    - 401
+    - 403
+    - 404
+    - 405
+    - 412
+
+SentryConfig:
+  Enabled: false
+  DSN: xxx.xxx.xxx
+  Labels:
+    App: dataset-service

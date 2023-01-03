@@ -1,9 +1,10 @@
 package log
 
 import (
-	"github.com/caraml-dev/timber/observation-service/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/caraml-dev/timber/common/config"
 )
 
 // Init the global logger to default prod settings. Calling InitGlobalLogger()

@@ -1,6 +1,7 @@
 export
 
 COMMON_MODULE_PATH=common
+DATASET_SVC_PATH=dataset-service
 OBSERVATION_SVC_PATH=observation-service
 
 # ==================================
@@ -51,6 +52,7 @@ lint: lint-go
 
 lint-go:
 	@echo "> Linting code..."
+	cd ${DATASET_SVC_PATH} && golangci-lint run --timeout 5m
 	cd ${OBSERVATION_SVC_PATH} && golangci-lint run --timeout 5m
 	cd ${COMMON_MODULE_PATH} && golangci-lint run --timeout 5m
 

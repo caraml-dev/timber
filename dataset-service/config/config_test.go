@@ -16,7 +16,7 @@ func TestDefaultConfigs(t *testing.T) {
 	emptyInterfaceMap := make(map[string]interface{})
 	emptyStringMap := make(map[string]string)
 	defaultCfg := Config{
-		Port: 9001,
+		Port: 8080,
 		DeploymentConfig: common_config.DeploymentConfig{
 			EnvironmentType: "local",
 			LogLevel:        common_config.InfoLevel,
@@ -30,51 +30,11 @@ func TestDefaultConfigs(t *testing.T) {
 			Labels:            emptyInterfaceMap,
 		},
 		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
-		LogConsumerConfig: LogConsumerConfig{
-			Kind: "",
-			KafkaConfig: &KafkaConfig{
-				Brokers:          "",
-				Topic:            "",
-				MaxMessageBytes:  1048588,
-				CompressionType:  "none",
-				ConnectTimeoutMS: 1000,
-				PollInterval:     1000,
-				AutoOffsetReset:  "latest",
-			},
-		},
-		LogProducerConfig: LogProducerConfig{
-			Kind:                 "",
-			QueueLength:          100,
-			FlushIntervalSeconds: 1,
-			KafkaConfig: &KafkaConfig{
-				Brokers:          "",
-				Topic:            "",
-				MaxMessageBytes:  1048588,
-				CompressionType:  "none",
-				ConnectTimeoutMS: 1000,
-				PollInterval:     1000,
-				AutoOffsetReset:  "latest",
-			},
-			FluentdConfig: &FluentdConfig{
-				Kind: "",
-				Host: "localhost",
-				Port: 24224,
-				Tag:  "observation-service",
-				BQConfig: &BQConfig{
-					Project: "",
-					Dataset: "",
-					Table:   "",
-				},
-			},
-		},
-		MonitoringConfig: MonitoringConfig{
-			Kind: "",
-		},
 	}
 	cfg, err := Load()
 	require.NoError(t, err)
 	assert.Equal(t, defaultCfg, *cfg)
-	assert.Equal(t, ":9001", cfg.ListenAddress())
+	assert.Equal(t, ":8080", cfg.ListenAddress())
 }
 
 // TestLoadConfigFiles verifies that when multiple configs are passed in
@@ -90,7 +50,7 @@ func TestLoadConfigFiles(t *testing.T) {
 			name:        "success | load multiple config files",
 			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
 			expected: Config{
-				Port: 9002,
+				Port: 8081,
 				DeploymentConfig: common_config.DeploymentConfig{
 					EnvironmentType: "dev",
 					LogLevel:        common_config.InfoLevel,
@@ -98,52 +58,12 @@ func TestLoadConfigFiles(t *testing.T) {
 				},
 				NewRelicConfig: newrelic.Config{
 					Enabled:           true,
-					AppName:           "observation-service",
+					AppName:           "dataset-service",
 					License:           "amazing-license",
 					IgnoreStatusCodes: []int{403, 404, 405},
 					Labels:            map[string]interface{}{"env": "dev"},
 				},
-				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "observation-service", "env": "dev"}},
-				LogConsumerConfig: LogConsumerConfig{
-					Kind: "",
-					KafkaConfig: &KafkaConfig{
-						Brokers:          "",
-						Topic:            "",
-						MaxMessageBytes:  1048588,
-						CompressionType:  "none",
-						ConnectTimeoutMS: 1000,
-						PollInterval:     1000,
-						AutoOffsetReset:  "latest",
-					},
-				},
-				LogProducerConfig: LogProducerConfig{
-					Kind:                 "",
-					QueueLength:          100,
-					FlushIntervalSeconds: 1,
-					KafkaConfig: &KafkaConfig{
-						Brokers:          "",
-						Topic:            "",
-						MaxMessageBytes:  1048588,
-						CompressionType:  "none",
-						ConnectTimeoutMS: 1000,
-						PollInterval:     1000,
-						AutoOffsetReset:  "latest",
-					},
-					FluentdConfig: &FluentdConfig{
-						Kind: "",
-						Host: "localhost",
-						Port: 24224,
-						Tag:  "observation-service",
-						BQConfig: &BQConfig{
-							Project: "",
-							Dataset: "",
-							Table:   "",
-						},
-					},
-				},
-				MonitoringConfig: MonitoringConfig{
-					Kind: "",
-				},
+				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
 			},
 		},
 		{

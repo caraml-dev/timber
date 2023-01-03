@@ -17,11 +17,12 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
+	customErr "github.com/caraml-dev/timber/common/errors"
+	"github.com/caraml-dev/timber/common/log"
+	"github.com/caraml-dev/timber/common/server"
 	"github.com/caraml-dev/timber/observation-service/appcontext"
 	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/caraml-dev/timber/observation-service/controller"
-	customErr "github.com/caraml-dev/timber/observation-service/errors"
-	"github.com/caraml-dev/timber/observation-service/log"
 )
 
 var (
@@ -101,7 +102,7 @@ func (s *Server) Start() {
 	upiv1.RegisterObservationServiceServer(grpcServer, s)
 
 	// Add health checker
-	healthChecker := newHealthChecker()
+	healthChecker := server.NewHealthChecker()
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthChecker)
 
 	// Start servers

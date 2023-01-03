@@ -8,7 +8,6 @@ import (
 
 type healthChecker struct{}
 
-// Check
 func (s *healthChecker) Check(ctx context.Context, req *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
 	return &grpc_health_v1.HealthCheckResponse{
 		Status: grpc_health_v1.HealthCheckResponse_SERVING,
@@ -22,6 +21,7 @@ func (s *healthChecker) Watch(req *grpc_health_v1.HealthCheckRequest, server grp
 	})
 }
 
-func newHealthChecker() *healthChecker {
+// NewHealthChecker instantiates healthChecker
+func NewHealthChecker() *healthChecker {
 	return &healthChecker{}
 }
