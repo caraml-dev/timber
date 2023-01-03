@@ -42,7 +42,7 @@ func ParseConfig(spec interface{}, filepaths []string) error {
 
 	err := reflectViperConfig("", spec, v)
 	if err != nil {
-		return fmt.Errorf("failed to read default config via reflection: %s", err)
+		return fmt.Errorf("failed to read default viper config via reflection: %s", err)
 	}
 
 	// Load config values from the provided config files
@@ -50,7 +50,7 @@ func ParseConfig(spec interface{}, filepaths []string) error {
 		v.SetConfigFile(f)
 		err := v.MergeInConfig()
 		if err != nil {
-			return fmt.Errorf("failed to read config from file '%s': %s", f, err)
+			return fmt.Errorf("failed to read viper config from file '%s': %s", f, err)
 		}
 	}
 
@@ -63,7 +63,7 @@ func ParseConfig(spec interface{}, filepaths []string) error {
 	// Unmarshal config values into the config object.
 	err = v.Unmarshal(spec)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal config values: %s", err)
+		return fmt.Errorf("failed to unmarshal viper config values: %s", err)
 	}
 
 	return nil

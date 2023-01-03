@@ -66,13 +66,15 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@v3
       - name: Lint Common module
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         with:
           version: ${{ env.GO_LINT_VERSION }}
           working-directory: common
+          skip-pkg-cache: true
+          skip-build-cache: true
           args: --timeout 3m --verbose
       - name: Lint Observation Service module
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         with:
           version: ${{ env.GO_LINT_VERSION }}
           working-directory: observation-service
@@ -80,7 +82,7 @@ jobs:
           skip-build-cache: true
           args: --timeout 3m --verbose
       - name: Lint Dataset Service module
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         with:
           version: ${{ env.GO_LINT_VERSION }}
           working-directory: dataset-service

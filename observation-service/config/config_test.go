@@ -149,13 +149,13 @@ func TestLoadConfigFiles(t *testing.T) {
 		{
 			name:        "failure | bad config",
 			configFiles: []string{"../testdata/config3.yaml"},
-			errString: strings.Join([]string{"failed to update viper config: failed to unmarshal config values: 1 error(s) decoding:\n\n* cannot ",
+			errString: strings.Join([]string{"failed to update config: failed to unmarshal viper config values: 1 error(s) decoding:\n\n* cannot ",
 				"parse 'Port' as int: strconv.ParseInt: parsing \"abc\": invalid syntax"}, ""),
 		},
 		{
 			name:        "failure | file read",
 			configFiles: []string{"../testdata/config4.yaml"},
-			errString: strings.Join([]string{"failed to update viper config: failed to read config from file '../testdata/config4.yaml': ",
+			errString: strings.Join([]string{"failed to update config: failed to read viper config from file '../testdata/config4.yaml': ",
 				"While parsing config: yaml: unmarshal errors:\n  line 1: cannot unmarshal !!str `bad_config` ",
 				"into map[string]interface {}"}, ""),
 		},

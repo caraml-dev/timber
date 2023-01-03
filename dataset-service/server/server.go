@@ -17,6 +17,7 @@ import (
 
 	"github.com/caraml-dev/timber/common/errors"
 	"github.com/caraml-dev/timber/common/log"
+	"github.com/caraml-dev/timber/common/server"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
 	"github.com/caraml-dev/timber/dataset-service/config"
@@ -85,7 +86,7 @@ func NewServer(configFiles []string) (*Server, error) {
 	}
 
 	// Add health checker
-	healthChecker := newHealthChecker()
+	healthChecker := server.NewHealthChecker()
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthChecker)
 
 	// Creating a normal HTTP server
