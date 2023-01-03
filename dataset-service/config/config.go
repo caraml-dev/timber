@@ -14,8 +14,14 @@ type Config struct {
 	Port int `envconfig:"PORT" default:"8080"`
 
 	DeploymentConfig common_config.DeploymentConfig
+	MLPConfig        *MLPConfig
 	NewRelicConfig   newrelic.Config
 	SentryConfig     sentry.Config
+}
+
+// MLPConfig captures the configuration used to connect to the MLP API server
+type MLPConfig struct {
+	URL string
 }
 
 // ListenAddress returns the Dataset API app's port

@@ -2,9 +2,11 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc"
 
+	"github.com/caraml-dev/timber/common/errors"
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
@@ -28,9 +30,15 @@ func NewDatasetServiceController(ctx *appcontext.AppContext) (*grpc.Server, *Dat
 
 // ListLogMetadata definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) ListLogMetadata(
-	context.Context,
-	*timberv1.ListLogMetadataRequest,
+	c context.Context,
+	r *timberv1.ListLogMetadataRequest,
 ) (*timberv1.ListLogMetadataResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/ListLogMetadata")
 	response := &timberv1.ListLogMetadataResponse{}
@@ -39,9 +47,15 @@ func (d DatasetServiceController) ListLogMetadata(
 
 // GetLogMetadata definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) GetLogMetadata(
-	context.Context,
-	*timberv1.GetLogMetadataRequest,
+	c context.Context,
+	r *timberv1.GetLogMetadataRequest,
 ) (*timberv1.GetLogMetadataResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/GetLogMetadata")
 	response := &timberv1.GetLogMetadataResponse{}
@@ -50,9 +64,15 @@ func (d DatasetServiceController) GetLogMetadata(
 
 // ListLogWriters definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) ListLogWriters(
-	context.Context,
-	*timberv1.ListLogWritersRequest,
+	c context.Context,
+	r *timberv1.ListLogWritersRequest,
 ) (*timberv1.ListLogWritersResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/ListLogWriters")
 	response := &timberv1.ListLogWritersResponse{}
@@ -61,9 +81,15 @@ func (d DatasetServiceController) ListLogWriters(
 
 // GetLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) GetLogWriter(
-	context.Context,
-	*timberv1.GetLogWriterRequest,
+	c context.Context,
+	r *timberv1.GetLogWriterRequest,
 ) (*timberv1.GetLogWriterResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/GetLogWriter")
 	response := &timberv1.GetLogWriterResponse{}
@@ -72,9 +98,15 @@ func (d DatasetServiceController) GetLogWriter(
 
 // CreateLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) CreateLogWriter(
-	context.Context,
-	*timberv1.CreateLogWriterRequest,
+	c context.Context,
+	r *timberv1.CreateLogWriterRequest,
 ) (*timberv1.CreateLogWriterResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/CreateLogWriter")
 	response := &timberv1.CreateLogWriterResponse{}
@@ -83,9 +115,15 @@ func (d DatasetServiceController) CreateLogWriter(
 
 // UpdateLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) UpdateLogWriter(
-	context.Context,
-	*timberv1.UpdateLogWriterRequest,
+	c context.Context,
+	r *timberv1.UpdateLogWriterRequest,
 ) (*timberv1.UpdateLogWriterResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/UpdateLogWriter")
 	response := &timberv1.UpdateLogWriterResponse{}
@@ -94,9 +132,15 @@ func (d DatasetServiceController) UpdateLogWriter(
 
 // ListObservationServices definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) ListObservationServices(
-	context.Context,
-	*timberv1.ListObservationServicesRequest,
+	c context.Context,
+	r *timberv1.ListObservationServicesRequest,
 ) (*timberv1.ListObservationServicesResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/ListObservationServices")
 	response := &timberv1.ListObservationServicesResponse{}
@@ -105,9 +149,15 @@ func (d DatasetServiceController) ListObservationServices(
 
 // GetObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) GetObservationService(
-	context.Context,
-	*timberv1.GetObservationServiceRequest,
+	c context.Context,
+	r *timberv1.GetObservationServiceRequest,
 ) (*timberv1.GetObservationServiceResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/GetObservationService")
 	response := &timberv1.GetObservationServiceResponse{}
@@ -116,9 +166,15 @@ func (d DatasetServiceController) GetObservationService(
 
 // CreateObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) CreateObservationService(
-	context.Context,
-	*timberv1.CreateObservationServiceRequest,
+	c context.Context,
+	r *timberv1.CreateObservationServiceRequest,
 ) (*timberv1.CreateObservationServiceResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/CreateObservationService")
 	response := &timberv1.CreateObservationServiceResponse{}
@@ -127,9 +183,15 @@ func (d DatasetServiceController) CreateObservationService(
 
 // UpdateObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (d DatasetServiceController) UpdateObservationService(
-	context.Context,
-	*timberv1.UpdateObservationServiceRequest,
+	c context.Context,
+	r *timberv1.UpdateObservationServiceRequest,
 ) (*timberv1.UpdateObservationServiceResponse, error) {
+	// Check if the projectId is valid
+	projectID := r.GetProjectId()
+	if _, err := d.appCtx.Services.MLPService.GetProject(projectID); err != nil {
+		return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed getting projectID (%d) from MLP: %v", projectID, err))
+	}
+
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/UpdateObservationService")
 	response := &timberv1.UpdateObservationServiceResponse{}

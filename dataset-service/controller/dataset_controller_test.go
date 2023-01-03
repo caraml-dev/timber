@@ -2,14 +2,15 @@ package controller
 
 import (
 	"context"
-	"log"
 	"testing"
 
+	mlp "github.com/gojek/mlp/api/client"
 	"github.com/stretchr/testify/suite"
 
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
-	"github.com/caraml-dev/timber/dataset-service/config"
+	"github.com/caraml-dev/timber/dataset-service/services"
+	"github.com/caraml-dev/timber/dataset-service/services/mocks"
 )
 
 type DataseServicetControllerTestSuite struct {
@@ -20,12 +21,19 @@ type DataseServicetControllerTestSuite struct {
 func (s *DataseServicetControllerTestSuite) SetupSuite() {
 	s.Suite.T().Log("Setting up DataseServicetControllerTestSuite")
 
-	cfg := &config.Config{}
-	appCtx, err := appcontext.NewAppContext(cfg)
-	if err != nil {
-		log.Fatalf("Failed initializing AppContext: %v", err)
+	// Create mock MLP service and set up with test responses
+	mlpSvc := &mocks.MLPService{}
+	projectID := int64(0)
+	expectedProject := &mlp.Project{Id: 0}
+	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
+
+	s.ctrl = &DatasetServiceController{
+		appCtx: &appcontext.AppContext{
+			Services: services.Services{
+				MLPService: mlpSvc,
+			},
+		},
 	}
-	_, s.ctrl = NewDatasetServiceController(appCtx)
 }
 
 func TestDatasetServiceController(t *testing.T) {

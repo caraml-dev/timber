@@ -15,6 +15,7 @@ import (
 func TestDefaultConfigs(t *testing.T) {
 	emptyInterfaceMap := make(map[string]interface{})
 	emptyStringMap := make(map[string]string)
+	mlpConfig := &MLPConfig{URL: ""}
 	defaultCfg := Config{
 		Port: 8080,
 		DeploymentConfig: common_config.DeploymentConfig{
@@ -22,6 +23,7 @@ func TestDefaultConfigs(t *testing.T) {
 			LogLevel:        common_config.InfoLevel,
 			MaxGoRoutines:   1000,
 		},
+		MLPConfig: mlpConfig,
 		NewRelicConfig: newrelic.Config{
 			Enabled:           false,
 			AppName:           "",
@@ -40,6 +42,7 @@ func TestDefaultConfigs(t *testing.T) {
 // TestLoadConfigFiles verifies that when multiple configs are passed in
 // they are consumed in the correct order
 func TestLoadConfigFiles(t *testing.T) {
+	mlpConfig := &MLPConfig{URL: ""}
 	tests := []struct {
 		name        string
 		configFiles []string
@@ -56,6 +59,7 @@ func TestLoadConfigFiles(t *testing.T) {
 					LogLevel:        common_config.InfoLevel,
 					MaxGoRoutines:   1000,
 				},
+				MLPConfig: mlpConfig,
 				NewRelicConfig: newrelic.Config{
 					Enabled:           true,
 					AppName:           "dataset-service",

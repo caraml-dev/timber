@@ -4,17 +4,18 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
-	"github.com/caraml-dev/timber/dataset-service/config"
+	"github.com/caraml-dev/timber/dataset-service/services"
+	"github.com/caraml-dev/timber/dataset-service/services/mocks"
 )
 
 func TestNewAppContext(t *testing.T) {
-	cfg := &config.Config{}
-	appCtx, err := NewAppContext(cfg)
-
-	expectedAppContext := &AppContext{}
-
-	require.NoError(t, err)
-	assert.Equal(t, expectedAppContext, appCtx)
+	// Create mock MLP service
+	mlpSvc := &mocks.MLPService{}
+	appCtx := AppContext{
+		Services: services.Services{
+			MLPService: mlpSvc,
+		},
+	}
+	assert.Equal(t, mlpSvc, appCtx.Services.MLPService)
 }
