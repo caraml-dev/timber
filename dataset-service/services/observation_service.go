@@ -6,7 +6,9 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -30,8 +32,14 @@ const (
 
 // ObservationService provides a set of methods to interact with the MLP APIs
 type ObservationService interface {
-	// CreateService gets the project matching the provided id
-	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*timberv1.ObservationServiceConfig, error)
+	// CreateService creates new Observation Service Helm release and returns ID of created Observation Service
+	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*timberv1.ObservationServiceResponse, error)
+	// UpdateService updates existing Observation Service Helm release and returns ID of updated Observation Service
+	UpdateService(
+		projectName string,
+		observationServiceID int,
+		config *timberv1.ObservationServiceConfig,
+	) (*timberv1.ObservationServiceResponse, error)
 }
 
 type observationService struct {
@@ -57,15 +65,69 @@ func NewObservationService(
 }
 
 func (o *observationService) CreateService(
-	projectName string,
+	caramlProjectName string,
 	config *timberv1.ObservationServiceConfig,
-) (*timberv1.ObservationServiceConfig, error) {
-	// TODO: Publish helm chart and reference published chart
-	// Locate directory of Observation Service helm chart
-	_, filename, _, _ := runtime.Caller(0)
-	repositoryRoot := filepath.Dir(filepath.Dir(path.Dir(filename)))
-	chartDir := fmt.Sprintf("%s/infra/charts/observation-service", repositoryRoot)
-	chart, err := loader.LoadDir(chartDir)
+) (*timberv1.ObservationServiceResponse, error) {
+	// Read chart
+	chart, err := readChart()
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if chart is installable
+	validInstallableChart, err := isChartInstallable(chart)
+	if !validInstallableChart {
+		log.Info(err)
+	}
+
+	// Retrieve computed chart values based on default values and request body values
+	updatedChartValues, err := getChartValues(config, o.gcpProject, caramlProjectName, o.deploymentConfig, o.observationServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate configuration required to run helm installation, this is dependent on storage backend.
+	settings := cli.New()
+	actionConfig := new(action.Configuration)
+	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, HELM_DRIVER, log.Infof)
+	if err != nil {
+		return nil, err
+	}
+
+	// Postfix helm release name with provided Service name as a CaraML project could have multiple different services
+	projectReleaseName := fmt.Sprintf("%s-%s", RELEASE_NAME, config.GetServiceName())
+
+	// Initialize helm installation
+	installation := action.NewInstall(actionConfig)
+	installation.ReleaseName = projectReleaseName
+	installation.Namespace = caramlProjectName
+	installation.CreateNamespace = true
+
+	// Trigger helm installation
+	release, err := installation.Run(chart, updatedChartValues)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	log.Infof("%s helm release installation (version %d) underway! Status: %s", release.Name, release.Version, release.Info.Status)
+	// Pretty print Helm release YAML manifest with fmt.Println
+	fmt.Println(release.Manifest)
+
+	// TODO: Retrieve Observation Service ID from DB
+	resp := &timberv1.ObservationServiceResponse{
+		Id: uuid.New().String(),
+	}
+
+	return resp, nil
+}
+
+func (o *observationService) UpdateService(
+	projectName string,
+	observationServiceID int,
+	config *timberv1.ObservationServiceConfig,
+) (*timberv1.ObservationServiceResponse, error) {
+	// Read chart
+	chart, err := readChart()
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +144,7 @@ func (o *observationService) CreateService(
 		return nil, err
 	}
 
-	// Generate configuration required to run helm installation, this is dependent on storage backend.
+	// Generate configuration required to run helm upgrade
 	settings := cli.New()
 	actionConfig := new(action.Configuration)
 	err = actionConfig.Init(settings.RESTClientGetter(), projectName, HELM_DRIVER, log.Infof)
@@ -90,42 +152,42 @@ func (o *observationService) CreateService(
 		return nil, err
 	}
 
-	// Initialize helm installation
-	client := action.NewUpgrade(actionConfig)
-	// TODO: Use project name?
-	client.Namespace = projectName
+	// Initialize helm upgrade
+	upgrade := action.NewUpgrade(actionConfig)
+	upgrade.Namespace = projectName
 
-	// Trigger helm installation
-	// TODO: Do we want to postfix helm release name with provided ServiceName? i.e make it a parameter in request proto
-	// projectReleaseName := fmt.Sprintf("%s-%s", RELEASE_NAME, o.deploymentConfig.ServiceName)
-	release, err := client.Run(RELEASE_NAME, chart, updatedChartValues)
+	// Trigger helm upgrade
+	// TODO: Get project release name based on provided Observation Service ID
+	projectReleaseName := fmt.Sprintf("%s-%s", RELEASE_NAME, config.GetServiceName())
+	release, err := upgrade.Run(projectReleaseName, chart, updatedChartValues)
 	if err != nil {
-		check := fmt.Sprintf("\"%s\" has no deployed releases", RELEASE_NAME)
-		// Installation does not exist, should use NewInstall instead of NewUpgrade
-		if err.Error() == check {
-			log.Infof("%s: generating new release...", check)
-			installation := action.NewInstall(actionConfig)
-			// TODO: Use service name in postfix?
-			installation.ReleaseName = RELEASE_NAME
-			installation.Namespace = projectName
-			installation.CreateNamespace = true
-
-			release, err = installation.Run(chart, updatedChartValues)
-			if err != nil {
-				log.Error(err)
-				return nil, err
-			}
-		} else {
-			log.Error(err)
-			return nil, err
-		}
+		log.Error(err)
+		return nil, err
 	}
-	log.Infof("%s helm release (version %d) has been deployed!\n⎈ Happy Helming!⎈\n", release.Name, release.Version)
-	// fmt.Println for pretty print of YAML manifest
+	log.Infof("%s helm release upgrade (version %d) underway! Status: %s", release.Name, release.Version, release.Info.Status)
+	// Pretty print Helm release YAML manifest with fmt.Println
 	fmt.Println(release.Manifest)
 
-	// TODO: Should we return information related to the helm installation rather than *timberv1.ObservationServiceConfig?
-	return nil, nil
+	// TODO: Retrieve Observation Service ID from DB
+	resp := &timberv1.ObservationServiceResponse{
+		Id: strconv.Itoa(observationServiceID),
+	}
+
+	return resp, nil
+}
+
+func readChart() (*chart.Chart, error) {
+	// TODO: Publish helm chart and reference published chart
+	// Locate directory of Observation Service helm chart
+	_, filename, _, _ := runtime.Caller(0)
+	repositoryRoot := filepath.Dir(filepath.Dir(path.Dir(filename)))
+	chartDir := fmt.Sprintf("%s/infra/charts/observation-service", repositoryRoot)
+	chart, err := loader.LoadDir(chartDir)
+	if err != nil {
+		return nil, err
+	}
+
+	return chart, nil
 }
 
 func isChartInstallable(ch *chart.Chart) (bool, error) {
@@ -139,13 +201,13 @@ func isChartInstallable(ch *chart.Chart) (bool, error) {
 func getChartValues(
 	config *timberv1.ObservationServiceConfig,
 	gcpProject string,
-	projectName string,
+	caramlProjectName string,
 	deploymentConfig common_config.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
 ) (map[string]interface{}, error) {
 	// Initialize and set default values
 	values := &models.ObservationServiceHelmValues{}
-	values = setDefaultValues(values, gcpProject, projectName, deploymentConfig, observationServiceConfig)
+	values = setDefaultValues(values, gcpProject, caramlProjectName, config.GetServiceName(), deploymentConfig, observationServiceConfig)
 
 	// Compute LogConsumerConfig
 	values, err := setLogConsumerConfig(values, config)
@@ -154,7 +216,7 @@ func getChartValues(
 	}
 
 	// Compute LogProducerConfig
-	values, err = setLogProducerConfig(values, config, gcpProject, projectName)
+	values, err = setLogProducerConfig(values, config, gcpProject, caramlProjectName)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +247,8 @@ func getChartValues(
 func setDefaultValues(
 	values *models.ObservationServiceHelmValues,
 	gcpProject string,
-	projectName string,
+	caramlProjectName string,
+	serviceName string,
 	deploymentConfig common_config.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
 ) *models.ObservationServiceHelmValues {
@@ -195,8 +258,8 @@ func setDefaultValues(
 	// ApiConfig
 	values.ObservationServiceConfig.ApiConfig.Port = 9001
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig = deploymentConfig
-	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ProjectName = projectName
-	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName = RELEASE_NAME
+	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ProjectName = caramlProjectName
+	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName = fmt.Sprintf("%s-%s", RELEASE_NAME, serviceName)
 	// Environment Variables
 	envVars := []models.Env{
 		{
@@ -240,7 +303,7 @@ func setDefaultValues(
 		},
 		{
 			Name:  "FLUENTD_TAG",
-			Value: "observation-service.log",
+			Value: "observation-service",
 		},
 		{
 			Name:  "FLUENTD_GCP_JSON_KEY_PATH",
@@ -252,11 +315,11 @@ func setDefaultValues(
 		},
 		{
 			Name:  "FLUENTD_BQ_DATASET",
-			Value: projectName,
+			Value: caramlProjectName,
 		},
 		{
 			Name:  "FLUENTD_BQ_TABLE",
-			Value: fmt.Sprintf("%s_observation_log", projectName),
+			Value: fmt.Sprintf("%s_observation_log", caramlProjectName),
 		},
 	}
 	values.FluentdConfig.ExtraEnvs = envVars

@@ -23,6 +23,7 @@
     - [ObservationServiceConfig](#caraml-timber-v1-ObservationServiceConfig)
     - [ObservationServiceDataSink](#caraml-timber-v1-ObservationServiceDataSink)
     - [ObservationServiceDataSource](#caraml-timber-v1-ObservationServiceDataSource)
+    - [ObservationServiceResponse](#caraml-timber-v1-ObservationServiceResponse)
   
     - [ObservationServiceDataSinkType](#caraml-timber-v1-ObservationServiceDataSinkType)
     - [ObservationServiceDataSourceType](#caraml-timber-v1-ObservationServiceDataSourceType)
@@ -260,12 +261,12 @@ Type of logging application for specified log
 <a name="caraml-timber-v1-ObservationServiceConfig"></a>
 
 ### ObservationServiceConfig
-ObservationService describes details of a Observation Service
+ObservationServiceConfig describes details of a Observation Service
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  | Unique identifier of an Observation Service deployed by Dataset Service. |
+| service_name | [string](#string) |  | Required to postfix helm release name with provided Service name as a CaraML project could have multiple different services |
 | source | [ObservationServiceDataSource](#caraml-timber-v1-ObservationServiceDataSource) |  | Configuration for pull-based Observation Service data source. |
 | sink | [ObservationServiceDataSink](#caraml-timber-v1-ObservationServiceDataSink) |  | Configuration for Observation Service data sink. |
 
@@ -301,6 +302,21 @@ Configurations of Data source where Observation logs should be retrieved from
 | ----- | ---- | ----- | ----------- |
 | type | [ObservationServiceDataSourceType](#caraml-timber-v1-ObservationServiceDataSourceType) |  |  |
 | kafka_config | [KafkaConfig](#caraml-timber-v1-KafkaConfig) |  |  |
+
+
+
+
+
+
+<a name="caraml-timber-v1-ObservationServiceResponse"></a>
+
+### ObservationServiceResponse
+ObservationServiceResponse describes details of a deployed Observation Service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | Unique identifier of an Observation Service deployed by Dataset Service. |
 
 
 
@@ -406,7 +422,7 @@ Response message for CreateObservationService method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| observation_service | [ObservationServiceConfig](#caraml-timber-v1-ObservationServiceConfig) |  | Details of single Observation Service deployed by Dataset Service. |
+| observation_service | [ObservationServiceResponse](#caraml-timber-v1-ObservationServiceResponse) |  | Details of single Observation Service deployed by Dataset Service. |
 
 
 
@@ -653,7 +669,7 @@ Response message for UpdateObservationService method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| observation_service | [ObservationServiceConfig](#caraml-timber-v1-ObservationServiceConfig) |  | Details of single Observation Service updated by Dataset Service. |
+| observation_service | [ObservationServiceResponse](#caraml-timber-v1-ObservationServiceResponse) |  | Details of single Observation Service updated by Dataset Service. |
 
 
 

@@ -64,16 +64,13 @@ func (o ObservationServiceController) CreateObservationService(
 		return nil, err
 	}
 
-	// TODO: Implement method
-	log.Info("Called caraml.upi.v1.DatasetService/CreateObservationService")
-	res, err := o.appCtx.Services.ObservationService.CreateService(project.Name, r.GetObservationService())
+	result, err := o.appCtx.Services.ObservationService.CreateService(project.Name, r.GetObservationService())
 	if err != nil {
 		return nil, err
 	}
-	log.Info(res)
 
-	response := &timberv1.CreateObservationServiceResponse{}
-	return response, nil
+	resp := &timberv1.CreateObservationServiceResponse{ObservationService: result}
+	return resp, nil
 }
 
 // UpdateObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
@@ -82,15 +79,19 @@ func (o ObservationServiceController) UpdateObservationService(
 	r *timberv1.UpdateObservationServiceRequest,
 ) (*timberv1.UpdateObservationServiceResponse, error) {
 	// Check if the projectId is valid
-	err := o.checkProject(r.GetProjectId())
+	projectID := r.GetProjectId()
+	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: Implement method
-	log.Info("Called caraml.upi.v1.DatasetService/UpdateObservationService")
-	response := &timberv1.UpdateObservationServiceResponse{}
-	return response, nil
+	result, err := o.appCtx.Services.ObservationService.UpdateService(project.Name, int(r.GetId()), r.GetObservationService())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: result}
+	return resp, nil
 }
 
 func (o ObservationServiceController) checkProject(projectId int64) error {

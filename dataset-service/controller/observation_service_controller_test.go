@@ -35,7 +35,8 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 
 	// Create mock Observation service and set up with test responses
 	observationSvc := &mocks.ObservationService{}
-	observationSvc.On("CreateService", projectName, mock.Anything).Return(&timberv1.ObservationServiceConfig{}, nil)
+	observationSvc.On("CreateService", projectName, mock.Anything).Return(&timberv1.ObservationServiceResponse{}, nil)
+	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&timberv1.ObservationServiceResponse{}, nil)
 
 	s.ctrl = &ObservationServiceController{
 		appCtx: &appcontext.AppContext{
@@ -132,7 +133,7 @@ func (s *ObservationServiceControllerTestSuite) TestCreateObservationService() {
 			name:      "success",
 			projectID: 0,
 			req:       &timberv1.CreateObservationServiceRequest{},
-			resp:      &timberv1.CreateObservationServiceResponse{},
+			resp:      &timberv1.CreateObservationServiceResponse{ObservationService: &timberv1.ObservationServiceResponse{}},
 		},
 		{
 			name:      "failure | project not found",
@@ -166,7 +167,7 @@ func (s *ObservationServiceControllerTestSuite) TestUpdateObservationService() {
 			name:      "success",
 			projectID: 0,
 			req:       &timberv1.UpdateObservationServiceRequest{},
-			resp:      &timberv1.UpdateObservationServiceResponse{},
+			resp:      &timberv1.UpdateObservationServiceResponse{ObservationService: &timberv1.ObservationServiceResponse{}},
 		},
 		{
 			name:      "failure | project not found",

@@ -208,7 +208,7 @@ message CreateObservationServiceRequest {
 // Response message for CreateObservationService method.
 message CreateObservationServiceResponse {
     // Details of single Observation Service deployed by Dataset Service.
-    ObservationServiceConfig observation_service = 1;
+    ObservationServiceResponse observation_service = 1;
 }
 
 // Request message for UpdateObservationService method.
@@ -224,5 +224,5 @@ message UpdateObservationServiceRequest {
 // Response message for UpdateObservationService method.
 message UpdateObservationServiceResponse {
     // Details of single Observation Service updated by Dataset Service.
-    ObservationServiceConfig observation_service = 1;
+    ObservationServiceResponse observation_service = 1;
 }
