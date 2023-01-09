@@ -31,6 +31,11 @@ func TestDefaultConfigs(t *testing.T) {
 			IgnoreStatusCodes: []int{},
 			Labels:            emptyInterfaceMap,
 		},
+		ObservationServiceConfig: ObservationServiceConfig{
+			GCPProject:                 "",
+			ObservationServiceImageTag: "",
+			FluentdImageTag:            "",
+		},
 		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
 	}
 	cfg, err := Load()
@@ -66,6 +71,11 @@ func TestLoadConfigFiles(t *testing.T) {
 					License:           "amazing-license",
 					IgnoreStatusCodes: []int{403, 404, 405},
 					Labels:            map[string]interface{}{"env": "dev"},
+				},
+				ObservationServiceConfig: ObservationServiceConfig{
+					GCPProject:                 "",
+					ObservationServiceImageTag: "",
+					FluentdImageTag:            "",
 				},
 				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
 			},

@@ -58,13 +58,20 @@ func (o ObservationServiceController) CreateObservationService(
 	r *timberv1.CreateObservationServiceRequest,
 ) (*timberv1.CreateObservationServiceResponse, error) {
 	// Check if the projectId is valid
-	err := o.checkProject(r.GetProjectId())
+	projectID := r.GetProjectId()
+	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
 		return nil, err
 	}
 
 	// TODO: Implement method
 	log.Info("Called caraml.upi.v1.DatasetService/CreateObservationService")
+	res, err := o.appCtx.Services.ObservationService.CreateService(project.Name, r.GetObservationService())
+	if err != nil {
+		return nil, err
+	}
+	log.Info(res)
+
 	response := &timberv1.CreateObservationServiceResponse{}
 	return response, nil
 }

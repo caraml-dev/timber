@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	mlp "github.com/gojek/mlp/api/client"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/caraml-dev/timber/common/errors"
@@ -25,16 +26,22 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	// Create mock MLP service and set up with test responses
 	mlpSvc := &mocks.MLPService{}
 	projectID := int64(0)
-	expectedProject := &mlp.Project{Id: 0}
+	projectName := "test-project"
+	expectedProject := &mlp.Project{Id: 0, Name: projectName}
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
 	mlpSvc.On(
 		"GetProject", int64(3),
 	).Return(nil, errors.Newf(errors.NotFound, "MLP Project info for id %d not found in the cache", int64(3)))
 
+	// Create mock Observation service and set up with test responses
+	observationSvc := &mocks.ObservationService{}
+	observationSvc.On("CreateService", projectName, mock.Anything).Return(&timberv1.ObservationServiceConfig{}, nil)
+
 	s.ctrl = &ObservationServiceController{
 		appCtx: &appcontext.AppContext{
 			Services: services.Services{
-				MLPService: mlpSvc,
+				MLPService:         mlpSvc,
+				ObservationService: observationSvc,
 			},
 		},
 	}

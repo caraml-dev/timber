@@ -13,10 +13,18 @@ import (
 type Config struct {
 	Port int `envconfig:"PORT" default:"8080"`
 
-	DeploymentConfig common_config.DeploymentConfig
-	MLPConfig        *MLPConfig
-	NewRelicConfig   newrelic.Config
-	SentryConfig     sentry.Config
+	DeploymentConfig         common_config.DeploymentConfig
+	ObservationServiceConfig ObservationServiceConfig
+	MLPConfig                *MLPConfig
+	NewRelicConfig           newrelic.Config
+	SentryConfig             sentry.Config
+}
+
+// ObservationServiceConfig captures the configuration used for log storage
+type ObservationServiceConfig struct {
+	GCPProject                 string
+	ObservationServiceImageTag string
+	FluentdImageTag            string
 }
 
 // MLPConfig captures the configuration used to connect to the MLP API server
