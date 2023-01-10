@@ -5,17 +5,17 @@ import (
 
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-	"github.com/caraml-dev/timber/dataset-service/appcontext"
+	"github.com/caraml-dev/timber/dataset-service/services"
 )
 
 // ObservationServiceController implements controller logic for Dataset Service observation service endpoints
 type ObservationServiceController struct {
-	appCtx *appcontext.AppContext
+	services *services.Services
 }
 
 // NewObservationServiceController instantiates ObservationServiceController
-func NewObservationServiceController(ctx *appcontext.AppContext) *ObservationServiceController {
-	return &ObservationServiceController{appCtx: ctx}
+func NewObservationServiceController(services *services.Services) *ObservationServiceController {
+	return &ObservationServiceController{services: services}
 }
 
 // ListObservationServices definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
@@ -59,12 +59,12 @@ func (o ObservationServiceController) CreateObservationService(
 ) (*timberv1.CreateObservationServiceResponse, error) {
 	// Check if the projectId is valid
 	projectID := r.GetProjectId()
-	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
+	project, err := o.services.MLPService.GetProject(projectID)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.CreateService(project.Name, r.GetObservationService())
+	result, err := o.services.ObservationService.CreateService(project.Name, r.GetObservationService())
 	if err != nil {
 		return nil, err
 	}
@@ -80,12 +80,12 @@ func (o ObservationServiceController) UpdateObservationService(
 ) (*timberv1.UpdateObservationServiceResponse, error) {
 	// Check if the projectId is valid
 	projectID := r.GetProjectId()
-	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
+	project, err := o.services.MLPService.GetProject(projectID)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.UpdateService(project.Name, int(r.GetId()), r.GetObservationService())
+	result, err := o.services.ObservationService.UpdateService(project.Name, int(r.GetId()), r.GetObservationService())
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (o ObservationServiceController) UpdateObservationService(
 
 func (o ObservationServiceController) checkProject(projectId int64) error {
 	// Check if the projectId is valid
-	if _, err := o.appCtx.Services.MLPService.GetProject(projectId); err != nil {
+	if _, err := o.services.MLPService.GetProject(projectId); err != nil {
 		return err
 	}
 

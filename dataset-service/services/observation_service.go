@@ -15,7 +15,7 @@ import (
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/config"
@@ -24,10 +24,10 @@ import (
 )
 
 const (
-	// HELM_DRIVER is the storage backend to be used. Documentation details: https://helm.sh/docs/topics/advanced/#storage-backends
-	HELM_DRIVER = "secret"
-	// RELEASE_NAME is the helm release name prefix to be used when deploying Observation Service.
-	RELEASE_NAME = "observation-service"
+	// helm_driver is the storage backend to be used. Documentation details: https://helm.sh/docs/topics/advanced/#storage-backends
+	helm_driver = "secret"
+	// release_name is the helm release name prefix to be used when deploying Observation Service.
+	release_name = "observation-service"
 )
 
 // ObservationService provides a set of methods to interact with the MLP APIs
@@ -43,21 +43,17 @@ type ObservationService interface {
 }
 
 type observationService struct {
-	services *Services
-
 	gcpProject               string
-	deploymentConfig         common_config.DeploymentConfig
+	deploymentConfig         commonconfig.DeploymentConfig
 	observationServiceConfig config.ObservationServiceConfig
 }
 
 // NewObservationService instantiates ObservationService
 func NewObservationService(
-	services *Services,
-	deploymentConfig common_config.DeploymentConfig,
+	deploymentConfig commonconfig.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
 ) ObservationService {
 	return &observationService{
-		services:                 services,
 		gcpProject:               observationServiceConfig.GCPProject,
 		deploymentConfig:         deploymentConfig,
 		observationServiceConfig: observationServiceConfig,
@@ -68,34 +64,19 @@ func (o *observationService) CreateService(
 	caramlProjectName string,
 	config *timberv1.ObservationServiceConfig,
 ) (*timberv1.ObservationServiceResponse, error) {
-	// Read chart
-	chart, err := readChart()
-	if err != nil {
-		return nil, err
-	}
-
-	// Check if chart is installable
-	validInstallableChart, err := isChartInstallable(chart)
-	if !validInstallableChart {
-		log.Info(err)
-	}
-
-	// Retrieve computed chart values based on default values and request body values
-	updatedChartValues, err := getChartValues(config, o.gcpProject, caramlProjectName, o.deploymentConfig, o.observationServiceConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	// Generate configuration required to run helm installation, this is dependent on storage backend.
-	settings := cli.New()
-	actionConfig := new(action.Configuration)
-	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, HELM_DRIVER, log.Infof)
+	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
+		config,
+		o.gcpProject,
+		caramlProjectName,
+		o.deploymentConfig,
+		o.observationServiceConfig,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	// Postfix helm release name with provided Service name as a CaraML project could have multiple different services
-	projectReleaseName := fmt.Sprintf("%s-%s", RELEASE_NAME, config.GetServiceName())
+	projectReleaseName := fmt.Sprintf("%s-%s", release_name, config.GetServiceName())
 
 	// Initialize helm installation
 	installation := action.NewInstall(actionConfig)
@@ -122,43 +103,28 @@ func (o *observationService) CreateService(
 }
 
 func (o *observationService) UpdateService(
-	projectName string,
+	caramlProjectName string,
 	observationServiceID int,
 	config *timberv1.ObservationServiceConfig,
 ) (*timberv1.ObservationServiceResponse, error) {
-	// Read chart
-	chart, err := readChart()
-	if err != nil {
-		return nil, err
-	}
-
-	// Check if chart is installable
-	validInstallableChart, err := isChartInstallable(chart)
-	if !validInstallableChart {
-		log.Info(err)
-	}
-
-	// Retrieve computed chart values based on default values and request body values
-	updatedChartValues, err := getChartValues(config, o.gcpProject, projectName, o.deploymentConfig, o.observationServiceConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	// Generate configuration required to run helm upgrade
-	settings := cli.New()
-	actionConfig := new(action.Configuration)
-	err = actionConfig.Init(settings.RESTClientGetter(), projectName, HELM_DRIVER, log.Infof)
+	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
+		config,
+		o.gcpProject,
+		caramlProjectName,
+		o.deploymentConfig,
+		o.observationServiceConfig,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	// Initialize helm upgrade
 	upgrade := action.NewUpgrade(actionConfig)
-	upgrade.Namespace = projectName
+	upgrade.Namespace = caramlProjectName
 
 	// Trigger helm upgrade
 	// TODO: Get project release name based on provided Observation Service ID
-	projectReleaseName := fmt.Sprintf("%s-%s", RELEASE_NAME, config.GetServiceName())
+	projectReleaseName := fmt.Sprintf("%s-%s", release_name, config.GetServiceName())
 	release, err := upgrade.Run(projectReleaseName, chart, updatedChartValues)
 	if err != nil {
 		log.Error(err)
@@ -174,6 +140,43 @@ func (o *observationService) UpdateService(
 	}
 
 	return resp, nil
+}
+
+func retrieveChartAndActionConfig(
+	config *timberv1.ObservationServiceConfig,
+	gcpProject string,
+	caramlProjectName string,
+	deploymentConfig commonconfig.DeploymentConfig,
+	observationServiceConfig config.ObservationServiceConfig,
+) (*chart.Chart, map[string]any, *action.Configuration, error) {
+	// Read chart
+	chart, err := readChart()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	// Check if chart is installable
+	validInstallableChart, err := isChartInstallable(chart)
+	if !validInstallableChart {
+		log.Info(err)
+		return nil, nil, nil, err
+	}
+
+	// Retrieve computed chart values based on default values and request body values
+	updatedChartValues, err := getChartValues(config, gcpProject, caramlProjectName, deploymentConfig, observationServiceConfig)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	// Generate configuration required to run helm upgrade
+	settings := cli.New()
+	actionConfig := new(action.Configuration)
+	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, helm_driver, log.Infof)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return chart, updatedChartValues, actionConfig, nil
 }
 
 func readChart() (*chart.Chart, error) {
@@ -202,9 +205,9 @@ func getChartValues(
 	config *timberv1.ObservationServiceConfig,
 	gcpProject string,
 	caramlProjectName string,
-	deploymentConfig common_config.DeploymentConfig,
+	deploymentConfig commonconfig.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
-) (map[string]interface{}, error) {
+) (map[string]any, error) {
 	// Initialize and set default values
 	values := &models.ObservationServiceHelmValues{}
 	values = setDefaultValues(values, gcpProject, caramlProjectName, config.GetServiceName(), deploymentConfig, observationServiceConfig)
@@ -230,7 +233,7 @@ func getChartValues(
 	}
 
 	// Convert type of values for merging
-	var interfaceValues map[string]interface{}
+	var interfaceValues map[string]any
 	byteArr, err := json.Marshal(values)
 	if err != nil {
 		return nil, err
@@ -249,7 +252,7 @@ func setDefaultValues(
 	gcpProject string,
 	caramlProjectName string,
 	serviceName string,
-	deploymentConfig common_config.DeploymentConfig,
+	deploymentConfig commonconfig.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
 ) *models.ObservationServiceHelmValues {
 	// --- Observation Service configs --- //
@@ -259,7 +262,7 @@ func setDefaultValues(
 	values.ObservationServiceConfig.ApiConfig.Port = 9001
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig = deploymentConfig
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ProjectName = caramlProjectName
-	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName = fmt.Sprintf("%s-%s", RELEASE_NAME, serviceName)
+	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName = fmt.Sprintf("%s-%s", release_name, serviceName)
 	// Environment Variables
 	envVars := []models.Env{
 		{

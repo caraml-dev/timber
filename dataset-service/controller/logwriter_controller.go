@@ -5,17 +5,17 @@ import (
 
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-	"github.com/caraml-dev/timber/dataset-service/appcontext"
+	"github.com/caraml-dev/timber/dataset-service/services"
 )
 
 // LogWriterController implements controller logic for Dataset Service log writer endpoints
 type LogWriterController struct {
-	appCtx *appcontext.AppContext
+	services *services.Services
 }
 
 // NewLogWriterController instantiates LogWriterController
-func NewLogWriterController(ctx *appcontext.AppContext) *LogWriterController {
-	return &LogWriterController{appCtx: ctx}
+func NewLogWriterController(services *services.Services) *LogWriterController {
+	return &LogWriterController{services: services}
 }
 
 // ListLogWriters definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
@@ -88,7 +88,7 @@ func (l LogWriterController) UpdateLogWriter(
 
 func (l LogWriterController) checkProject(projectId int64) error {
 	// Check if the projectId is valid
-	if _, err := l.appCtx.Services.MLPService.GetProject(projectId); err != nil {
+	if _, err := l.services.MLPService.GetProject(projectId); err != nil {
 		return err
 	}
 

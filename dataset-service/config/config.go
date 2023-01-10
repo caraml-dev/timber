@@ -6,14 +6,14 @@ import (
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 )
 
 // Config captures the config related to starting Dataset Service
 type Config struct {
 	Port int `envconfig:"PORT" default:"8080"`
 
-	DeploymentConfig         common_config.DeploymentConfig
+	DeploymentConfig         commonconfig.DeploymentConfig
 	ObservationServiceConfig ObservationServiceConfig
 	MLPConfig                *MLPConfig
 	NewRelicConfig           newrelic.Config
@@ -22,9 +22,12 @@ type Config struct {
 
 // ObservationServiceConfig captures the configuration used for log storage
 type ObservationServiceConfig struct {
-	GCPProject                 string
+	// GCPProject specifies the GCP project where BQ logs will be written to via Fluentd
+	GCPProject string
+	// ObservationServiceImageTag specifies tag of image to be used when deploying Observation Service via Dataset Service APIs
 	ObservationServiceImageTag string
-	FluentdImageTag            string
+	// FluentdImageTag specifies tag of image to be used when deploying Fluentd via Dataset Service APIs
+	FluentdImageTag string
 }
 
 // MLPConfig captures the configuration used to connect to the MLP API server
@@ -40,7 +43,7 @@ func (c *Config) ListenAddress() string {
 // Load parses multiple file configs specified via filepaths and returns a Config struct
 func Load(filepaths ...string) (*Config, error) {
 	var cfg Config
-	err := common_config.ParseConfig(&cfg, filepaths)
+	err := commonconfig.ParseConfig(&cfg, filepaths)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update config: %s", err)
 	}

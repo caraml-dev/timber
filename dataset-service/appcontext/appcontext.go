@@ -23,13 +23,9 @@ func NewAppContext(cfg *config.Config) (*AppContext, error) {
 	}
 
 	obsSvc := services.NewObservationService(
-		&allServices,
 		cfg.DeploymentConfig,
 		cfg.ObservationServiceConfig,
 	)
-	if err != nil {
-		return nil, errors.Wrapf(err, "Failed initializing Observation Service")
-	}
 
 	allServices = services.NewServices(
 		mlpSvc,

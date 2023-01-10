@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/models"
@@ -47,11 +47,11 @@ func (s *ObservationServiceTestSuite) TestSetDefaultHelmValues() {
 	gcpProject := "test-gcp-project"
 	caramlProjectName := "test-caraml-project"
 	serviceName := "test-pricing"
-	deploymentConfig := common_config.DeploymentConfig{
+	deploymentConfig := commonconfig.DeploymentConfig{
 		EnvironmentType: "test",
 		ProjectName:     "",
 		ServiceName:     "dataset-service",
-		LogLevel:        common_config.InfoLevel,
+		LogLevel:        commonconfig.InfoLevel,
 		MaxGoRoutines:   200,
 	}
 	imageTag := "v0.0.1"
