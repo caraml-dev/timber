@@ -30,18 +30,6 @@ func TestObservationService(t *testing.T) {
 	suite.Run(t, new(ObservationServiceTestSuite))
 }
 
-func (s *ObservationServiceTestSuite) TestObservationServiceReadAndValidateChart() {
-	expectedChartName := "observation-service"
-
-	chart, err := readChart()
-	s.Suite.Require().NoError(err)
-	s.Suite.Assert().Equal(expectedChartName, chart.Name())
-
-	isInstallable, err := isChartInstallable(chart)
-	s.Suite.Require().NoError(err)
-	s.Suite.Assert().Equal(true, isInstallable)
-}
-
 func (s *ObservationServiceTestSuite) TestSetDefaultHelmValues() {
 	helmValues := &models.ObservationServiceHelmValues{}
 	gcpProject := "test-gcp-project"
@@ -99,7 +87,7 @@ func (s *ObservationServiceTestSuite) TestSetConsumerConfigValues() {
 	s.Suite.Require().NoError(err)
 	s.Suite.Assert().Equal("kafka", actual.ObservationServiceConfig.ApiConfig.LogConsumerConfig.Kind)
 	s.Suite.Assert().Equal(
-		models.GetKafkaConfigModel(kafkaDeploymentConfig.GetSource().GetKafkaConfig()),
+		models.NewKafkaConfig(kafkaDeploymentConfig.GetSource().GetKafkaConfig()),
 		actual.ObservationServiceConfig.ApiConfig.LogConsumerConfig.KafkaConfig,
 	)
 }
@@ -145,7 +133,7 @@ func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
 	s.Suite.Require().NoError(err)
 	s.Suite.Assert().Equal("kafka", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
 	s.Suite.Assert().Equal(
-		models.GetKafkaConfigModel(kafkaDeploymentConfig.GetSink().GetKafkaConfig()),
+		models.NewKafkaConfig(kafkaDeploymentConfig.GetSink().GetKafkaConfig()),
 		actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.KafkaConfig,
 	)
 }

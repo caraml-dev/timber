@@ -9,6 +9,7 @@ import (
 
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/appcontext"
 	"github.com/caraml-dev/timber/dataset-service/services"
 	"github.com/caraml-dev/timber/dataset-service/services/mocks"
 )
@@ -31,8 +32,10 @@ func (s *MetadataControllerTestSuite) SetupSuite() {
 	).Return(nil, errors.Newf(errors.NotFound, "MLP Project info for id %d not found in the cache", int64(3)))
 
 	s.ctrl = &MetadataController{
-		services: &services.Services{
-			MLPService: mlpSvc,
+		appCtx: &appcontext.AppContext{
+			Services: services.Services{
+				MLPService: mlpSvc,
+			},
 		},
 	}
 }

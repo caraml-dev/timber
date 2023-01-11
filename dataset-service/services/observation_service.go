@@ -9,18 +9,18 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
+	"k8s.io/apimachinery/pkg/api/resource"
 
 	commonconfig "github.com/caraml-dev/timber/common/config"
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/models"
-	osConfig "github.com/caraml-dev/timber/observation-service/config"
+	osconfig "github.com/caraml-dev/timber/observation-service/config"
 )
 
 const (
@@ -155,13 +155,6 @@ func retrieveChartAndActionConfig(
 		return nil, nil, nil, err
 	}
 
-	// Check if chart is installable
-	validInstallableChart, err := isChartInstallable(chart)
-	if !validInstallableChart {
-		log.Info(err)
-		return nil, nil, nil, err
-	}
-
 	// Retrieve computed chart values based on default values and request body values
 	updatedChartValues, err := getChartValues(config, gcpProject, caramlProjectName, deploymentConfig, observationServiceConfig)
 	if err != nil {
@@ -191,14 +184,6 @@ func readChart() (*chart.Chart, error) {
 	}
 
 	return chart, nil
-}
-
-func isChartInstallable(ch *chart.Chart) (bool, error) {
-	switch ch.Metadata.Type {
-	case "", "application":
-		return true, nil
-	}
-	return false, errors.Errorf("%s charts are not installable", ch.Metadata.Type)
 }
 
 func getChartValues(
@@ -272,10 +257,10 @@ func setDefaultValues(
 	}
 	values.ObservationServiceConfig.ExtraEnvs = envVars
 	// Resources
-	values.ObservationServiceConfig.Resources.Requests.CPU = "1"
-	values.ObservationServiceConfig.Resources.Requests.Memory = "512Mi"
-	values.ObservationServiceConfig.Resources.Limits.CPU = "1"
-	values.ObservationServiceConfig.Resources.Limits.Memory = "1Gi"
+	values.ObservationServiceConfig.Resources.Requests.CPU = resource.Quantity{Format: "1"}
+	values.ObservationServiceConfig.Resources.Requests.Memory = resource.Quantity{Format: "512Mi"}
+	values.ObservationServiceConfig.Resources.Limits.CPU = resource.Quantity{Format: "1"}
+	values.ObservationServiceConfig.Resources.Limits.Memory = resource.Quantity{Format: "1Gi"}
 	// Autoscaling
 	values.ObservationServiceConfig.Autoscaling.Enabled = false
 
@@ -327,10 +312,10 @@ func setDefaultValues(
 	}
 	values.FluentdConfig.ExtraEnvs = envVars
 	// Resources
-	values.FluentdConfig.Resources.Requests.CPU = "1"
-	values.FluentdConfig.Resources.Requests.Memory = "512Mi"
-	values.FluentdConfig.Resources.Limits.CPU = "1"
-	values.FluentdConfig.Resources.Limits.Memory = "1Gi"
+	values.FluentdConfig.Resources.Requests.CPU = resource.Quantity{Format: "1"}
+	values.FluentdConfig.Resources.Requests.Memory = resource.Quantity{Format: "512Mi"}
+	values.FluentdConfig.Resources.Limits.CPU = resource.Quantity{Format: "1"}
+	values.FluentdConfig.Resources.Limits.Memory = resource.Quantity{Format: "1Gi"}
 	// Autoscaling
 	values.FluentdConfig.Autoscaling.Enabled = false
 
@@ -356,7 +341,7 @@ func setLogConsumerConfig(
 	case timberv1.ObservationServiceDataSourceType_OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA:
 		kafkaConfig := config.GetSource().GetKafkaConfig()
 		values.ObservationServiceConfig.ApiConfig.LogConsumerConfig.Kind = "kafka"
-		values.ObservationServiceConfig.ApiConfig.LogConsumerConfig.KafkaConfig = models.GetKafkaConfigModel(kafkaConfig)
+		values.ObservationServiceConfig.ApiConfig.LogConsumerConfig.KafkaConfig = models.NewKafkaConfig(kafkaConfig)
 	case timberv1.ObservationServiceDataSourceType_OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED:
 		log.Infof("No source type specified for Observation Service deployment")
 	default:
@@ -377,8 +362,8 @@ func setLogProducerConfig(
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD:
 		fluentdConfig := config.GetSink().GetFluentdConfig()
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "fluentd"
-		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig = models.GetFluentdConfigModel(fluentdConfig, projectName)
-		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig.BQConfig = &osConfig.BQConfig{
+		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig = models.NewFluentdConfig(fluentdConfig, projectName)
+		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig.BQConfig = &osconfig.BQConfig{
 			Project: gcpProject,
 			Dataset: projectName,
 			Table:   fmt.Sprintf("%s_observation_log", projectName),
@@ -386,7 +371,7 @@ func setLogProducerConfig(
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA:
 		kafkaConfig := config.GetSink().GetKafkaConfig()
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "kafka"
-		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.KafkaConfig = models.GetKafkaConfigModel(kafkaConfig)
+		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.KafkaConfig = models.NewKafkaConfig(kafkaConfig)
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT:
 		log.Infof("Standard output sink type specified for Observation Service deployment")
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_NOOP:

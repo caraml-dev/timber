@@ -5,17 +5,17 @@ import (
 
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-	"github.com/caraml-dev/timber/dataset-service/services"
+	"github.com/caraml-dev/timber/dataset-service/appcontext"
 )
 
 // MetadataController implements controller logic for Dataset Service metadata endpoints
 type MetadataController struct {
-	services *services.Services
+	appCtx *appcontext.AppContext
 }
 
 // NewMetadataController instantiates MetadataController
-func NewMetadataController(services *services.Services) *MetadataController {
-	return &MetadataController{services: services}
+func NewMetadataController(ctx *appcontext.AppContext) *MetadataController {
+	return &MetadataController{appCtx: ctx}
 }
 
 // ListLogMetadata definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
@@ -54,7 +54,7 @@ func (m MetadataController) GetLogMetadata(
 
 func (m MetadataController) checkProject(projectId int64) error {
 	// Check if the projectId is valid
-	if _, err := m.services.MLPService.GetProject(projectId); err != nil {
+	if _, err := m.appCtx.Services.MLPService.GetProject(projectId); err != nil {
 		return err
 	}
 

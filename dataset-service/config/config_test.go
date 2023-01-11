@@ -68,8 +68,12 @@ func TestLoadConfigFiles(t *testing.T) {
 					IgnoreStatusCodes: []int{403, 404, 405},
 					Labels:            map[string]interface{}{"env": "dev"},
 				},
-				ObservationServiceConfig: ObservationServiceConfig{},
-				SentryConfig:             sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
+				ObservationServiceConfig: ObservationServiceConfig{
+					GCPProject:                 "test-project",
+					ObservationServiceImageTag: "v0.0.0",
+					FluentdImageTag:            "v0.0.0",
+				},
+				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
 			},
 		},
 		{

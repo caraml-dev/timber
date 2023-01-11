@@ -3,12 +3,14 @@ package models
 import (
 	"fmt"
 
+	"k8s.io/apimachinery/pkg/api/resource"
+
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	os "github.com/caraml-dev/timber/observation-service/config"
 )
 
-// GetFluentdConfigModel converts FluentdConfig proto to Observation Service's FluentdConfig
-func GetFluentdConfigModel(config *timberv1.FluentdConfig, projectName string) *os.FluentdConfig {
+// NewFluentdConfig converts FluentdConfig proto to Observation Service's FluentdConfig
+func NewFluentdConfig(config *timberv1.FluentdConfig, projectName string) *os.FluentdConfig {
 	return &os.FluentdConfig{
 		Tag: config.GetTag(),
 		// Set default values
@@ -18,8 +20,8 @@ func GetFluentdConfigModel(config *timberv1.FluentdConfig, projectName string) *
 	}
 }
 
-// GetKafkaConfigModel converts KafkaConfig proto to Observation Service's KafkaConfig
-func GetKafkaConfigModel(config *timberv1.KafkaConfig) *os.KafkaConfig {
+// NewKafkaConfig converts KafkaConfig proto to Observation Service's KafkaConfig
+func NewKafkaConfig(config *timberv1.KafkaConfig) *os.KafkaConfig {
 	return &os.KafkaConfig{
 		Brokers: config.GetBrokers(),
 		Topic:   config.GetTopic(),
@@ -40,8 +42,8 @@ type Env struct {
 
 // ConfigurableResources represents configurable resource parameters for Observation Service deployment
 type ConfigurableResources struct {
-	CPU    string `json:"cpu"`
-	Memory string `json:"memory"`
+	CPU    resource.Quantity `json:"cpu"`
+	Memory resource.Quantity `json:"memory"`
 }
 
 // Resources represents multiple configurable resource parameters for Observation Service deployment
@@ -52,10 +54,11 @@ type Resources struct {
 
 // Autoscaling represents configurable autoscaling parameters for Observation Service deployment
 type Autoscaling struct {
-	Enabled                        bool `json:"enabled"`
-	MinReplicas                    int  `json:"minReplicas"`
-	MaxReplicas                    int  `json:"maxReplicas"`
-	TargetCPUUtilizationPercentage int  `json:"targetCPUUtilizationPercentage"`
+	Enabled                           bool `json:"enabled"`
+	MinReplicas                       int  `json:"minReplicas"`
+	MaxReplicas                       int  `json:"maxReplicas"`
+	TargetCPUUtilizationPercentage    int  `json:"targetCPUUtilizationPercentage"`
+	TargetMemoryUtilizationPercentage int  `json:"targetMemoryUtilizationPercentage"`
 }
 
 // ObservationServiceConfig is required in helm chart - observationService field

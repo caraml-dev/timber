@@ -10,14 +10,14 @@ import (
 	os "github.com/caraml-dev/timber/observation-service/config"
 )
 
-func TestFluendConfigToApiSchema(t *testing.T) {
+func TestNewFluentdConfigToApiSchema(t *testing.T) {
 	testTag := "test-tag"
 	projectName := "test-project"
 	fluendConfig := &timberv1.FluentdConfig{
 		Tag: testTag,
 	}
 
-	actual := GetFluentdConfigModel(fluendConfig, projectName)
+	actual := NewFluentdConfig(fluendConfig, projectName)
 	expected := &os.FluentdConfig{
 		Tag:  testTag,
 		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", projectName),
@@ -27,13 +27,13 @@ func TestFluendConfigToApiSchema(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestKafkaConfigToApiSchema(t *testing.T) {
+func TestNewKafkaConfigToApiSchema(t *testing.T) {
 	kafkaConfig := &timberv1.KafkaConfig{
 		Brokers: "localhost:9092,localhost:9093,localhost:9094",
 		Topic:   "test-topic",
 	}
 
-	actual := GetKafkaConfigModel(kafkaConfig)
+	actual := NewKafkaConfig(kafkaConfig)
 	expected := &os.KafkaConfig{
 		Brokers:          "localhost:9092,localhost:9093,localhost:9094",
 		Topic:            "test-topic",

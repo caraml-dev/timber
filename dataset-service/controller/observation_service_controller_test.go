@@ -10,6 +10,7 @@ import (
 
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/appcontext"
 	"github.com/caraml-dev/timber/dataset-service/services"
 	"github.com/caraml-dev/timber/dataset-service/services/mocks"
 )
@@ -38,9 +39,11 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&timberv1.ObservationServiceResponse{}, nil)
 
 	s.ctrl = &ObservationServiceController{
-		services: &services.Services{
-			MLPService:         mlpSvc,
-			ObservationService: observationSvc,
+		appCtx: &appcontext.AppContext{
+			Services: services.Services{
+				MLPService:         mlpSvc,
+				ObservationService: observationSvc,
+			},
 		},
 	}
 }

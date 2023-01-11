@@ -78,7 +78,7 @@ func NewServer(configFiles []string) (*Server, error) {
 	// Creating mux for gRPC gateway. This will multiplex or route request to different gRPC service.
 	mux := runtime.NewServeMux()
 	// Register custom controller gRPC service
-	grpcServer, srv := controller.NewDatasetServiceController(&appCtx.Services)
+	grpcServer, srv := controller.NewDatasetServiceController(appCtx)
 	reflection.Register(grpcServer)
 	err = timberv1.RegisterDatasetServiceHandlerServer(ctx, mux, srv)
 	if err != nil {
