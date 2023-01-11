@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	mlp "github.com/gojek/mlp/api/client"
@@ -29,7 +30,11 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	projectID := int64(0)
 	projectName := "test-project"
 	expectedProject := &mlp.Project{Id: 0, Name: projectName}
+	failedProjectID := int64(4)
+	failedProjectName := "failed-test-project"
+	expectedFailedProject := &mlp.Project{Id: 4, Name: failedProjectName}
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
+	mlpSvc.On("GetProject", failedProjectID).Return(expectedFailedProject, nil)
 	mlpSvc.On(
 		"GetProject", int64(3),
 	).Return(nil, errors.Newf(errors.NotFound, "MLP Project info for id %d not found in the cache", int64(3)))
@@ -38,6 +43,8 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	observationSvc := &mocks.ObservationService{}
 	observationSvc.On("CreateService", projectName, mock.Anything).Return(&models.ObservationServiceResponse{}, nil)
 	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&models.ObservationServiceResponse{}, nil)
+	observationSvc.On("CreateService", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
+	observationSvc.On("UpdateService", failedProjectName, int(failedProjectID), mock.Anything).Return(nil, fmt.Errorf("failed update"))
 
 	s.ctrl = &ObservationServiceController{
 		appCtx: &appcontext.AppContext{
@@ -137,6 +144,12 @@ func (s *ObservationServiceControllerTestSuite) TestCreateObservationService() {
 			resp:      &timberv1.CreateObservationServiceResponse{ObservationService: &timberv1.ObservationServiceResponse{}},
 		},
 		{
+			name:      "failure | observation service creation",
+			projectID: 4,
+			req:       &timberv1.CreateObservationServiceRequest{ProjectId: int64(4)},
+			err:       "failed create",
+		},
+		{
 			name:      "failure | project not found",
 			projectID: 3,
 			req:       &timberv1.CreateObservationServiceRequest{ProjectId: int64(3)},
@@ -173,8 +186,14 @@ func (s *ObservationServiceControllerTestSuite) TestUpdateObservationService() {
 		{
 			name:      "failure | project not found",
 			projectID: 3,
-			req:       &timberv1.UpdateObservationServiceRequest{ProjectId: int64(3)},
+			req:       &timberv1.UpdateObservationServiceRequest{Id: int64(3), ProjectId: int64(3)},
 			err:       "MLP Project info for id 3 not found in the cache",
+		},
+		{
+			name:      "failure | observation service update",
+			projectID: 4,
+			req:       &timberv1.UpdateObservationServiceRequest{Id: int64(4), ProjectId: int64(4)},
+			err:       "failed update",
 		},
 	}
 

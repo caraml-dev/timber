@@ -92,7 +92,10 @@ func (o *observationService) CreateService(
 	}
 	log.Infof("%s helm release installation (version %d) underway! Status: %s", release.Name, release.Version, release.Info.Status)
 	// Pretty print Helm release YAML manifest with fmt.Println
-	fmt.Println(release.Manifest)
+	// TODO: Store Manifest as a blob in DB
+	if o.deploymentConfig.LogLevel == commonconfig.DebugLevel {
+		fmt.Println(release.Manifest)
+	}
 
 	// TODO: Retrieve Observation Service ID from DB
 	resp := &models.ObservationServiceResponse{
@@ -132,7 +135,10 @@ func (o *observationService) UpdateService(
 	}
 	log.Infof("%s helm release upgrade (version %d) underway! Status: %s", release.Name, release.Version, release.Info.Status)
 	// Pretty print Helm release YAML manifest with fmt.Println
-	fmt.Println(release.Manifest)
+	// TODO: Store Manifest as a blob in DB
+	if o.deploymentConfig.LogLevel == commonconfig.DebugLevel {
+		fmt.Println(release.Manifest)
+	}
 
 	// TODO: Retrieve Observation Service ID from DB
 	resp := &models.ObservationServiceResponse{
@@ -161,7 +167,7 @@ func retrieveChartAndActionConfig(
 		return nil, nil, nil, err
 	}
 
-	// Generate configuration required to run helm upgrade
+	// Generate configuration required to run helm install/upgrade
 	settings := cli.New()
 	actionConfig := new(action.Configuration)
 	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, helm_driver, log.Infof)
@@ -307,7 +313,7 @@ func setDefaultValues(
 		},
 		{
 			Name:  "FLUENTD_BQ_TABLE",
-			Value: fmt.Sprintf("%s_observation_log", caramlProjectName),
+			Value: fmt.Sprintf("%s_observation_log", serviceName),
 		},
 	}
 	values.FluentdConfig.ExtraEnvs = envVars
