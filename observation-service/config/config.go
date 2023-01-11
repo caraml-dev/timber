@@ -6,14 +6,14 @@ import (
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 )
 
 // Config captures the config related to starting Observation Service
 type Config struct {
 	Port int `envconfig:"PORT" default:"9001"`
 
-	DeploymentConfig  common_config.DeploymentConfig
+	DeploymentConfig  commonconfig.DeploymentConfig
 	NewRelicConfig    newrelic.Config
 	SentryConfig      sentry.Config
 	LogConsumerConfig LogConsumerConfig
@@ -146,7 +146,7 @@ func (c *Config) ListenAddress() string {
 // Load parses multiple file configs specified via filepaths and returns a Config struct
 func Load(filepaths ...string) (*Config, error) {
 	var cfg Config
-	err := common_config.ParseConfig(&cfg, filepaths)
+	err := commonconfig.ParseConfig(&cfg, filepaths)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update config: %s", err)
 	}

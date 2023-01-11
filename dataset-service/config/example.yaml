@@ -2,6 +2,8 @@ Port: 8080
 
 DeploymentConfig:
   EnvironmentType: local
+  LogLevel: DEBUG
+  MaxGoRoutines: 100
 
 NewRelicConfig:
   Enabled: false
@@ -20,6 +22,11 @@ SentryConfig:
   DSN: xxx.xxx.xxx
   Labels:
     App: dataset-service
+
+ObservationServiceConfig:
+  GCPProject: gcp-project
+  ObservationServiceImageTag: v0.0.1
+  FluentdImageTag: v0.0.1
 
 MLPConfig:
   URL: http://localhost:8080/api/v1

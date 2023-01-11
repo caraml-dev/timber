@@ -41,12 +41,18 @@ message ObservationServiceDataSink {
     FluentdConfig fluentd_config = 3;
 }
 
-// ObservationService describes details of a Observation Service
+// ObservationServiceConfig describes details of a Observation Service
 message ObservationServiceConfig {
-    // Unique identifier of an Observation Service deployed by Dataset Service.
-    string id = 1;
+    // Required to postfix helm release name with provided Service name as a CaraML project could have multiple different services
+    string service_name = 1;
     // Configuration for pull-based Observation Service data source.
     ObservationServiceDataSource source = 2;
     // Configuration for Observation Service data sink.
     ObservationServiceDataSink sink = 3;
+}
+
+// ObservationServiceResponse describes details of a deployed Observation Service
+message ObservationServiceResponse {
+    // Unique identifier of an Observation Service deployed by Dataset Service.
+    string id = 1;
 }

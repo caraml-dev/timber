@@ -252,6 +252,10 @@
                   <a href="#caraml.timber.v1.ObservationServiceDataSource"><span class="badge">M</span>ObservationServiceDataSource</a>
                 </li>
               
+                <li>
+                  <a href="#caraml.timber.v1.ObservationServiceResponse"><span class="badge">M</span>ObservationServiceResponse</a>
+                </li>
+              
               
                 <li>
                   <a href="#caraml.timber.v1.ObservationServiceDataSinkType"><span class="badge">E</span>ObservationServiceDataSinkType</a>
@@ -802,7 +806,7 @@
 
       
         <h3 id="caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</h3>
-        <p>ObservationService describes details of a Observation Service</p>
+        <p>ObservationServiceConfig describes details of a Observation Service</p>
 
         
           <table class="field-table">
@@ -812,10 +816,10 @@
             <tbody>
               
                 <tr>
-                  <td>id</td>
+                  <td>service_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Unique identifier of an Observation Service deployed by Dataset Service. </p></td>
+                  <td><p>Required to postfix helm release name with provided Service name as a CaraML project could have multiple different services </p></td>
                 </tr>
               
                 <tr>
@@ -899,6 +903,30 @@
                   <td><a href="#caraml.timber.v1.KafkaConfig">KafkaConfig</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ObservationServiceResponse">ObservationServiceResponse</h3>
+        <p>ObservationServiceResponse describes details of a deployed Observation Service</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Unique identifier of an Observation Service deployed by Dataset Service. </p></td>
                 </tr>
               
             </tbody>
@@ -1091,7 +1119,7 @@ Observation Service should be deployed for just the eager API</p></td>
               
                 <tr>
                   <td>observation_service</td>
-                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceResponse">ObservationServiceResponse</a></td>
                   <td></td>
                   <td><p>Details of single Observation Service deployed by Dataset Service. </p></td>
                 </tr>
@@ -1524,7 +1552,7 @@ Observation Service should be deployed for just the eager API</p></td>
               
                 <tr>
                   <td>observation_service</td>
-                  <td><a href="#caraml.timber.v1.ObservationServiceConfig">ObservationServiceConfig</a></td>
+                  <td><a href="#caraml.timber.v1.ObservationServiceResponse">ObservationServiceResponse</a></td>
                   <td></td>
                   <td><p>Details of single Observation Service updated by Dataset Service. </p></td>
                 </tr>

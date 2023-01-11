@@ -14,13 +14,22 @@ type AppContext struct {
 
 // NewAppContext initializes a AppContext struct
 func NewAppContext(cfg *config.Config) (*AppContext, error) {
+	// Init Services
+	var allServices services.Services
+
 	mlpSvc, err := services.NewMLPService(cfg.MLPConfig.URL)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed initializing MLP Service")
 	}
 
-	allServices := services.NewServices(
+	obsSvc := services.NewObservationService(
+		cfg.DeploymentConfig,
+		cfg.ObservationServiceConfig,
+	)
+
+	allServices = services.NewServices(
 		mlpSvc,
+		obsSvc,
 	)
 
 	appContext := &AppContext{
