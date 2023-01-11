@@ -33,13 +33,13 @@ const (
 // ObservationService provides a set of methods to interact with the MLP APIs
 type ObservationService interface {
 	// CreateService creates new Observation Service Helm release and returns ID of created Observation Service
-	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*timberv1.ObservationServiceResponse, error)
+	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*models.ObservationServiceResponse, error)
 	// UpdateService updates existing Observation Service Helm release and returns ID of updated Observation Service
 	UpdateService(
 		projectName string,
 		observationServiceID int,
 		config *timberv1.ObservationServiceConfig,
-	) (*timberv1.ObservationServiceResponse, error)
+	) (*models.ObservationServiceResponse, error)
 }
 
 type observationService struct {
@@ -63,7 +63,7 @@ func NewObservationService(
 func (o *observationService) CreateService(
 	caramlProjectName string,
 	config *timberv1.ObservationServiceConfig,
-) (*timberv1.ObservationServiceResponse, error) {
+) (*models.ObservationServiceResponse, error) {
 	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
@@ -95,7 +95,7 @@ func (o *observationService) CreateService(
 	fmt.Println(release.Manifest)
 
 	// TODO: Retrieve Observation Service ID from DB
-	resp := &timberv1.ObservationServiceResponse{
+	resp := &models.ObservationServiceResponse{
 		Id: uuid.New().String(),
 	}
 
@@ -106,7 +106,7 @@ func (o *observationService) UpdateService(
 	caramlProjectName string,
 	observationServiceID int,
 	config *timberv1.ObservationServiceConfig,
-) (*timberv1.ObservationServiceResponse, error) {
+) (*models.ObservationServiceResponse, error) {
 	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
@@ -135,7 +135,7 @@ func (o *observationService) UpdateService(
 	fmt.Println(release.Manifest)
 
 	// TODO: Retrieve Observation Service ID from DB
-	resp := &timberv1.ObservationServiceResponse{
+	resp := &models.ObservationServiceResponse{
 		Id: strconv.Itoa(observationServiceID),
 	}
 

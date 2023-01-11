@@ -69,7 +69,7 @@ func (o ObservationServiceController) CreateObservationService(
 		return nil, err
 	}
 
-	resp := &timberv1.CreateObservationServiceResponse{ObservationService: result}
+	resp := &timberv1.CreateObservationServiceResponse{ObservationService: result.ToApiSchema()}
 	return resp, nil
 }
 
@@ -90,7 +90,7 @@ func (o ObservationServiceController) UpdateObservationService(
 		return nil, err
 	}
 
-	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: result}
+	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: result.ToApiSchema()}
 	return resp, nil
 }
 
