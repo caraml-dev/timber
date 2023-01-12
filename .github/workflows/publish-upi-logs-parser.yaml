@@ -1,7 +1,5 @@
 name: publish-fluent-plugin-upi-logs
 on:
-  # for testing
-  push:
   release:
     types: [published]
 jobs:
