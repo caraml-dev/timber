@@ -45,10 +45,9 @@ class UpiParserTest < Test::Unit::TestCase
                                                                  })
         )
       )
-      puts msg.to_json({ preserve_proto_fieldnames: true })
       binary = ::Caraml::Upi::V1::PredictionLog.encode(msg)
       d.instance.parse(binary) do |time, record|
-        assert_equal(msg.to_json, record)
+        assert_equal(msg.to_json({ preserve_proto_fieldnames: true }), record)
         assert_not_nil(time)
       end
     end

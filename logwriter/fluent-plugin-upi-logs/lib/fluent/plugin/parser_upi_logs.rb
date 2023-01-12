@@ -28,7 +28,7 @@ module Fluent
         record = @protobuf_descriptor.decode(binary)
         time = Fluent::EventTime.now
         # Record are returned in json format
-        yield time, record.to_json
+        yield time, record.to_json({ preserve_proto_fieldnames: true })
       end
     end
   end

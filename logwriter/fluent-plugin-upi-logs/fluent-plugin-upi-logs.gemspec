@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Fluent parser plugin for UPI logs into JSON'
   spec.description   = 'Fluentd parser custom plugin that can parse UPI logs (PredictionLog and RouterLog
    - https://github.com/caraml-dev/universal-prediction-interface) into json'
-  spec.homepage      = 'https://github.com/caraml-dev/timber'
+  spec.homepage      = 'https://github.com/caraml-dev/timber/logwriter/fluent-plugin-upi-logs'
 
   _test_files = Dir['test/**/*.rb']
   spec.files = Dir['lib/**/*.rb']
