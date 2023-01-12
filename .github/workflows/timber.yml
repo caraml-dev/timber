@@ -128,6 +128,21 @@ jobs:
         working-directory: dataset-service
         run: make test-dataset-service
 
+  unit-tests-upi-logs-parser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: logwriter/fluent-plugin-upi-logs
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+      - run: bundle install
+      - name: Rubocop
+        run: rubocop
+      - run: bundle exec rake
+
   release-rules:
     runs-on: ubuntu-latest
     outputs:
