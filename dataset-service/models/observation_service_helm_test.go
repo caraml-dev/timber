@@ -10,7 +10,7 @@ import (
 	os "github.com/caraml-dev/timber/observation-service/config"
 )
 
-func TestNewFluentdConfigToApiSchema(t *testing.T) {
+func TestNewFluentdConfig(t *testing.T) {
 	testTag := "test-tag"
 	projectName := "test-project"
 	fluendConfig := &timberv1.FluentdConfig{
@@ -27,7 +27,7 @@ func TestNewFluentdConfigToApiSchema(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestNewKafkaConfigToApiSchema(t *testing.T) {
+func TestNewKafkaConfig(t *testing.T) {
 	kafkaConfig := &timberv1.KafkaConfig{
 		Brokers: "localhost:9092,localhost:9093,localhost:9094",
 		Topic:   "test-topic",

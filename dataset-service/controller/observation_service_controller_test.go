@@ -12,7 +12,6 @@ import (
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
-	"github.com/caraml-dev/timber/dataset-service/models"
 	"github.com/caraml-dev/timber/dataset-service/services"
 	"github.com/caraml-dev/timber/dataset-service/services/mocks"
 )
@@ -33,6 +32,7 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	failedProjectID := int64(4)
 	failedProjectName := "failed-test-project"
 	expectedFailedProject := &mlp.Project{Id: 4, Name: failedProjectName}
+	observationServiceResponse := ""
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
 	mlpSvc.On("GetProject", failedProjectID).Return(expectedFailedProject, nil)
 	mlpSvc.On(
@@ -41,8 +41,8 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 
 	// Create mock Observation service and set up with test responses
 	observationSvc := &mocks.ObservationService{}
-	observationSvc.On("CreateService", projectName, mock.Anything).Return(&models.ObservationServiceResponse{}, nil)
-	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&models.ObservationServiceResponse{}, nil)
+	observationSvc.On("CreateService", projectName, mock.Anything).Return(&observationServiceResponse, nil)
+	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&observationServiceResponse, nil)
 	observationSvc.On("CreateService", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
 	observationSvc.On("UpdateService", failedProjectName, int(failedProjectID), mock.Anything).Return(nil, fmt.Errorf("failed update"))
 

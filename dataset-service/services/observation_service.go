@@ -23,6 +23,9 @@ import (
 	osconfig "github.com/caraml-dev/timber/observation-service/config"
 )
 
+// TODO: Add dummy interfaces and use helm dependencies via dependency injection to skip actual installation in tests
+// Context: https://github.com/caraml-dev/timber/pull/12#discussion_r1067755536
+
 const (
 	// helm_driver is the storage backend to be used. Documentation details: https://helm.sh/docs/topics/advanced/#storage-backends
 	helm_driver = "secret"
@@ -33,13 +36,13 @@ const (
 // ObservationService provides a set of methods to interact with the MLP APIs
 type ObservationService interface {
 	// CreateService creates new Observation Service Helm release and returns ID of created Observation Service
-	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*models.ObservationServiceResponse, error)
+	CreateService(projectName string, config *timberv1.ObservationServiceConfig) (*string, error)
 	// UpdateService updates existing Observation Service Helm release and returns ID of updated Observation Service
 	UpdateService(
 		projectName string,
 		observationServiceID int,
 		config *timberv1.ObservationServiceConfig,
-	) (*models.ObservationServiceResponse, error)
+	) (*string, error)
 }
 
 type observationService struct {
@@ -63,7 +66,7 @@ func NewObservationService(
 func (o *observationService) CreateService(
 	caramlProjectName string,
 	config *timberv1.ObservationServiceConfig,
-) (*models.ObservationServiceResponse, error) {
+) (*string, error) {
 	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
@@ -98,18 +101,16 @@ func (o *observationService) CreateService(
 	}
 
 	// TODO: Retrieve Observation Service ID from DB
-	resp := &models.ObservationServiceResponse{
-		Id: uuid.New().String(),
-	}
+	observationServiceID := uuid.New().String()
 
-	return resp, nil
+	return &observationServiceID, nil
 }
 
 func (o *observationService) UpdateService(
 	caramlProjectName string,
 	observationServiceID int,
 	config *timberv1.ObservationServiceConfig,
-) (*models.ObservationServiceResponse, error) {
+) (*string, error) {
 	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
@@ -141,11 +142,9 @@ func (o *observationService) UpdateService(
 	}
 
 	// TODO: Retrieve Observation Service ID from DB
-	resp := &models.ObservationServiceResponse{
-		Id: strconv.Itoa(observationServiceID),
-	}
+	retrievedObservationServiceID := strconv.Itoa(observationServiceID)
 
-	return resp, nil
+	return &retrievedObservationServiceID, nil
 }
 
 func retrieveChartAndActionConfig(
@@ -268,6 +267,7 @@ func setDefaultValues(
 	values.ObservationServiceConfig.Resources.Limits.CPU = resource.Quantity{Format: "1"}
 	values.ObservationServiceConfig.Resources.Limits.Memory = resource.Quantity{Format: "1Gi"}
 	// Autoscaling
+	// TODO: Revisit if should be enabled by default
 	values.ObservationServiceConfig.Autoscaling.Enabled = false
 
 	// --- Fluentd configs --- //

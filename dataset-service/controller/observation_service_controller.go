@@ -68,8 +68,11 @@ func (o ObservationServiceController) CreateObservationService(
 	if err != nil {
 		return nil, err
 	}
+	observationService := &timberv1.ObservationServiceResponse{
+		Id: *result,
+	}
 
-	resp := &timberv1.CreateObservationServiceResponse{ObservationService: result.ToApiSchema()}
+	resp := &timberv1.CreateObservationServiceResponse{ObservationService: observationService}
 	return resp, nil
 }
 
@@ -89,8 +92,11 @@ func (o ObservationServiceController) UpdateObservationService(
 	if err != nil {
 		return nil, err
 	}
+	observationService := &timberv1.ObservationServiceResponse{
+		Id: *result,
+	}
 
-	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: result.ToApiSchema()}
+	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: observationService}
 	return resp, nil
 }
 
