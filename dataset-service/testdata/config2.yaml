@@ -7,3 +7,4 @@ ObservationServiceConfig:
   GCPProject: test-project
   ObservationServiceImageTag: v0.0.0
   FluentdImageTag: v0.0.0
+  KubeConfig: /tmp/kubeconfig

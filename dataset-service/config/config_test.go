@@ -72,6 +72,7 @@ func TestLoadConfigFiles(t *testing.T) {
 					GCPProject:                 "test-project",
 					ObservationServiceImageTag: "v0.0.0",
 					FluentdImageTag:            "v0.0.0",
+					KubeConfig:                 "/tmp/kubeconfig",
 				},
 				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
 			},
