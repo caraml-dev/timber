@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 )
 
 func TestDefaultConfigs(t *testing.T) {
@@ -18,9 +18,9 @@ func TestDefaultConfigs(t *testing.T) {
 	mlpConfig := &MLPConfig{URL: ""}
 	defaultCfg := Config{
 		Port: 8080,
-		DeploymentConfig: common_config.DeploymentConfig{
+		DeploymentConfig: commonconfig.DeploymentConfig{
 			EnvironmentType: "local",
-			LogLevel:        common_config.InfoLevel,
+			LogLevel:        commonconfig.InfoLevel,
 			MaxGoRoutines:   1000,
 		},
 		MLPConfig: mlpConfig,
@@ -31,7 +31,8 @@ func TestDefaultConfigs(t *testing.T) {
 			IgnoreStatusCodes: []int{},
 			Labels:            emptyInterfaceMap,
 		},
-		SentryConfig: sentry.Config{Enabled: false, Labels: emptyStringMap},
+		ObservationServiceConfig: ObservationServiceConfig{},
+		SentryConfig:             sentry.Config{Enabled: false, Labels: emptyStringMap},
 	}
 	cfg, err := Load()
 	require.NoError(t, err)
@@ -54,9 +55,9 @@ func TestLoadConfigFiles(t *testing.T) {
 			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
 			expected: Config{
 				Port: 8081,
-				DeploymentConfig: common_config.DeploymentConfig{
+				DeploymentConfig: commonconfig.DeploymentConfig{
 					EnvironmentType: "dev",
-					LogLevel:        common_config.InfoLevel,
+					LogLevel:        commonconfig.InfoLevel,
 					MaxGoRoutines:   1000,
 				},
 				MLPConfig: mlpConfig,
@@ -66,6 +67,11 @@ func TestLoadConfigFiles(t *testing.T) {
 					License:           "amazing-license",
 					IgnoreStatusCodes: []int{403, 404, 405},
 					Labels:            map[string]interface{}{"env": "dev"},
+				},
+				ObservationServiceConfig: ObservationServiceConfig{
+					GCPProject:                 "test-project",
+					ObservationServiceImageTag: "v0.0.0",
+					FluentdImageTag:            "v0.0.0",
 				},
 				SentryConfig: sentry.Config{Enabled: false, Labels: map[string]string{"app": "dataset-service", "env": "dev"}},
 			},

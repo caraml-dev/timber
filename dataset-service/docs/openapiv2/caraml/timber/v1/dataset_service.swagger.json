@@ -481,7 +481,7 @@
       "type": "object",
       "properties": {
         "observationService": {
-          "$ref": "#/definitions/v1ObservationServiceConfig",
+          "$ref": "#/definitions/v1ObservationServiceResponse",
           "description": "Details of single Observation Service deployed by Dataset Service."
         }
       },
@@ -747,9 +747,9 @@
     "v1ObservationServiceConfig": {
       "type": "object",
       "properties": {
-        "id": {
+        "serviceName": {
           "type": "string",
-          "description": "Unique identifier of an Observation Service deployed by Dataset Service."
+          "title": "Required to postfix helm release name with provided Service name as a CaraML project could have multiple different services"
         },
         "source": {
           "$ref": "#/definitions/v1ObservationServiceDataSource",
@@ -760,7 +760,7 @@
           "description": "Configuration for Observation Service data sink."
         }
       },
-      "title": "ObservationService describes details of a Observation Service"
+      "title": "ObservationServiceConfig describes details of a Observation Service"
     },
     "v1ObservationServiceDataSink": {
       "type": "object",
@@ -813,6 +813,16 @@
       "description": "- OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER: No-Op represents no need to fetch logs from any data source, this should be selected if\nObservation Service should be deployed for just the eager API\n - OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA: Observation Service will poll logs from a Kafka source",
       "title": "Data source where Observation logs should be retrieved from"
     },
+    "v1ObservationServiceResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of an Observation Service deployed by Dataset Service."
+        }
+      },
+      "title": "ObservationServiceResponse describes details of a deployed Observation Service"
+    },
     "v1UpdateLogWriterResponse": {
       "type": "object",
       "properties": {
@@ -827,7 +837,7 @@
       "type": "object",
       "properties": {
         "observationService": {
-          "$ref": "#/definitions/v1ObservationServiceConfig",
+          "$ref": "#/definitions/v1ObservationServiceResponse",
           "description": "Details of single Observation Service updated by Dataset Service."
         }
       },

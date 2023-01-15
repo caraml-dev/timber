@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	common_config "github.com/caraml-dev/timber/common/config"
+	commonconfig "github.com/caraml-dev/timber/common/config"
 	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/caraml-dev/timber/observation-service/internal/testutils"
 	"github.com/caraml-dev/timber/observation-service/monitoring"
@@ -24,7 +24,7 @@ func (s *MetricServiceTestSuite) SetupSuite() {
 
 	var err error
 	s.cfg = config.Config{
-		DeploymentConfig: common_config.DeploymentConfig{
+		DeploymentConfig: commonconfig.DeploymentConfig{
 			ProjectName: "default",
 			ServiceName: "observation-service",
 		},
