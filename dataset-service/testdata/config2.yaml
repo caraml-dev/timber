@@ -2,3 +2,8 @@ SentryConfig:
   Labels:
     app: dataset-service
     env: dev
+
+ObservationServiceConfig:
+  GCPProject: test-project
+  ObservationServiceImageTag: v0.0.0
+  FluentdImageTag: v0.0.0
