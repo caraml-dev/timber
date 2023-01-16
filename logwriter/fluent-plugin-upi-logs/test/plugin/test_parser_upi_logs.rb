@@ -40,14 +40,20 @@ class UpiParserTest < Test::Unit::TestCase
         model_name: '123',
         input: ::Caraml::Upi::V1::ModelInput.new(
           'features_table' => Google::Protobuf::Struct.from_hash({
-                                                                   'subkey' => 999_441.341342314,
-                                                                   'subkey2' => false
+                                                                   'subkey' => 123.456789,
+                                                                   'subkey2' => false,
+                                                                   'subkey3' => 'hello'
                                                                  })
         )
       )
       binary = ::Caraml::Upi::V1::PredictionLog.encode(msg)
+      expected = { 'prediction_id' => '1',
+                   'model_name' => '123',
+                   'input' =>
+                      { 'features_table' =>
+                         { 'subkey3' => 'hello', 'subkey2' => false, 'subkey' => 123.456789 } } }
       d.instance.parse(binary) do |time, record|
-        assert_equal(msg.to_json({ preserve_proto_fieldnames: true }), record)
+        assert_equal(expected, record)
         assert_not_nil(time)
       end
     end

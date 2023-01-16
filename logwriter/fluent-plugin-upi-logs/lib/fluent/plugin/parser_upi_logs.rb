@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 require 'fluent/plugin/parser'
 
 require 'caraml/upi/v1/prediction_log_pb'
@@ -27,8 +29,10 @@ module Fluent
       def parse(binary)
         record = @protobuf_descriptor.decode(binary)
         time = Fluent::EventTime.now
-        # Record are returned in json format
-        yield time, record.to_json({ preserve_proto_fieldnames: true })
+        # Record are returned in json format. 'to_h' is not used directly as it will retain all fields with zero value
+        # '.to_json' will omit empty fields from the proto and then parsed with JSON lib
+        puts time
+        yield time, JSON.parse(record.to_json({ preserve_proto_fieldnames: true }))
       end
     end
   end

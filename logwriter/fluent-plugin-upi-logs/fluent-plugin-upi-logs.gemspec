@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name    = 'fluent-plugin-upi-logs'
-  spec.version = '0.0.0.dev.1'
+  spec.version = '0.0.0.dev.2'
   spec.authors = ['Caraml Dev']
   spec.email   = ['caraml-dev@gojek.com']
   spec.license = 'Apache-2.0'
