@@ -21,8 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0.6'
   spec.add_development_dependency 'rubocop', '~> 1.43.0'
   spec.add_development_dependency 'test-unit', '~> 3.5.7'
-  spec.add_runtime_dependency 'caraml-upi-protos', ['~> 0.0.0']
+  spec.add_runtime_dependency 'caraml-upi-protos', ['~> 0.0.1']
   spec.add_runtime_dependency 'fluentd', ['>= 0.14.10', '< 2']
   spec.add_runtime_dependency 'google-protobuf', ['~> 3.12']
-  spec.add_runtime_dependency 'ruby-protocol-buffers', ['~> 1.5.0']
 end
