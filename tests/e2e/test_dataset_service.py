@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytest
 import yaml
+from data import ObservationServiceDataSinkType
 from kubernetes import client, config
 
 from tests.e2e.dataset_service_client import (
@@ -74,7 +75,12 @@ def test_simple_observation_service_updation(
     # Update Observation Service
     service_name = "test-service"
     req_body = {
-        "observation_service": {"service_name": service_name, "sink": {"type": 2}}
+        "observation_service": {
+            "service_name": service_name,
+            "sink": {
+                "type": ObservationServiceDataSinkType.OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT.value
+            },
+        }
     }
     observation_service = dataset_service_client.update_observation_service(
         TEST_PROJECT_ID, 1, req_body

@@ -2,6 +2,12 @@
 
 ### Running End-to-end tests locally
 
+E2E tests are currently setup via `tests/e2e` directory. This setup does the following:
+
+1. Deploy a k3d cluster via docker-compose
+2. Pytests would reference the k3d cluster via kubeconfig parameter in `tests/e2e/config/dataset-service.local.yaml`
+3. Dataset service will be started from a local environment, which triggers helm deployment of Observation Service into the k3d cluster
+
 Running the e2e tests locally are as follows:
 
 #### <a>Spin up k8s and required dependencies</b>

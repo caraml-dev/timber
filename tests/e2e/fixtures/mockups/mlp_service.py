@@ -16,6 +16,11 @@ def find_free_port():
 
 
 class MLPService(http.server.BaseHTTPRequestHandler):
+    """
+    MLPService will be started on a random free port, and it's url will be injected into Dataset Service when
+    starting via a fixture in tests/e2e/fixtures/services.py.
+    """
+
     def do_GET(self):
         print("Request", self.path)
         if self.path == "/projects":
@@ -25,6 +30,8 @@ class MLPService(http.server.BaseHTTPRequestHandler):
         self.send_error(HTTPStatus.NOT_FOUND, "URL not found")
 
     def get_projects(self):
+        # All calls to retrieving an MLP project as part of Dataset Service APIs
+        # will return a mock project with Id=999 and name=test-project
         body = json.dumps([{"id": 999, "name": "test-project"}]).encode()
 
         self.send_response(HTTPStatus.OK)

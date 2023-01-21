@@ -86,7 +86,10 @@ dependency-services:
 install-python-ci-dependencies:
 	pip install -r tests/requirements.txt
 
-e2e: build-dataset-service
+e2e-clean-up:
+	cd infra/tests/e2e && docker-compose down
+
+e2e: build-dataset-service e2e-clean-up
 	cd infra/tests/e2e && docker-compose down
 	cd infra/tests/e2e && docker-compose up -d
 	cd tests/e2e; python -m pytest -s -v
