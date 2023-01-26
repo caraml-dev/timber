@@ -1,0 +1,17 @@
+Port: 8080
+
+DeploymentConfig:
+  EnvironmentType: local
+  LogLevel: DEBUG
+  MaxGoRoutines: 100
+
+NewRelicConfig:
+  Enabled: false
+
+SentryConfig:
+  Enabled: false
+
+ObservationServiceConfig:
+  ObservationServiceImageTag: v0.0.0-build.12-8d2b8eb
+  FluentdImageTag: v0.0.0-build.6-75be417
+  KubeConfig: /tmp/kubeconfig

@@ -1,0 +1,11 @@
+PyYAML==5.4.1
+requests==2.26.0
+python-dotenv==0.19.0
+pytz==2021.1
+kubernetes
+
+pytest==6.2.4
+pytest-order
+flake8
+black==22.3.0
+isort>=5

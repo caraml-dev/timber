@@ -28,6 +28,8 @@ type ObservationServiceConfig struct {
 	ObservationServiceImageTag string
 	// FluentdImageTag specifies tag of image to be used when deploying Fluentd via Dataset Service APIs
 	FluentdImageTag string
+	// KubeConfig specifies the file path to the configuration for which Kubernetes cluster to connect to
+	KubeConfig string
 }
 
 // MLPConfig captures the configuration used to connect to the MLP API server

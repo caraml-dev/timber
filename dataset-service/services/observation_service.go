@@ -169,6 +169,9 @@ func retrieveChartAndActionConfig(
 	// Generate configuration required to run helm install/upgrade
 	settings := cli.New()
 	actionConfig := new(action.Configuration)
+	if observationServiceConfig.KubeConfig != "" {
+		settings.KubeConfig = observationServiceConfig.KubeConfig
+	}
 	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, helm_driver, log.Infof)
 	if err != nil {
 		return nil, nil, nil, err
@@ -379,6 +382,7 @@ func setLogProducerConfig(
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "kafka"
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.KafkaConfig = models.NewKafkaConfig(kafkaConfig)
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT:
+		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "stdout"
 		log.Infof("Standard output sink type specified for Observation Service deployment")
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_NOOP:
 		log.Infof("No-Op sink type specified for Observation Service deployment")
