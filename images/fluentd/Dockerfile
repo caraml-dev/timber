@@ -1,3 +1,4 @@
+# Ref https://github.com/fluent/fluentd-kubernetes-daemonset
 FROM fluent/fluentd:v1.15-debian-1
 
 # Use root account to use apt
@@ -27,7 +28,6 @@ RUN buildDeps="sudo make gcc g++ libc-dev" \
    && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
 # Copy conf and entrypoint files
-COPY fluent.conf /fluentd/etc/
 COPY entrypoint.sh /bin/
 
 RUN chmod +x /bin/entrypoint.sh
