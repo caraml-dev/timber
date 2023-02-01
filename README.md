@@ -63,7 +63,7 @@ Timber is still under active development. Please have a look at our contributing
 ├── dataset-service                     # Dataset service implementation.
 ├── images                              # Docker images
 │   └── fluentd                         # FluentD docker image for logwriter and observation service
-|   └── Dockerfile.observation_service  # Dockerfile for building Observation service
+|   └── observation-service             # Dockerfile for building Observation service
 ├── infra                               # Infrastructure setup for testing and deployment.
 ├── logwriter                           # Logwriter implementation.
 │   └── fluent-plugin-upi-logs          # FluentD plugin for parsing Universal Prediction Interface protobuf.

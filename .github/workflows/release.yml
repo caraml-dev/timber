@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_NAME: observation-service
-      DOCKER_FILE: images/Dockerfile.observation_service
+      DOCKER_FILE: images/observation-service/Dockerfile
     outputs:
       api-version: ${{ steps.build-image.outputs.api-version }}
     steps:
