@@ -55,3 +55,24 @@ grpcurl -plaintext localhost:9001 describe
 Timber is still under active development. Please have a look at our contributing and development guides if you want to contribute to the project:
 
 - [Contribution Process for Timber](https://github.com/caraml-dev/timber/blob/main/CONTRIBUTING.md)
+
+## Project Structure
+
+```                               
+├── common                              # Common code to be reused both in Dataset service and Observation service
+├── dataset-service                     # Dataset service implementation.
+├── images                              # Docker images
+│   └── fluentd                         # FluentD docker image for logwriter and observation service
+|   └── observation-service             # Dockerfile for building Observation service
+├── infra                               # Infrastructure setup for testing and deployment.
+├── logwriter                           # Logwriter implementation.
+│   └── fluent-plugin-upi-logs          # FluentD plugin for parsing Universal Prediction Interface protobuf.
+├── observation-service                 # Observation service implementation.
+├── scripts                             # Miscellaneous scripts.
+|   └── vertagen                        # Helper for version string generation.
+├── tests                               # Integration and end to end test suites.
+├── CONTRIBUTING.md                     # Contributing guide.
+├── LICENSE
+├── Makefile
+├── README.md    
+```
