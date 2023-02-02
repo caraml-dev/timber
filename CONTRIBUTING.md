@@ -334,7 +334,7 @@ fluentd:
     </match>
 ```
 
-5. Write and deploy Kafka Producer
+5. Write and deploy Kafka Producer. The container is deployed on minikube as there are much issues with using kafka client outside minikube to connect to the kafka deployed there.
 
 Create you own go project
 ```go
