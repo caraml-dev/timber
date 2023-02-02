@@ -415,7 +415,7 @@ RUN go build \
 
 CMD ["/app/main"]
 ```
-Before building the image, run the before cli for minikube to be able to access local docker registry
+Before building the image, run the below cli for minikube to be able to access local docker registry
 ```
  eval $(minikube docker-env)
 ```
