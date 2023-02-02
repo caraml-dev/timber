@@ -430,7 +430,7 @@ Create the manifest and apply it. Note that imagePullPolicy must be set to never
 apiVersion: v1
 kind: Pod
 metadata:
-  name: gocode
+  name: log-producer
 spec:
   containers:
   - name: log-producer
