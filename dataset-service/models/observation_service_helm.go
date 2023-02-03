@@ -16,6 +16,7 @@ func NewFluentdConfig(config *timberv1.FluentdConfig, projectName string) *os.Fl
 		// Set default values
 		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", projectName),
 		Port: 24224,
+		// Currently support BQ only
 		Kind: os.LoggerBQSinkFluentdProducer,
 	}
 }
@@ -61,9 +62,18 @@ type Autoscaling struct {
 	TargetMemoryUtilizationPercentage int  `json:"targetMemoryUtilizationPercentage"`
 }
 
+type GCPServiceAccount struct {
+	Credentials GCPCredentials `json:"credentials"`
+}
+
+type GCPCredentials struct {
+	Name string `json:"name"`
+	Key  string `json:"key"`
+}
+
 // ObservationServiceConfig is required in helm chart - observationService field
 type ObservationServiceConfig struct {
-	Image       Image       `json:"image"`
+	Image       *Image      `json:"image,omitempty"`
 	ApiConfig   os.Config   `json:"apiConfig"`
 	ExtraEnvs   []Env       `json:"extraEnvs"`
 	Resources   Resources   `json:"resources"`
@@ -77,11 +87,12 @@ type Image struct {
 
 // FluentdConfig is required in helm chart - fluentd field
 type FluentdConfig struct {
-	Enabled     bool        `json:"enabled"`
-	Image       Image       `json:"image"`
-	ExtraEnvs   []Env       `json:"extraEnvs"`
-	Resources   Resources   `json:"resources"`
-	Autoscaling Autoscaling `json:"autoscaling"`
+	Enabled           bool              `json:"enabled"`
+	Image             *Image            `json:"image,omitempty"`
+	ExtraEnvs         []Env             `json:"extraEnvs"`
+	Resources         Resources         `json:"resources"`
+	Autoscaling       Autoscaling       `json:"autoscaling"`
+	GCPServiceAccount GCPServiceAccount `json:"gcpServiceAccount"`
 }
 
 // ObservationServiceHelmValues is required in helm chart - observationService apiConfig field

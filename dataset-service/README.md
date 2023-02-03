@@ -23,7 +23,7 @@ To get started, install following software:
 
 To generate all code and documentation
 ```
-make
+make generate
 ```
 
 To perform lint check

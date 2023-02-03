@@ -97,6 +97,7 @@ func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
 	gcpProject := "test-gcp-project"
 	caramlProject := "pricing-test"
 	fluentdTag := "observation-service"
+	observationServiceConfig := config.ObservationServiceConfig{}
 	fluentdDeploymentConfig := &timberv1.ObservationServiceConfig{
 		Sink: &timberv1.ObservationServiceDataSink{
 			Type: timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD,
@@ -118,7 +119,7 @@ func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
 			Table:   fmt.Sprintf("%s_observation_log", caramlProject),
 		},
 	}
-	actual, err := setLogProducerConfig(helmValues, fluentdDeploymentConfig, gcpProject, caramlProject)
+	actual, err := setLogProducerConfig(helmValues, fluentdDeploymentConfig, observationServiceConfig, gcpProject, caramlProject)
 	s.Suite.Require().NoError(err)
 	s.Suite.Assert().Equal("fluentd", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
 	s.Suite.Assert().Equal(expectedFluentDConfig, actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig)
@@ -129,7 +130,7 @@ func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
 			Type: timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA,
 		},
 	}
-	actual, err = setLogProducerConfig(helmValues, kafkaDeploymentConfig, gcpProject, caramlProject)
+	actual, err = setLogProducerConfig(helmValues, kafkaDeploymentConfig, observationServiceConfig, gcpProject, caramlProject)
 	s.Suite.Require().NoError(err)
 	s.Suite.Assert().Equal("kafka", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
 	s.Suite.Assert().Equal(

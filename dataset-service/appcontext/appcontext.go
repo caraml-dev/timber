@@ -22,10 +22,13 @@ func NewAppContext(cfg *config.Config) (*AppContext, error) {
 		return nil, errors.Wrapf(err, "Failed initializing MLP Service")
 	}
 
-	obsSvc := services.NewObservationService(
+	obsSvc, err := services.NewObservationService(
 		cfg.DeploymentConfig,
 		cfg.ObservationServiceConfig,
 	)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed initializing Observation Service")
+	}
 
 	allServices = services.NewServices(
 		mlpSvc,

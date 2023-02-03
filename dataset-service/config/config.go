@@ -26,8 +26,14 @@ type ObservationServiceConfig struct {
 	GCPProject string
 	// ObservationServiceImageTag specifies tag of image to be used when deploying Observation Service via Dataset Service APIs
 	ObservationServiceImageTag string
+	// OberservationServiceHelmChart link to Observation Service Helm chart for deployment
+	ObservationServiceHelmChartPath string
 	// FluentdImageTag specifies tag of image to be used when deploying Fluentd via Dataset Service APIs
 	FluentdImageTag string
+	// GCPSecretName is the name of the secret in Kubernetes to load
+	GCPServiceAccountSecret string
+	// GCP KeyName is the name of the key within the secret data to use for GCP access
+	GCPServiceAccountKey string
 	// KubeConfig specifies the file path to the configuration for which Kubernetes cluster to connect to
 	KubeConfig string
 }

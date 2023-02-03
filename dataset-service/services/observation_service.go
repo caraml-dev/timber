@@ -3,9 +3,6 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"path"
-	"path/filepath"
-	"runtime"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -49,25 +46,39 @@ type observationService struct {
 	gcpProject               string
 	deploymentConfig         commonconfig.DeploymentConfig
 	observationServiceConfig config.ObservationServiceConfig
+	observationServiceChart  *chart.Chart
 }
 
 // NewObservationService instantiates ObservationService
 func NewObservationService(
 	deploymentConfig commonconfig.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
-) ObservationService {
+) (ObservationService, error) {
+
+	settings := cli.New()
+	chartPathOption := action.ChartPathOptions{}
+	chartPath, err := chartPathOption.LocateChart(observationServiceConfig.ObservationServiceHelmChartPath, settings)
+	if err != nil {
+		return nil, err
+	}
+	observationServiceChart, err := loader.Load(chartPath)
+	if err != nil {
+		return nil, err
+	}
+
 	return &observationService{
 		gcpProject:               observationServiceConfig.GCPProject,
 		deploymentConfig:         deploymentConfig,
 		observationServiceConfig: observationServiceConfig,
-	}
+		observationServiceChart:  observationServiceChart,
+	}, nil
 }
 
 func (o *observationService) CreateService(
 	caramlProjectName string,
 	config *timberv1.ObservationServiceConfig,
 ) (*string, error) {
-	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
+	updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
 		caramlProjectName,
@@ -86,9 +97,10 @@ func (o *observationService) CreateService(
 	installation.ReleaseName = projectReleaseName
 	installation.Namespace = caramlProjectName
 	installation.CreateNamespace = true
+	installation.DryRun = true
 
 	// Trigger helm installation
-	release, err := installation.Run(chart, updatedChartValues)
+	release, err := installation.Run(o.observationServiceChart, updatedChartValues)
 	if err != nil {
 		log.Error(err)
 		return nil, err
@@ -111,7 +123,7 @@ func (o *observationService) UpdateService(
 	observationServiceID int,
 	config *timberv1.ObservationServiceConfig,
 ) (*string, error) {
-	chart, updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
+	updatedChartValues, actionConfig, err := retrieveChartAndActionConfig(
 		config,
 		o.gcpProject,
 		caramlProjectName,
@@ -129,7 +141,7 @@ func (o *observationService) UpdateService(
 	// Trigger helm upgrade
 	// TODO: Get project release name based on provided Observation Service ID
 	projectReleaseName := fmt.Sprintf("%s-%s", release_name, config.GetServiceName())
-	release, err := upgrade.Run(projectReleaseName, chart, updatedChartValues)
+	release, err := upgrade.Run(projectReleaseName, o.observationServiceChart, updatedChartValues)
 	if err != nil {
 		log.Error(err)
 		return nil, err
@@ -153,17 +165,12 @@ func retrieveChartAndActionConfig(
 	caramlProjectName string,
 	deploymentConfig commonconfig.DeploymentConfig,
 	observationServiceConfig config.ObservationServiceConfig,
-) (*chart.Chart, map[string]any, *action.Configuration, error) {
-	// Read chart
-	chart, err := readChart()
-	if err != nil {
-		return nil, nil, nil, err
-	}
+) (map[string]any, *action.Configuration, error) {
 
 	// Retrieve computed chart values based on default values and request body values
 	updatedChartValues, err := getChartValues(config, gcpProject, caramlProjectName, deploymentConfig, observationServiceConfig)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, err
 	}
 
 	// Generate configuration required to run helm install/upgrade
@@ -174,24 +181,10 @@ func retrieveChartAndActionConfig(
 	}
 	err = actionConfig.Init(settings.RESTClientGetter(), caramlProjectName, helm_driver, log.Infof)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, err
 	}
 
-	return chart, updatedChartValues, actionConfig, nil
-}
-
-func readChart() (*chart.Chart, error) {
-	// TODO: Publish helm chart and reference published chart
-	// Locate directory of Observation Service helm chart
-	_, filename, _, _ := runtime.Caller(0)
-	repositoryRoot := filepath.Dir(filepath.Dir(path.Dir(filename)))
-	chartDir := fmt.Sprintf("%s/infra/charts/observation-service", repositoryRoot)
-	chart, err := loader.LoadDir(chartDir)
-	if err != nil {
-		return nil, err
-	}
-
-	return chart, nil
+	return updatedChartValues, actionConfig, nil
 }
 
 func getChartValues(
@@ -212,17 +205,9 @@ func getChartValues(
 	}
 
 	// Compute LogProducerConfig
-	values, err = setLogProducerConfig(values, config, gcpProject, caramlProjectName)
+	values, err = setLogProducerConfig(values, config, observationServiceConfig, gcpProject, caramlProjectName)
 	if err != nil {
 		return nil, err
-	}
-
-	// Compute Fluentd
-	if config.GetSink().GetType() == timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD {
-		values, err = setFluentdConfig(values, config)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	// Convert type of values for merging
@@ -249,21 +234,16 @@ func setDefaultValues(
 	observationServiceConfig config.ObservationServiceConfig,
 ) *models.ObservationServiceHelmValues {
 	// --- Observation Service configs --- //
-	// Image
-	values.ObservationServiceConfig.Image.Tag = observationServiceConfig.ObservationServiceImageTag
+	// Override if application config is provided, else use helm values default
+	if (observationServiceConfig.ObservationServiceImageTag) != "" {
+		values.ObservationServiceConfig.Image = &models.Image{Tag: observationServiceConfig.ObservationServiceImageTag}
+	}
 	// ApiConfig
 	values.ObservationServiceConfig.ApiConfig.Port = 9001
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig = deploymentConfig
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ProjectName = caramlProjectName
 	values.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName = fmt.Sprintf("%s-%s", release_name, serviceName)
-	// Environment Variables
-	envVars := []models.Env{
-		{
-			Name:  "GOOGLE_APPLICATION_CREDENTIALS",
-			Value: "/etc/gcp_service_account/service-account.json",
-		},
-	}
-	values.ObservationServiceConfig.ExtraEnvs = envVars
+
 	// Resources
 	values.ObservationServiceConfig.Resources.Requests.CPU = resource.Quantity{Format: "1"}
 	values.ObservationServiceConfig.Resources.Requests.Memory = resource.Quantity{Format: "512Mi"}
@@ -274,10 +254,12 @@ func setDefaultValues(
 	values.ObservationServiceConfig.Autoscaling.Enabled = false
 
 	// --- Fluentd configs --- //
-	// Image
-	values.FluentdConfig.Image.Tag = observationServiceConfig.FluentdImageTag
+	// Override if application config is provided, else use helm values default
+	if observationServiceConfig.FluentdImageTag != "" {
+		values.FluentdConfig.Image = &models.Image{Tag: observationServiceConfig.FluentdImageTag}
+	}
 	// Environment Variables
-	envVars = []models.Env{
+	envVars := []models.Env{
 		{
 			Name:  "FLUENTD_WORKER_COUNT",
 			Value: "1",
@@ -331,14 +313,6 @@ func setDefaultValues(
 	return values
 }
 
-// setFluentdConfig configures custom values for Fluentd Deployment
-func setFluentdConfig(
-	values *models.ObservationServiceHelmValues,
-	config *timberv1.ObservationServiceConfig,
-) (*models.ObservationServiceHelmValues, error) {
-	return values, nil
-}
-
 // setLogConsumerConfig configures custom values for LogConsumerConfig
 func setLogConsumerConfig(
 	values *models.ObservationServiceHelmValues,
@@ -364,6 +338,7 @@ func setLogConsumerConfig(
 func setLogProducerConfig(
 	values *models.ObservationServiceHelmValues,
 	config *timberv1.ObservationServiceConfig,
+	appConfig config.ObservationServiceConfig,
 	gcpProject string,
 	projectName string,
 ) (*models.ObservationServiceHelmValues, error) {
@@ -377,6 +352,9 @@ func setLogProducerConfig(
 			Dataset: projectName,
 			Table:   fmt.Sprintf("%s_observation_log", projectName),
 		}
+		values.FluentdConfig.Enabled = true
+		values.FluentdConfig.GCPServiceAccount.Credentials.Name = appConfig.GCPServiceAccountKey
+		values.FluentdConfig.GCPServiceAccount.Credentials.Key = appConfig.GCPServiceAccountSecret
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA:
 		kafkaConfig := config.GetSink().GetKafkaConfig()
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "kafka"
