@@ -50,7 +50,7 @@ func NewServer(configFiles []string) (*Server, error) {
 	}
 
 	// Init logger
-	log.InitGlobalLogger(&cfg.DeploymentConfig)
+	log.InitGlobalLogger(cfg.DeploymentConfig.LogLevel)
 	cleanup = append(cleanup, func() {
 		// Flushes any buffered log entries
 		_ = log.Sync()
