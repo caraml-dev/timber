@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
@@ -10,11 +8,12 @@ import (
 )
 
 // NewFluentdConfig converts FluentdConfig proto to Observation Service's FluentdConfig
-func NewFluentdConfig(config *timberv1.FluentdConfig, projectName string) *os.FluentdConfig {
+func NewFluentdConfig(config *timberv1.FluentdConfig) *os.FluentdConfig {
+	//TODO to revisit what is user input or generated from app
 	return &os.FluentdConfig{
-		Tag: config.GetTag(),
+		Tag:  config.GetTag(),
+		Host: config.GetHost(),
 		// Set default values
-		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", projectName),
 		Port: 24224,
 		// Currently support BQ only
 		Kind: os.LoggerBQSinkFluentdProducer,

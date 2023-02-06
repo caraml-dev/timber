@@ -17,7 +17,7 @@ func TestNewFluentdConfig(t *testing.T) {
 		Tag: testTag,
 	}
 
-	actual := NewFluentdConfig(fluendConfig, projectName)
+	actual := NewFluentdConfig(fluendConfig)
 	expected := &os.FluentdConfig{
 		Tag:  testTag,
 		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", projectName),

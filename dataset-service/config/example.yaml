@@ -25,11 +25,13 @@ SentryConfig:
 
 ObservationServiceConfig:
   GCPProject: gcp-project
+  GCPServiceAccountKey: gcp-secret-name
+  GCPServiceAccountSecret: sa.json
+  # Optional to override image deployed by helms
   ObservationServiceImageTag: v0.0.1
+  # Optional to override image deployed by helms
   FluentdImageTag: v0.0.1
   ObservationServiceHelmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/observation-service-0.1.4/observation-service-0.1.4.tgz
-  GCPServiceAccountKey: gcp-secret
-  GCPServiceAccountSecret: sa.json
 
 MLPConfig:
   URL: http://localhost:8080/api/v1

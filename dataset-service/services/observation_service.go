@@ -27,7 +27,9 @@ const (
 	// helm_driver is the storage backend to be used. Documentation details: https://helm.sh/docs/topics/advanced/#storage-backends
 	helm_driver = "secret"
 	// release_name is the helm release name prefix to be used when deploying Observation Service.
-	release_name = "observation-service"
+	release_name = "obs"
+	// fluentd_name_override is the name suffix for fluentd deployment
+	fluentd_name_override = "timber-obs-fluentd"
 )
 
 // ObservationService provides a set of methods to interact with the MLP APIs
@@ -97,7 +99,6 @@ func (o *observationService) CreateService(
 	installation.ReleaseName = projectReleaseName
 	installation.Namespace = caramlProjectName
 	installation.CreateNamespace = true
-	installation.DryRun = true
 
 	// Trigger helm installation
 	release, err := installation.Run(o.observationServiceChart, updatedChartValues)
@@ -345,14 +346,19 @@ func setLogProducerConfig(
 	switch config.GetSink().GetType() {
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD:
 		fluentdConfig := config.GetSink().GetFluentdConfig()
+		//Prefix and postfix are added to service name as convention for identify fluentd
+		fluentdConfig.Host = fmt.Sprintf("%s-%s-%s", release_name, config.GetServiceName(), fluentd_name_override)
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "fluentd"
-		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig = models.NewFluentdConfig(fluentdConfig, projectName)
+		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig = models.NewFluentdConfig(fluentdConfig)
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig.BQConfig = &osconfig.BQConfig{
-			Project: gcpProject,
-			Dataset: projectName,
-			Table:   fmt.Sprintf("%s_observation_log", projectName),
+			//TODO to re-evaluate this if request should determine dataset and table
+			// Project will be app configured, dataset and table are user input
+			Project: appConfig.GCPProject,
+			Dataset: config.GetSink().GetFluentdConfig().GetConfig().GetDataset(),
+			Table:   config.GetSink().GetFluentdConfig().GetConfig().GetTable(),
 		}
 		values.FluentdConfig.Enabled = true
+		//TODO Revisit service account workflow or manually created, for now take from appConfig
 		values.FluentdConfig.GCPServiceAccount.Credentials.Name = appConfig.GCPServiceAccountKey
 		values.FluentdConfig.GCPServiceAccount.Credentials.Key = appConfig.GCPServiceAccountSecret
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA:
