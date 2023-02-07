@@ -180,7 +180,7 @@ message ListObservationServicesRequest {
 // Response message for ListObservationServices method.
 message ListObservationServicesResponse {
     // Observation Services deployed by Dataset Service for a particular CaraML project.
-    repeated ObservationServiceConfig observation_services = 1;
+    repeated ObservationService observation_services = 1;
 }
 
 // Request message for GetObservationService method.
@@ -194,35 +194,35 @@ message GetObservationServiceRequest {
 // Response message for GetObservationService method.
 message GetObservationServiceResponse {
     // Details of single Observation Service deployed by Dataset Service.
-    ObservationServiceConfig observation_service = 1;
+    ObservationService observation_service = 1;
 }
 
 // Request message for CreateObservationService method.
 message CreateObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to write log resource from.
     int64 project_id = 1;
     // Details of single Observation Service to be deployed by Dataset Service.
-    ObservationServiceConfig observation_service = 2;
+    ObservationService observation_service = 3;
 }
 
 // Response message for CreateObservationService method.
 message CreateObservationServiceResponse {
     // Details of single Observation Service deployed by Dataset Service.
-    ObservationServiceResponse observation_service = 1;
+    ObservationService observation_service = 1;
 }
 
 // Request message for UpdateObservationService method.
 message UpdateObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to write log resource from.
     int64 project_id = 1;
-    // The ID of Observation Service to update.
+    // The ID of Log Writer to update.
     int64 id = 2;
     // Details of single Observation Service to be updated by Dataset Service.
-    ObservationServiceConfig observation_service = 3;
+    ObservationService observation_service = 3;
 }
 
 // Response message for UpdateObservationService method.
 message UpdateObservationServiceResponse {
     // Details of single Observation Service updated by Dataset Service.
-    ObservationServiceResponse observation_service = 1;
+    ObservationService observation_service = 1;
 }

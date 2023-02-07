@@ -3,17 +3,25 @@ syntax = "proto3";
 package caraml.timber.v1;
 option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1;api";
 
-import "caraml/timber/v1/log.proto";
+import "caraml/timber/v1/status.proto";
+import "google/protobuf/timestamp.proto";
 
-// Type of logging application for specified log
-enum LogWriterType {
-    LOG_WRITER_TYPE_UNSPECIFIED = 0;
-    // Fluentd will be used for logging
-    LOG_WRITER_TYPE_FLUENTD = 1;
-}
 
 // LogWriter describes details of a Log Writer
 message LogWriter {
-    LogWriterType type = 1;
-    FluentdConfig fluentd_config = 2;
+    // Project id that owns the observation service
+    int64 project_id = 1;
+    // Observation service id
+    int64 id = 2;
+    // Observation service name
+    string name = 3;
+
+    // TODO: add other fields required for log writer
+
+    // Status of the observation service
+    Status status = 10;
+    // Creation timestamp
+    google.protobuf.Timestamp create_time = 11;
+    // Last update timestamp
+    google.protobuf.Timestamp update_time = 12;
 }
