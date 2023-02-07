@@ -359,8 +359,8 @@ func setLogProducerConfig(
 		}
 		values.FluentdConfig.Enabled = true
 		//TODO Revisit service account workflow or manually created, for now take from appConfig
-		values.FluentdConfig.GCPServiceAccount.Credentials.Name = appConfig.GCPServiceAccountKey
-		values.FluentdConfig.GCPServiceAccount.Credentials.Key = appConfig.GCPServiceAccountSecret
+		values.FluentdConfig.GCPServiceAccount.Credentials.Name = appConfig.GCPServiceAccountSecret
+		values.FluentdConfig.GCPServiceAccount.Credentials.Key = appConfig.GCPServiceAccountKey
 	case timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA:
 		kafkaConfig := config.GetSink().GetKafkaConfig()
 		values.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind = "kafka"

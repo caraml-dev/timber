@@ -61,10 +61,12 @@ type Autoscaling struct {
 	TargetMemoryUtilizationPercentage int  `json:"targetMemoryUtilizationPercentage"`
 }
 
+// GCPServiceAccount represent the service account credentials held in a secrets in kubernetes
 type GCPServiceAccount struct {
 	Credentials GCPCredentials `json:"credentials"`
 }
 
+// GCPCredentials represent the name of the secret and the key within secret where the service account json is stored
 type GCPCredentials struct {
 	Name string `json:"name"`
 	Key  string `json:"key"`

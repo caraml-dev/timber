@@ -62,7 +62,7 @@ func (s *ObservationServiceTestSuite) TestSetDefaultHelmValues() {
 	s.Suite.Assert().Equal(9001, actualHelmValues.ObservationServiceConfig.ApiConfig.Port)
 	s.Suite.Assert().Equal(imageTag, actualHelmValues.ObservationServiceConfig.Image.Tag)
 	s.Suite.Assert().Equal(caramlProjectName, actualHelmValues.ObservationServiceConfig.ApiConfig.DeploymentConfig.ProjectName)
-	s.Suite.Assert().Equal("observation-service-test-pricing", actualHelmValues.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName)
+	s.Suite.Assert().Equal("obs-test-pricing", actualHelmValues.ObservationServiceConfig.ApiConfig.DeploymentConfig.ServiceName)
 }
 
 func (s *ObservationServiceTestSuite) TestSetConsumerConfigValues() {
@@ -97,32 +97,45 @@ func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
 	gcpProject := "test-gcp-project"
 	caramlProject := "pricing-test"
 	fluentdTag := "observation-service"
-	observationServiceConfig := config.ObservationServiceConfig{}
+	observationServiceConfig := config.ObservationServiceConfig{
+		GCPProject:              gcpProject,
+		GCPServiceAccountSecret: "secretName",
+		GCPServiceAccountKey:    "keyName",
+	}
 	fluentdDeploymentConfig := &timberv1.ObservationServiceConfig{
+		ServiceName: "serviceName",
 		Sink: &timberv1.ObservationServiceDataSink{
 			Type: timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD,
 			FluentdConfig: &timberv1.FluentdConfig{
 				Tag: fluentdTag,
+				Config: &timberv1.FluentdOutputBQConfig{
+					Dataset: "myDataset",
+					Table:   "myTable",
+				},
 			},
 		},
 	}
 
 	// Test Fluentd Config
+	// Port is set by app,
 	expectedFluentDConfig := &os.FluentdConfig{
 		Tag:  fluentdTag,
-		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", caramlProject),
+		Host: fmt.Sprintf("%s-%s-%s", release_name, fluentdDeploymentConfig.GetServiceName(), fluentd_name_override),
 		Port: 24224,
 		Kind: os.LoggerBQSinkFluentdProducer,
 		BQConfig: &os.BQConfig{
 			Project: gcpProject,
-			Dataset: caramlProject,
-			Table:   fmt.Sprintf("%s_observation_log", caramlProject),
+			Dataset: "myDataset",
+			Table:   "myTable",
 		},
 	}
 	actual, err := setLogProducerConfig(helmValues, fluentdDeploymentConfig, observationServiceConfig, gcpProject, caramlProject)
 	s.Suite.Require().NoError(err)
 	s.Suite.Assert().Equal("fluentd", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
 	s.Suite.Assert().Equal(expectedFluentDConfig, actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig)
+	s.Suite.Assert().True(actual.FluentdConfig.Enabled)
+	s.Suite.Assert().Equal(observationServiceConfig.GCPServiceAccountSecret, actual.FluentdConfig.GCPServiceAccount.Credentials.Name)
+	s.Suite.Assert().Equal(observationServiceConfig.GCPServiceAccountKey, actual.FluentdConfig.GCPServiceAccount.Credentials.Key)
 
 	// Test Kafka Config
 	kafkaDeploymentConfig := &timberv1.ObservationServiceConfig{

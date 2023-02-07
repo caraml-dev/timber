@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,16 +10,15 @@ import (
 )
 
 func TestNewFluentdConfig(t *testing.T) {
-	testTag := "test-tag"
-	projectName := "test-project"
-	fluendConfig := &timberv1.FluentdConfig{
-		Tag: testTag,
+	fluentdConfig := &timberv1.FluentdConfig{
+		Host: "hostname",
+		Tag:  "test-tag",
 	}
 
-	actual := NewFluentdConfig(fluendConfig)
+	actual := NewFluentdConfig(fluentdConfig)
 	expected := &os.FluentdConfig{
-		Tag:  testTag,
-		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", projectName),
+		Tag:  "test-tag",
+		Host: "hostname",
 		Port: 24224,
 		Kind: os.LoggerBQSinkFluentdProducer,
 	}
