@@ -68,6 +68,8 @@ type FluentdConfig struct {
 	Port int `default:"24224"`
 	// Fluentd Tag to match messages
 	Tag string `default:"observation-service"`
+	// BufferLimit specifies maximum no. of events that can be buffered on memory
+	BufferLimit int `default:"8192"`
 
 	// BQConfig captures the config related to initializing a BQ Sink
 	BQConfig *BQConfig

@@ -26,7 +26,15 @@ func NewFluentdLogProducer(
 	cfg config.FluentdConfig,
 	metricsService services.MetricService,
 ) (*FluentdLogProducer, error) {
-	logger, err := fluent.New(fluent.Config{FluentPort: cfg.Port, FluentHost: cfg.Host})
+	logger, err := fluent.New(
+		fluent.Config{
+			FluentPort:             cfg.Port,
+			FluentHost:             cfg.Host,
+			Async:                  true,
+			AsyncReconnectInterval: 10000,
+			BufferLimit:            cfg.BufferLimit,
+		},
+	)
 	if err != nil {
 		log.Error(err)
 	}
