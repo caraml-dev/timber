@@ -18,6 +18,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/testcontainers/testcontainers-go v0.15.0
 	go.einride.tech/protobuf-bigquery v0.23.0
+	go.uber.org/automaxprocs v1.5.1
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
