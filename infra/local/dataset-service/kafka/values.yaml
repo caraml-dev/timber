@@ -1,0 +1,10 @@
+zookeeper:
+  persistence:
+    enabled: false
+persistence:
+  enabled: false
+autoCreateTopicsEnable: true
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi

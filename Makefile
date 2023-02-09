@@ -96,3 +96,6 @@ e2e: build-dataset-service e2e-clean-up
 
 e2e-ci:
 	cd tests/e2e; python -m pytest -s -v
+
+dev-env:
+	$(MAKE) -C infra/local/dataset-service dev-env
