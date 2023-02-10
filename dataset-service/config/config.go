@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/caraml-dev/timber/dataset-service/helm/values"
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 
@@ -11,35 +12,65 @@ import (
 
 // Config captures the config related to starting Dataset Service
 type Config struct {
-	Port int `envconfig:"PORT" default:"8080"`
+	// Configuration for dataset service deployment
+	DatasetServiceConfig *DatasetServiceConfig
+	// Common deployment configuration for both log writer and observation service
+	CommonDeploymentConfig *CommonDeploymentConfig
+	// Observation service specific configuration
+	ObservationServiceConfig *ObservationServiceConfig
+	// Log writer specific configuration
+	LogWriterConfig *LogWriterConfig
+}
 
-	DeploymentConfig         commonconfig.DeploymentConfig
-	ObservationServiceConfig ObservationServiceConfig
-	MLPConfig                *MLPConfig
-	NewRelicConfig           newrelic.Config
-	SentryConfig             sentry.Config
+type DatasetServiceConfig struct {
+	// Port to be used by dataset service
+	Port int `envconfig:"PORT" default:"8080"`
+	// LogLevel captures the selected supported logging level
+	LogLevel commonconfig.LogLevel `envconfig:"LOG_LEVEL" split_words:"false" default:"INFO"`
+	// MlpURL is URL for connecting to MLP API
+	MlpURL string `default:"localhost:3000"`
+	// New relic configuration
+	NewRelicConfig *newrelic.Config
+	// Sentry configuration
+	SentryConfig *sentry.Config
+}
+
+type CommonDeploymentConfig struct {
+	// environment type of the deployment
+	EnvironmentType string `default:"local"`
+	// KubeConfig specifies the file path to the configuration for which Kubernetes cluster to connect to
+	KubeConfig string
+	// BQ Config
+	BQConfig *BQConfig
+}
+
+type BQConfig struct {
+	// GCPProject specifies the GCP project where BQ logs will be written to via FluentdHelmValues
+	GCPProject string
+	// BigQuery dataset prefix
+	BQDatasetPrefix string `default:"caraml"`
+	// Table name prefix for table storing observation logs
+	ObservationBQTablePrefix string `default:"os"`
 }
 
 // ObservationServiceConfig captures the configuration used for log storage
 type ObservationServiceConfig struct {
-	// GCPProject specifies the GCP project where BQ logs will be written to via Fluentd
-	GCPProject string
-	// ObservationServiceImageTag specifies tag of image to be used when deploying Observation Service via Dataset Service APIs
-	ObservationServiceImageTag string
-	// FluentdImageTag specifies tag of image to be used when deploying Fluentd via Dataset Service APIs
-	FluentdImageTag string
-	// KubeConfig specifies the file path to the configuration for which Kubernetes cluster to connect to
-	KubeConfig string
+	// link to Observation Service Helm chart for deployment
+	HelmChartPath string
+	// Default helm values to be used when deploying observation service
+	DefaultValues *values.ObservationServiceHelmValues
 }
 
-// MLPConfig captures the configuration used to connect to the MLP API server
-type MLPConfig struct {
-	URL string
+type LogWriterConfig struct {
+	// link to Log Writer Helm chart for deployment
+	HelmChartPath string
+	// Default helm valus to be used when deploying log writer
+	DefaultValues *values.FluentdHelmValues
 }
 
 // ListenAddress returns the Dataset API app's port
 func (c *Config) ListenAddress() string {
-	return fmt.Sprintf(":%d", c.Port)
+	return fmt.Sprintf(":%d", c.DatasetServiceConfig.Port)
 }
 
 // Load parses multiple file configs specified via filepaths and returns a Config struct
