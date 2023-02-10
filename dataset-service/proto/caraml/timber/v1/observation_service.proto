@@ -5,38 +5,24 @@ option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/tim
 
 import "google/protobuf/timestamp.proto";
 import "caraml/timber/v1/status.proto";
+import "caraml/timber/v1/kafka.proto";
 
 // Data source where Observation logs should be retrieved from
-enum SourceType {
-    SOURCE_TYPE_UNSPECIFIED = 0;
+enum ObservationServiceDataSourceType {
+    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED = 0;
     // No-Op represents no need to fetch logs from any data source, this should be selected if
     // Observation Service should be deployed for just the eager API
-    SOURCE_TYPE_EAGER = 1;
+    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER = 1;
     // Observation Service will poll logs from a Kafka source
-    SOURCE_TYPE_KAFKA = 2;
+    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA = 2;
 }
 
 // Configurations of Data source where Observation logs should be retrieved from
 message Source {
-    SourceType type = 1;
-}
-
-// Data sink where Observation logs would be flushed to
-enum SinkType {
-    SINK_TYPE_UNSPECIFIED = 0;
-    // No-Op represents no need to flush logs to any data sink
-    SINK_TYPE_NOOP = 1;
-    // Observation Service will publish logs to standard output
-    SINK_TYPE_STDOUT = 2;
-    // Observation Service will flush logs to a Kafka sink
-    SINK_TYPE_KAFKA = 3;
-    // Observation Service will flush logs to Fluentd
-    SINK_TYPE_FLUENTD = 4;
-}
-
-// Configurations of Data sink where Observation logs would be flushed to
-message Sink {
-    SinkType type = 1;
+    // Data source of the observation service
+    ObservationServiceDataSourceType type = 1;
+    // Kafka configuration, required if the source type is SOURCE_TYPE_KAFKA
+    KafkaConfig kafka = 2;
 }
 
 // ObservationServiceConfig describes details of a Observation Service
@@ -49,8 +35,6 @@ message ObservationService {
     string name = 3;
     // Configuration for pull-based Observation Service data source.
     Source source = 4;
-    // Configuration for Observation Service data sink.
-    Sink sink = 5;
     // Status of the observation service
     Status status = 10;
     // Creation timestamp
