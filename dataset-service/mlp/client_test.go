@@ -1,4 +1,4 @@
-package services
+package mlp
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2/google"
 
-	"github.com/caraml-dev/timber/dataset-service/services/mocks"
+	"github.com/caraml-dev/timber/dataset-service/mlp/mocks"
 )
 
 func TestNewMLPClient(t *testing.T) {
@@ -33,8 +33,8 @@ func TestNewMLPClient(t *testing.T) {
 }
 
 func TestMLPServiceGetProject(t *testing.T) {
-	mlpSvc := &mocks.MLPService{}
-	expectedProject := &mlp.Project{Id: 1}
+	mlpSvc := &mocks.Client{}
+	expectedProject := &mlp.Project{ID: 1}
 
 	projectID := int64(1)
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)

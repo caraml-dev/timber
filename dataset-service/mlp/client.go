@@ -1,4 +1,4 @@
-package services
+package mlp
 
 import (
 	"context"
@@ -23,13 +23,13 @@ const (
 	GoogleOAuthScope = "https://www.googleapis.com/auth/userinfo.email"
 )
 
-// MLPService provides a set of methods to interact with the MLP APIs
-type MLPService interface {
+// Client provides a set of methods to interact with the MLP APIs
+type Client interface {
 	// GetProject gets the project matching the provided id
 	GetProject(id int64) (*mlp.Project, error)
 }
 
-type mlpService struct {
+type client struct {
 	mlpClient *mlpClient
 	cache     *cache.Cache
 }
@@ -46,8 +46,8 @@ func newMLPClient(googleClient *http.Client, basePath string) *mlpClient {
 	return &mlpClient{mlp.NewAPIClient(cfg)}
 }
 
-// NewMLPService returns a service that retrieves information that is shared across MLP projects.
-func NewMLPService(mlpBasePath string) (MLPService, error) {
+// NewClient returns a service that retrieves information that is shared across MLP projects.
+func NewClient(mlpBasePath string) (Client, error) {
 	httpClient := http.DefaultClient
 	googleClient, err := google.DefaultClient(context.Background(), GoogleOAuthScope)
 	if err == nil {
@@ -56,7 +56,7 @@ func NewMLPService(mlpBasePath string) (MLPService, error) {
 		log.Println("Google default credential not found. Fallback to HTTP default client")
 	}
 
-	svc := &mlpService{
+	svc := &client{
 		mlpClient: newMLPClient(httpClient, mlpBasePath),
 		cache:     cache.New(mlpCacheExpirySeconds*time.Second, mlpCacheCleanUpSeconds*time.Second),
 	}
@@ -71,7 +71,7 @@ func NewMLPService(mlpBasePath string) (MLPService, error) {
 // GetProject gets the project matching the provided id. This method will hit the cache first,
 // and if not found, will call MLP API once to get the updated list of projects and refresh the cache,
 // then try to get the value again. If still not found, will return a freecache NotFound error.
-func (service mlpService) GetProject(id int64) (*mlp.Project, error) {
+func (service *client) GetProject(id int64) (*mlp.Project, error) {
 	project, err := service.getProject(id)
 	if err != nil {
 		err = service.refreshProjects()
@@ -83,7 +83,7 @@ func (service mlpService) GetProject(id int64) (*mlp.Project, error) {
 	return project, nil
 }
 
-func (service mlpService) getProject(id int64) (*mlp.Project, error) {
+func (service *client) getProject(id int64) (*mlp.Project, error) {
 	key := buildProjectKey(id)
 	cachedValue, found := service.cache.Get(key)
 	if !found {
@@ -97,7 +97,7 @@ func (service mlpService) getProject(id int64) (*mlp.Project, error) {
 	return &project, nil
 }
 
-func (service mlpService) refreshProjects() error {
+func (service *client) refreshProjects() error {
 	ctx, cancel := context.WithTimeout(context.Background(), mlpQueryTimeoutSeconds*time.Second)
 	defer cancel()
 
@@ -109,7 +109,7 @@ func (service mlpService) refreshProjects() error {
 		defer resp.Body.Close()
 	}
 	for _, project := range projects {
-		key := buildProjectKey(int64(project.Id))
+		key := buildProjectKey(int64(project.ID))
 		service.cache.Set(key, project, cache.DefaultExpiration)
 	}
 	return nil
