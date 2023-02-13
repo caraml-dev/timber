@@ -21,7 +21,6 @@ require (
 	google.golang.org/protobuf v1.28.2-0.20220831092852-f930b1dc76e8
 	helm.sh/helm/v3 v3.10.3
 	k8s.io/cli-runtime v0.25.2
-	k8s.io/client-go v0.26.0
 )
 
 require (
@@ -186,6 +185,7 @@ require (
 	k8s.io/apiextensions-apiserver v0.25.2 // indirect
 	k8s.io/apimachinery v0.26.0 // indirect
 	k8s.io/apiserver v0.25.2 // indirect
+	k8s.io/client-go v0.26.0 // indirect
 	k8s.io/component-base v0.25.2 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280 // indirect
