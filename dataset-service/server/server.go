@@ -36,7 +36,7 @@ type Server struct {
 // NewServer creates and configures an APIServer serving all application routes.
 func NewServer(configFiles []string) (*Server, error) {
 	ctx := context.Background()
-	// Collect all the clean up actions
+	// Collect all the cleanup actions
 	cleanup := []func(){}
 
 	// Load config
@@ -46,24 +46,24 @@ func NewServer(configFiles []string) (*Server, error) {
 	}
 
 	// Init logger
-	log.InitGlobalLogger(&cfg.DeploymentConfig)
+	log.InitGlobalLogger(cfg.DatasetServiceConfig.LogLevel)
 	cleanup = append(cleanup, func() {
 		// Flushes any buffered log entries
 		_ = log.Sync()
 	})
 
 	// Init NewRelic
-	if cfg.NewRelicConfig.Enabled {
-		if err := newrelic.InitNewRelic(cfg.NewRelicConfig); err != nil {
+	if cfg.DatasetServiceConfig.NewRelicConfig.Enabled {
+		if err := newrelic.InitNewRelic(*cfg.DatasetServiceConfig.NewRelicConfig); err != nil {
 			return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed initializing NewRelic: %v", err))
 		}
 		cleanup = append(cleanup, func() { newrelic.Shutdown(5 * time.Second) })
 	}
 
 	// Init Sentry client
-	if cfg.SentryConfig.Enabled {
-		cfg.SentryConfig.Labels["environment"] = cfg.DeploymentConfig.EnvironmentType
-		if err := sentry.InitSentry(cfg.SentryConfig); err != nil {
+	if cfg.DatasetServiceConfig.SentryConfig.Enabled {
+		cfg.DatasetServiceConfig.SentryConfig.Labels["environment"] = cfg.CommonDeploymentConfig.EnvironmentType
+		if err := sentry.InitSentry(*cfg.DatasetServiceConfig.SentryConfig); err != nil {
 			return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed initializing Sentry Client: %v", err))
 		}
 		cleanup = append(cleanup, func() { sentry.Close() })
@@ -90,12 +90,12 @@ func NewServer(configFiles []string) (*Server, error) {
 	grpc_health_v1.RegisterHealthServer(grpcServer, healthChecker)
 
 	// Creating a normal HTTP server
-	server := http.Server{
+	s := http.Server{
 		Addr:    cfg.ListenAddress(),
 		Handler: mux,
 	}
 
-	return &Server{&server, grpcServer, cfg, cleanup}, nil
+	return &Server{&s, grpcServer, cfg, cleanup}, nil
 }
 
 // Start runs ListenAndServe on the http.Server with graceful shutdown.
@@ -105,7 +105,7 @@ func (s *Server) Start() {
 			panic(err)
 		}
 	}()
-	log.Infof("Listening on %s\n", s.srv.Addr)
+	log.Infof("Listening on %s", s.srv.Addr)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)

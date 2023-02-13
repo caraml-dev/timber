@@ -1,14 +1,18 @@
-package services
+package service
+
+import (
+	"github.com/caraml-dev/timber/dataset-service/mlp"
+)
 
 // Services contain all instantiated Service layer interfaces
 type Services struct {
-	MLPService         MLPService
+	MLPService         mlp.Client
 	ObservationService ObservationService
 }
 
 // NewServices instantiates Services
 func NewServices(
-	mlpSvc MLPService,
+	mlpSvc mlp.Client,
 	obsSvc ObservationService,
 ) Services {
 	return Services{
