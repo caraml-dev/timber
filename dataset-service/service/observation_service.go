@@ -19,12 +19,12 @@ const (
 	releaseNamePrefix = "os"
 )
 
-// ObservationService provides a set of methods to interact with the MLP APIs
+// ObservationService provides a set of methods for controlling observation log's deployment
 type ObservationService interface {
-	// CreateService creates new Observation Service Helm release and returns ID of created Observation Service
-	CreateService(projectName string, config *timberv1.ObservationService) (*timberv1.ObservationService, error)
-	// UpdateService updates existing Observation Service Helm release and returns ID of updated Observation Service
-	UpdateService(projectName string, observationServiceID int, config *timberv1.ObservationService) (*timberv1.ObservationService, error)
+	// Create creates new Observation Service Helm release and returns ID of created Observation Service
+	Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
+	// Update updates existing Observation Service Helm release and returns ID of updated Observation Service
+	Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
 }
 
 type observationService struct {
@@ -53,9 +53,8 @@ func NewObservationService(
 	}, nil
 }
 
-func (o *observationService) CreateService(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
+func (o *observationService) Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
 	//TODO: create BQ dataset and/or table before deploying the observation service, although observation service has that privileges
-
 	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
 	val, err := o.createHelmValues(releaseName, projectName, svc)
 	if err != nil {
@@ -72,7 +71,7 @@ func (o *observationService) CreateService(projectName string, svc *timberv1.Obs
 	return svc, nil
 }
 
-func (o *observationService) UpdateService(projectName string, observationServiceID int, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
+func (o *observationService) Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
 
 	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
 	val, err := o.createHelmValues(releaseName, projectName, svc)
