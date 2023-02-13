@@ -29,7 +29,7 @@ commonDeploymentConfig:
     observationBqTablePrefix: os
 observationServiceConfig:
   # You can replace   helmChartPath to point to local directory
-  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/observation-svc-0.2.5/observation-svc-0.2.5.tgz
+  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/observation-svc-0.2.6/observation-svc-0.2.6.tgz
   defaultValues:
     observationService:
       image:
@@ -197,7 +197,7 @@ observationServiceConfig:
 
 logWriterConfig:
   # You can replace helmChartPath to point to local directory
-  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/fluentd-0.1.4/fluentd-0.1.4.tgz
+  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/fluentd-0.1.5/fluentd-0.1.5.tgz
   defaultValues:
     image:
       registry: ghcr.io
