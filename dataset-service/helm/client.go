@@ -25,7 +25,6 @@ type Client interface {
 }
 
 const (
-	k8sUser    = "user"
 	helmDriver = "secret"
 )
 
