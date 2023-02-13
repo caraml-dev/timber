@@ -100,12 +100,11 @@ func (h *helmClient) Upgrade(releaseName string, namespaceName string, chart *ch
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
-	upgrade := action.NewInstall(actionConfig)
-	upgrade.ReleaseName = releaseName
+	upgrade := action.NewUpgrade(actionConfig)
 	upgrade.Namespace = namespaceName
 
 	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", releaseName, namespaceName, chart.Name(), chart.Metadata.Version)
-	r, err := upgrade.Run(chart, values)
+	r, err := upgrade.Run(releaseName, chart, values)
 	if err != nil {
 		return nil, err
 	}
@@ -129,10 +128,11 @@ func (h helmClient) GetRelease(releaseName string, namespaceName string, actionC
 func (h *helmClient) initializeConfig(actionConfig *action.Configuration, namespaceName string) (*action.Configuration, error) {
 	if actionConfig == nil {
 		actionConfig = new(action.Configuration)
+		err := actionConfig.Init(h.clientGetter, namespaceName, helmDriver, log.Debugf)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err := actionConfig.Init(h.clientGetter, namespaceName, helmDriver, log.Debugf)
-	if err != nil {
-		return nil, err
-	}
+
 	return actionConfig, nil
 }
