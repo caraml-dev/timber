@@ -8,19 +8,19 @@ import "caraml/timber/v1/status.proto";
 import "caraml/timber/v1/kafka.proto";
 
 // Data source where Observation logs should be retrieved from
-enum ObservationServiceDataSourceType {
-    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED = 0;
+enum ObservationServiceSourceType {
+    OBSERVATION_SERVICE_SOURCE_TYPE_UNSPECIFIED = 0;
     // No-Op represents no need to fetch logs from any data source, this should be selected if
     // Observation Service should be deployed for just the eager API
-    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER = 1;
+    OBSERVATION_SERVICE_SOURCE_TYPE_EAGER = 1;
     // Observation Service will poll logs from a Kafka source
-    OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA = 2;
+    OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA = 2;
 }
 
 // Configurations of Data source where Observation logs should be retrieved from
-message Source {
+message ObservationServiceSource {
     // Data source of the observation service
-    ObservationServiceDataSourceType type = 1;
+    ObservationServiceSourceType type = 1;
     // Kafka configuration, required if the source type is SOURCE_TYPE_KAFKA
     KafkaConfig kafka = 2;
 }
@@ -34,7 +34,8 @@ message ObservationService {
     // Observation service name
     string name = 3;
     // Configuration for pull-based Observation Service data source.
-    Source source = 4;
+    ObservationServiceSource source = 4;
+    // TODO: Add details of where the log is stored at
     // Status of the observation service
     Status status = 10;
     // Creation timestamp

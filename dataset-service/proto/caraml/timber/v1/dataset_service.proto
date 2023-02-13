@@ -5,7 +5,7 @@ option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/tim
 
 import "google/api/annotations.proto";
 
-import "caraml/timber/v1/log.proto";
+import "caraml/timber/v1/log_metadata.proto";
 import "caraml/timber/v1/log_writer.proto";
 import "caraml/timber/v1/observation_service.proto";
 
