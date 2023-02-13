@@ -4,17 +4,15 @@ import (
 	"context"
 	"testing"
 
+	"github.com/caraml-dev/timber/common/errors"
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/appcontext"
+	mlpMock "github.com/caraml-dev/timber/dataset-service/mlp/mocks"
 	"github.com/caraml-dev/timber/dataset-service/service"
 	svcMock "github.com/caraml-dev/timber/dataset-service/service/mocks"
 	mlp "github.com/gojek/mlp/api/client"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"google.golang.org/protobuf/proto"
-
-	"github.com/caraml-dev/timber/common/errors"
-	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-	"github.com/caraml-dev/timber/dataset-service/appcontext"
-	mlpMock "github.com/caraml-dev/timber/dataset-service/mlp/mocks"
 )
 
 type LogWriterControllerTestSuite struct {
@@ -167,7 +165,7 @@ func (s *LogWriterControllerTestSuite) TestCreateLogWriter() {
 		resp, err := s.ctrl.CreateLogWriter(ctx, data.req)
 		if data.err == "" {
 			s.Suite.Assert().NoError(err)
-			s.Suite.Assert().True(proto.Equal(resp, data.resp))
+			s.Suite.Assert().Equal(resp, data.resp)
 		} else {
 			s.Suite.Assert().EqualError(err, data.err)
 		}
@@ -208,7 +206,7 @@ func (s *LogWriterControllerTestSuite) TestUpdateLogWriter() {
 		resp, err := s.ctrl.UpdateLogWriter(ctx, data.req)
 		if data.err == "" {
 			s.Suite.Assert().NoError(err)
-			s.Suite.Assert().True(proto.Equal(resp, data.resp))
+			s.Suite.Assert().Equal(resp, data.resp)
 		} else {
 			s.Suite.Assert().EqualError(err, data.err)
 		}
