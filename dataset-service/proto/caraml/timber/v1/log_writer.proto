@@ -21,7 +21,7 @@ message LogWriterSource {
   // Log type. It determines whether prediction_log_source or router_log_source is populated.
   // If the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid.
   // Whereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid.
-  LogWriterSourceType log_type = 1;
+  LogWriterSourceType type = 1;
   // Prediction log source details
   PredictionLogSource prediction_log_source = 2;
   // Router log source details

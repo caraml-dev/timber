@@ -686,7 +686,7 @@
     "v1LogWriterSource": {
       "type": "object",
       "properties": {
-        "logType": {
+        "type": {
           "$ref": "#/definitions/v1LogWriterSourceType",
           "description": "Log type. It determines whether prediction_log_source or router_log_source is populated.\nIf the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid.\nWhereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid."
         },

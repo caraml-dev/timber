@@ -224,7 +224,7 @@ Details of the log writer data source
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| log_type | [LogWriterSourceType](#caraml-timber-v1-LogWriterSourceType) |  | Log type. It determines whether prediction_log_source or router_log_source is populated. If the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid. Whereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid. |
+| type | [LogWriterSourceType](#caraml-timber-v1-LogWriterSourceType) |  | Log type. It determines whether prediction_log_source or router_log_source is populated. If the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid. Whereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid. |
 | prediction_log_source | [PredictionLogSource](#caraml-timber-v1-PredictionLogSource) |  | Prediction log source details |
 | router_log_source | [RouterLogSource](#caraml-timber-v1-RouterLogSource) |  | Router log source details |
 
