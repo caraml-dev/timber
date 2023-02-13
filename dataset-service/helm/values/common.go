@@ -78,9 +78,9 @@ type Service struct {
 func MerveEnvs(left []Env, right []Env) []Env {
 	for _, e := range right {
 		found := false
-		for _, d := range left {
+		for i, d := range left {
 			if d.Name == e.Name {
-				d.Value = e.Value
+				left[i].Value = e.Value
 				found = true
 				break
 			}
