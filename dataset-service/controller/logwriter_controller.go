@@ -19,7 +19,7 @@ func NewLogWriterController(ctx *appcontext.AppContext) *LogWriterController {
 }
 
 // ListLogWriters definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
-func (l LogWriterController) ListLogWriters(
+func (l *LogWriterController) ListLogWriters(
 	c context.Context,
 	r *timberv1.ListLogWritersRequest,
 ) (*timberv1.ListLogWritersResponse, error) {
@@ -36,7 +36,7 @@ func (l LogWriterController) ListLogWriters(
 }
 
 // GetLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
-func (l LogWriterController) GetLogWriter(
+func (l *LogWriterController) GetLogWriter(
 	c context.Context,
 	r *timberv1.GetLogWriterRequest,
 ) (*timberv1.GetLogWriterResponse, error) {
@@ -53,40 +53,54 @@ func (l LogWriterController) GetLogWriter(
 }
 
 // CreateLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
-func (l LogWriterController) CreateLogWriter(
+func (l *LogWriterController) CreateLogWriter(
 	c context.Context,
 	r *timberv1.CreateLogWriterRequest,
 ) (*timberv1.CreateLogWriterResponse, error) {
 	// Check if the projectId is valid
-	err := l.checkProject(r.GetProjectId())
+	projectID := r.GetProjectId()
+	project, err := l.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
+		log.Errorf("error finding project: %v", err)
 		return nil, err
 	}
 
-	// TODO: Implement method
-	log.Info("Called caraml.upi.v1.DatasetService/CreateLogWriter")
-	response := &timberv1.CreateLogWriterResponse{}
+	logWriter, err := l.appCtx.Services.LogWriterService.Create(project.Name, r.LogWriter)
+	if err != nil {
+		log.Errorf("error creating logwriter: %v", err)
+		return nil, err
+	}
+
+	response := &timberv1.CreateLogWriterResponse{
+		LogWriter: logWriter,
+	}
 	return response, nil
 }
 
 // UpdateLogWriter definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
-func (l LogWriterController) UpdateLogWriter(
+func (l *LogWriterController) UpdateLogWriter(
 	c context.Context,
 	r *timberv1.UpdateLogWriterRequest,
 ) (*timberv1.UpdateLogWriterResponse, error) {
 	// Check if the projectId is valid
-	err := l.checkProject(r.GetProjectId())
+	projectID := r.GetProjectId()
+	project, err := l.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
+		log.Errorf("error finding project: %v", err)
 		return nil, err
 	}
 
-	// TODO: Implement method
-	log.Info("Called caraml.upi.v1.DatasetService/UpdateLogWriter")
-	response := &timberv1.UpdateLogWriterResponse{}
+	logWriter, err := l.appCtx.Services.LogWriterService.Update(project.Name, r.LogWriter)
+	if err != nil {
+		log.Errorf("error updating logwriter: %v", err)
+		return nil, err
+	}
+
+	response := &timberv1.UpdateLogWriterResponse{LogWriter: logWriter}
 	return response, nil
 }
 
-func (l LogWriterController) checkProject(projectId int64) error {
+func (l *LogWriterController) checkProject(projectId int64) error {
 	// Check if the projectId is valid
 	if _, err := l.appCtx.Services.MLPService.GetProject(projectId); err != nil {
 		return err

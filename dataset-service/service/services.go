@@ -8,15 +8,18 @@ import (
 type Services struct {
 	MLPService         mlp.Client
 	ObservationService ObservationService
+	LogWriterService   LogWriterService
 }
 
 // NewServices instantiates Services
 func NewServices(
 	mlpSvc mlp.Client,
 	obsSvc ObservationService,
+	logWriterSvc LogWriterService,
 ) Services {
 	return Services{
 		MLPService:         mlpSvc,
 		ObservationService: obsSvc,
+		LogWriterService:   logWriterSvc,
 	}
 }

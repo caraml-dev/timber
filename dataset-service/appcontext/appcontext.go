@@ -32,9 +32,15 @@ func NewAppContext(cfg *config.Config) (*AppContext, error) {
 		return nil, err
 	}
 
+	logWriterSvc, err := service.NewLogWriterService(
+		cfg.CommonDeploymentConfig,
+		cfg.LogWriterConfig,
+	)
+
 	allServices = service.NewServices(
 		mlpSvc,
 		obsSvc,
+		logWriterSvc,
 	)
 
 	appContext := &AppContext{
