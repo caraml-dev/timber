@@ -30,4 +30,6 @@ type ObservationService struct {
 	ExtraEnvs []Env `json:"extraEnvs,omitempty"`
 	// Observation service configuration
 	APIConfig obsconfig.Config `json:"apiConfig,omitempty"`
+	// Service k8s service configuration
+	Service Service `json:"service,omitempty"`
 }

@@ -57,8 +57,10 @@ observationServiceConfig:
       extraEnvs:
         name: EXTRA1
         value: VALUE1
+      service:
+        internalPort: 9001
       apiConfig:
-        port: 8080
+        port: 9001
         deploymentConfig:
           environmentType: local
           projectName: my-project # will be modified per deployment
@@ -234,7 +236,7 @@ logWriterConfig:
       - name: FLUENTD_LOG_PATH
         value: /fluentd/cache/log
       - name: FLUENTD_TAG
-        value: observation-service.log
+        value: observation-service.log #Modify Accordingly
       - name: FLUENTD_GCP_JSON_KEY_PATH
         value: /etc/gcp_service_account/service-account.json
       - name: FLUENTD_GCP_PROJECT

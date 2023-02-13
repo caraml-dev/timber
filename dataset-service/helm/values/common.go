@@ -68,6 +68,12 @@ type Credentials struct {
 	Key  string `json:"key,omitempty"`
 }
 
+type Service struct {
+	Type         string `json:"type,omitempty"`
+	ExternalPort string `json:"externalPort,omitempty"`
+	InternalPort string `json:"internalPort,omitempty"`
+}
+
 // MerveEnvs merge 2 slices of Env and give priority for right slice
 func MerveEnvs(left []Env, right []Env) []Env {
 	for _, e := range right {
