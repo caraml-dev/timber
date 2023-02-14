@@ -1,15 +1,15 @@
 package service
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/bq"
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/jinzhu/copier"
 	"helm.sh/helm/v3/pkg/chart"
 )
 
@@ -92,7 +92,12 @@ func (l *logWriterService) Update(projectName string, logWriter *timberv1.LogWri
 }
 
 func (l *logWriterService) createHelmValues(projectName string, logWriter *timberv1.LogWriter) (map[string]any, error) {
-	val := l.defaults
+	val := &values.FluentdHelmValues{}
+	err := copier.CopyWithOption(val, l.defaults, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	if err != nil {
+		return nil, err
+	}
+
 	kafkaConfig, err := getKafkaConfig(logWriter)
 	if err != nil {
 		return nil, err
@@ -108,19 +113,7 @@ func (l *logWriterService) createHelmValues(projectName string, logWriter *timbe
 		return nil, fmt.Errorf("error configuring sink: %w", err)
 	}
 
-	// Convert type of values for merging
-	var interfaceValues map[string]any
-	byteArr, err := json.Marshal(val)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(byteArr, &interfaceValues)
-	if err != nil {
-		return nil, err
-	}
-
-	return interfaceValues, nil
+	return values.ToRaw(val)
 }
 
 func (l *logWriterService) configureSource(val *values.FluentdHelmValues, kafkaConfig *timberv1.KafkaConfig, logType timberv1.LogWriterSourceType) (*values.FluentdHelmValues, error) {
@@ -133,19 +126,19 @@ func (l *logWriterService) configureSource(val *values.FluentdHelmValues, kafkaC
 		val.ExtraEnvs,
 		[]values.Env{
 			{
-				Name:  "FLUENTD_KAFKA_BROKER",
+				Name:  values.FluentdKafkaBrokerEnv,
 				Value: kafkaConfig.Brokers,
 			},
 			{
-				Name:  "FLUENTD_KAFKA_TOPIC",
+				Name:  values.FluentdKafkaTopicEnv,
 				Value: kafkaConfig.Topic,
 			},
 			{
-				Name:  "FLUENTD_KAFKA_PROTO_CLASS_NAME",
+				Name:  values.FluentdProtoClassNameEnv,
 				Value: protoName,
 			},
 			{
-				Name:  "FLUENTD_TAG",
+				Name:  values.FluentdTagEnv,
 				Value: kafkaConfig.Topic,
 			},
 		},
@@ -155,35 +148,27 @@ func (l *logWriterService) configureSource(val *values.FluentdHelmValues, kafkaC
 }
 
 func (l *logWriterService) configureSink(val *values.FluentdHelmValues, projectName string, kafkaConfig *timberv1.KafkaConfig) (*values.FluentdHelmValues, error) {
-	datasetName := l.createDatasetName(projectName)
-	tableName := l.createTableName(kafkaConfig)
+	datasetName := bq.DatasetFromProject(l.commonDeployConfig.BQConfig, projectName)
+	tableName := bq.TableFromKafkaTopic(kafkaConfig.Topic)
 	val.ExtraEnvs = values.MerveEnvs(
 		val.ExtraEnvs,
 		[]values.Env{
 			{
-				Name:  "FLUENTD_GCP_PROJECT",
+				Name:  values.FluentdGCPProjectEnv,
 				Value: l.commonDeployConfig.BQConfig.GCPProject,
 			},
 			{
-				Name:  "FLUENTD_BQ_DATASET",
+				Name:  values.FluentdBQDatasetEnv,
 				Value: datasetName,
 			},
 			{
-				Name:  "FLUENTD_BQ_TABLE",
+				Name:  values.FluentdBQTableEnv,
 				Value: tableName,
 			},
 		},
 	)
 
 	return val, nil
-}
-
-func (l *logWriterService) createDatasetName(projectName string) string {
-	return strings.ReplaceAll(fmt.Sprintf("%s_%s", l.commonDeployConfig.BQConfig.BQDatasetPrefix, projectName), "-", "_")
-}
-
-func (l *logWriterService) createTableName(kafkaConfig *timberv1.KafkaConfig) string {
-	return strings.ReplaceAll(kafkaConfig.Topic, "-", "_")
 }
 
 func createReleaseName(logWriter *timberv1.LogWriter) string {

@@ -20,8 +20,8 @@ import (
 
 type ObservationServiceTestSuite struct {
 	suite.Suite
-	obs            *observationService
-	mockHelmClient *mocks.Client
+	config    *config.Config
+	helmChart *chart.Chart
 }
 
 func (s *ObservationServiceTestSuite) SetupSuite() {
@@ -29,15 +29,8 @@ func (s *ObservationServiceTestSuite) SetupSuite() {
 	cfg, err := config.Load("testdata/test_config.yaml")
 	s.NoError(err)
 
-	s.mockHelmClient = &mocks.Client{}
-	chartStub := &chart.Chart{}
-
-	s.obs = &observationService{
-		helmClient:         s.mockHelmClient,
-		helmChart:          chartStub,
-		commonDeployConfig: cfg.CommonDeploymentConfig,
-		defaults:           cfg.ObservationServiceConfig.DefaultValues,
-	}
+	s.config = cfg
+	s.helmChart = &chart.Chart{}
 }
 
 func (s *ObservationServiceTestSuite) TearDownSuite() {
@@ -104,7 +97,7 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 					},
 				},
 				Fluentd: values.FluentdHelmValues{
-					ExtraEnvs: values.MerveEnvs(s.obs.defaults.Fluentd.ExtraEnvs, []values.Env{
+					ExtraEnvs: values.MerveEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
 						{
 							Name:  values.FluentdBQDatasetEnv,
 							Value: "caraml_my_project",
@@ -137,10 +130,11 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 
 	for _, tt := range tests {
 		s.Run(tt.name, func() {
-			s.mockHelmClient.On("Install",
+			mockHelmClient := &mocks.Client{}
+			mockHelmClient.On("Install",
 				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
 				tt.args.projectName,
-				s.obs.helmChart,
+				s.helmChart,
 				mock.Anything,
 				mock.Anything,
 			).
@@ -149,7 +143,15 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 						Status: release.StatusDeployed,
 					},
 				}, nil)
-			got, err := s.obs.Create(tt.args.projectName, tt.args.svc)
+
+			obs := &observationService{
+				helmClient:         mockHelmClient,
+				helmChart:          s.helmChart,
+				commonDeployConfig: s.config.CommonDeploymentConfig,
+				defaults:           s.config.ObservationServiceConfig.DefaultValues,
+			}
+
+			got, err := obs.Create(tt.args.projectName, tt.args.svc)
 			if (err != nil) != tt.wantErr {
 				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -159,8 +161,8 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 
 			// validate that the helm values passed to helm client is as expected
 			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
-			s.assertHelmValuesOverride(tt.wantOverrideHelmValues)
-			s.mockHelmClient.AssertExpectations(s.T())
+			s.assertHelmValuesOverride(mockHelmClient, tt.wantOverrideHelmValues)
+			mockHelmClient.AssertExpectations(s.T())
 		})
 	}
 }
@@ -225,7 +227,7 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 					},
 				},
 				Fluentd: values.FluentdHelmValues{
-					ExtraEnvs: values.MerveEnvs(s.obs.defaults.Fluentd.ExtraEnvs, []values.Env{
+					ExtraEnvs: values.MerveEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
 						{
 							Name:  values.FluentdBQDatasetEnv,
 							Value: "caraml_my_project",
@@ -258,10 +260,11 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 
 	for _, tt := range tests {
 		s.Run(tt.name, func() {
-			s.mockHelmClient.On("Upgrade",
+			mockHelmClient := &mocks.Client{}
+			mockHelmClient.On("Upgrade",
 				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
 				tt.args.projectName,
-				s.obs.helmChart,
+				s.helmChart,
 				mock.Anything,
 				mock.Anything,
 			).
@@ -270,33 +273,42 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 						Status: release.StatusDeployed,
 					},
 				}, nil)
-			got, err := s.obs.Update(tt.args.projectName, tt.args.svc)
+
+			obs := &observationService{
+				helmClient:         mockHelmClient,
+				helmChart:          s.helmChart,
+				commonDeployConfig: s.config.CommonDeploymentConfig,
+				defaults:           s.config.ObservationServiceConfig.DefaultValues,
+			}
+
+			got, err := obs.Update(tt.args.projectName, tt.args.svc)
 			if (err != nil) != tt.wantErr {
-				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				s.T().Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+
 			assert.Equal(s.T(), tt.want, got)
 
 			// validate that the helm values passed to helm client is as expected
 			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
-			s.assertHelmValuesOverride(tt.wantOverrideHelmValues)
-			s.mockHelmClient.AssertExpectations(s.T())
+			s.assertHelmValuesOverride(mockHelmClient, tt.wantOverrideHelmValues)
+			mockHelmClient.AssertExpectations(s.T())
 		})
 	}
 }
 
-func (s *ObservationServiceTestSuite) assertHelmValuesOverride(override *values.ObservationServiceHelmValues) {
-	// copy first to avoid s.obs.defaults getting overwritten by test
+func (s *ObservationServiceTestSuite) assertHelmValuesOverride(mockHelmClient *mocks.Client, override *values.ObservationServiceHelmValues) {
+	// copy first to avoid s.config.ObservationServiceConfig.DefaultValues getting overwritten by test
 	expHelmValues := values.ObservationServiceHelmValues{}
-	err := copier.CopyWithOption(&expHelmValues, s.obs.defaults, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	err := copier.CopyWithOption(&expHelmValues, s.config.ObservationServiceConfig.DefaultValues, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	s.NoError(err)
 
-	// merge expHelmValues (that contains copy of s.obs.defaults) with expected override
+	// merge expHelmValues (that contains copy of s.config.ObservationServiceConfig.DefaultValues) with expected override
 	err = mergo.Merge(&expHelmValues, override, mergo.WithOverride)
 	s.NoError(err)
 
 	// compare against the value received by mock helm client
-	gotHelmValues := s.mockHelmClient.Calls[0].Arguments[3]
+	gotHelmValues := mockHelmClient.Calls[0].Arguments[3]
 	wantRawValues, err := values.ToRaw(expHelmValues)
 	s.NoError(err)
 
