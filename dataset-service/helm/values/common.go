@@ -1,6 +1,10 @@
 package values
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/jinzhu/copier"
+)
 
 // Docker image configuration
 type ImageConfig struct {
@@ -78,22 +82,25 @@ type Service struct {
 
 // MerveEnvs merge 2 slices of Env and give priority for right slice
 func MerveEnvs(left []Env, right []Env) []Env {
+	newSlice := make([]Env, len(left))
+
+	copier.CopyWithOption(&newSlice, &left, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	for _, e := range right {
 		found := false
-		for i, d := range left {
+		for i, d := range newSlice {
 			if d.Name == e.Name {
-				left[i].Value = e.Value
+				newSlice[i].Value = e.Value
 				found = true
 				break
 			}
 		}
 
 		if !found {
-			left = append(left, e)
+			newSlice = append(newSlice, e)
 		}
 	}
 
-	return left
+	return newSlice
 }
 
 func ToRaw(val any) (map[string]any, error) {
