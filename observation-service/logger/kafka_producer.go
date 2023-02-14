@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
@@ -78,6 +79,10 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 		log.Error(err)
 	}
 
+	labels := map[string]string{
+		"component": "kafka",
+	}
+	kafkaFlushStartTime := time.Now()
 	err = p.producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &p.topic,
@@ -87,6 +92,15 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 	}, deliveryChan)
 	if err != nil {
 		log.Error(err)
+	} else {
+		// Log kafka latency
+		p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
+		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
+		// Log E2E latency
+		labels = map[string]string{
+			"component": "e2e",
+		}
+		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
 	}
 
 	// Get delivery response
@@ -97,8 +111,6 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 		log.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 	}
-	p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-	p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs)
 }
 
 func newKafkaLogEntry(

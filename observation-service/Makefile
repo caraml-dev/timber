@@ -47,7 +47,6 @@ observation-service:
 # ==================================
 
 test-observation-service: tidy vendor
-	go mod vendor
 	@echo "> Running Observation Service tests ..."
 	go test -v ./... -coverpkg ./... -gcflags=-l -race -coverprofile cover.out.tmp -tags unit,integration
 	cat cover.out.tmp | grep -v "api/api.go\|cmd\|.pb.go\|mock\|testutils\|server" > cover.out

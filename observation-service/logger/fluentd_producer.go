@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/fluent/fluent-logger-golang/fluent"
 
@@ -67,11 +68,22 @@ func (p *FluentdLogProducer) Produce(observationLog *types.ObservationLogEntry) 
 		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 		log.Error(err)
 	}
+	labels := map[string]string{
+		"component": "fluentd",
+	}
+	fluentdFlushStartTime := time.Now()
 	err = p.logger.Post(p.tag, logFormattedVal)
 	if err != nil {
 		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 		log.Error(err)
+	} else {
+		// Log fluentd latency
+		p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
+		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
+		// Log E2E latency
+		labels = map[string]string{
+			"component": "e2e",
+		}
+		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
 	}
-	p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-	p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs)
 }
