@@ -1,140 +1,308 @@
 package service
 
-//
-//import (
-//	"fmt"
-//	"testing"
-//
-//	"github.com/stretchr/testify/suite"
-//
-//	commonconfig "github.com/caraml-dev/timber/common/config"
-//	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-//	"github.com/caraml-dev/timber/dataset-service/config"
-//	"github.com/caraml-dev/timber/dataset-service/models"
-//	os "github.com/caraml-dev/timber/observation-service/config"
-//)
-//
-//type ObservationServiceTestSuite struct {
-//	suite.Suite
-//	ObservationService
-//}
-//
-//func (s *ObservationServiceTestSuite) SetupSuite() {
-//	s.Suite.T().Log("Setting up ObservationServiceTestSuite")
-//}
-//
-//func (s *ObservationServiceTestSuite) TearDownSuite() {
-//	s.Suite.T().Log("Cleaning up ObservationServiceTestSuite")
-//}
-//
-//func TestObservationService(t *testing.T) {
-//	suite.Run(t, new(ObservationServiceTestSuite))
-//}
-//
-//func (s *ObservationServiceTestSuite) TestSetDefaultHelmValues() {
-//	helmValues := &models.ObservationServiceHelmValues{}
-//	gcpProject := "test-gcp-project"
-//	caramlProjectName := "test-caraml-project"
-//	serviceName := "test-pricing"
-//	deploymentConfig := commonconfig.CommonDeploymentConfig{
-//		EnvironmentType: "test",
-//		ProjectName:     "",
-//		ServiceName:     "dataset-service",
-//		LogLevel:        commonconfig.InfoLevel,
-//		MaxGoRoutines:   200,
-//	}
-//	imageTag := "v0.0.1"
-//	observationServiceConfig := config.ObservationServiceConfig{
-//		GCPProject:                 gcpProject,
-//		ObservationServiceImageTag: imageTag,
-//		FluentdImageTag:            imageTag,
-//	}
-//
-//	actualHelmValues := setDefaultValues(
-//		helmValues,
-//		gcpProject,
-//		caramlProjectName,
-//		serviceName,
-//		deploymentConfig,
-//		observationServiceConfig,
-//	)
-//
-//	// Check some hardcoded default values and configurable (empty and override) values
-//	s.Suite.Assert().Equal(9001, actualHelmValues.ObservationServiceConfig.ApiConfig.Port)
-//	s.Suite.Assert().Equal(imageTag, actualHelmValues.ObservationServiceConfig.Image.Tag)
-//	s.Suite.Assert().Equal(caramlProjectName, actualHelmValues.ObservationServiceConfig.ApiConfig.CommonDeploymentConfig.ProjectName)
-//	s.Suite.Assert().Equal("observation-service-test-pricing", actualHelmValues.ObservationServiceConfig.ApiConfig.CommonDeploymentConfig.ServiceName)
-//}
-//
-//func (s *ObservationServiceTestSuite) TestSetConsumerConfigValues() {
-//	helmValues := &models.ObservationServiceHelmValues{}
-//	eagerDeploymentConfig := &timberv1.ObservationServiceConfig{
-//		Source: &timberv1.ObservationServiceDataSource{
-//			Type: timberv1.ObservationServiceDataSourceType_OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER,
-//		},
-//	}
-//
-//	// Test Eager Config
-//	_, err := setLogConsumerConfig(helmValues, eagerDeploymentConfig)
-//	s.Suite.Require().Error(fmt.Errorf("source type (eager) is currently unsupported"), err)
-//
-//	// Test Kafka Config
-//	kafkaDeploymentConfig := &timberv1.ObservationServiceConfig{
-//		Source: &timberv1.ObservationServiceDataSource{
-//			Type: timberv1.ObservationServiceDataSourceType_OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA,
-//		},
-//	}
-//	actual, err := setLogConsumerConfig(helmValues, kafkaDeploymentConfig)
-//	s.Suite.Require().NoError(err)
-//	s.Suite.Assert().Equal("kafka", actual.ObservationServiceConfig.ApiConfig.LogConsumerConfig.Kind)
-//	s.Suite.Assert().Equal(
-//		models.NewKafkaConfig(kafkaDeploymentConfig.GetSource().GetKafkaConfig()),
-//		actual.ObservationServiceConfig.ApiConfig.LogConsumerConfig.KafkaConfig,
-//	)
-//}
-//
-//func (s *ObservationServiceTestSuite) TestSetProducerConfigValues() {
-//	helmValues := &models.ObservationServiceHelmValues{}
-//	gcpProject := "test-gcp-project"
-//	caramlProject := "pricing-test"
-//	fluentdTag := "observation-service"
-//	fluentdDeploymentConfig := &timberv1.ObservationServiceConfig{
-//		Sink: &timberv1.ObservationServiceDataSink{
-//			Type: timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD,
-//			FluentdConfig: &timberv1.FluentdConfig{
-//				Tag: fluentdTag,
-//			},
-//		},
-//	}
-//
-//	// Test Fluentd Config
-//	expectedFluentDConfig := &os.FluentdConfig{
-//		Tag:  fluentdTag,
-//		Host: fmt.Sprintf("observation-service-fluentd.%s.svc.cluster.local", caramlProject),
-//		Port: 24224,
-//		Kind: os.LoggerBQSinkFluentdProducer,
-//		BQConfig: &os.BQConfig{
-//			Project: gcpProject,
-//			Dataset: caramlProject,
-//			Table:   fmt.Sprintf("%s_observation_log", caramlProject),
-//		},
-//	}
-//	actual, err := setLogProducerConfig(helmValues, fluentdDeploymentConfig, gcpProject, caramlProject)
-//	s.Suite.Require().NoError(err)
-//	s.Suite.Assert().Equal("fluentd", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
-//	s.Suite.Assert().Equal(expectedFluentDConfig, actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.FluentdConfig)
-//
-//	// Test Kafka Config
-//	kafkaDeploymentConfig := &timberv1.ObservationServiceConfig{
-//		Sink: &timberv1.ObservationServiceDataSink{
-//			Type: timberv1.ObservationServiceDataSinkType_OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA,
-//		},
-//	}
-//	actual, err = setLogProducerConfig(helmValues, kafkaDeploymentConfig, gcpProject, caramlProject)
-//	s.Suite.Require().NoError(err)
-//	s.Suite.Assert().Equal("kafka", actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.Kind)
-//	s.Suite.Assert().Equal(
-//		models.NewKafkaConfig(kafkaDeploymentConfig.GetSink().GetKafkaConfig()),
-//		actual.ObservationServiceConfig.ApiConfig.LogProducerConfig.KafkaConfig,
-//	)
-//}
+import (
+	"fmt"
+	"testing"
+
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/config"
+	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
+	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	osconfig "github.com/caraml-dev/timber/observation-service/config"
+	"github.com/imdario/mergo"
+	"github.com/jinzhu/copier"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
+	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/release"
+)
+
+type ObservationServiceTestSuite struct {
+	suite.Suite
+	obs            *observationService
+	mockHelmClient *mocks.Client
+}
+
+func (s *ObservationServiceTestSuite) SetupSuite() {
+	s.Suite.T().Log("Setting up ObservationServiceTestSuite")
+	cfg, err := config.Load("testdata/test_config.yaml")
+	s.NoError(err)
+
+	s.mockHelmClient = &mocks.Client{}
+	chartStub := &chart.Chart{}
+
+	s.obs = &observationService{
+		helmClient:         s.mockHelmClient,
+		helmChart:          chartStub,
+		commonDeployConfig: cfg.CommonDeploymentConfig,
+		defaults:           cfg.ObservationServiceConfig.DefaultValues,
+	}
+}
+
+func (s *ObservationServiceTestSuite) TearDownSuite() {
+	s.Suite.T().Log("Cleaning up ObservationServiceTestSuite")
+}
+
+func (s *ObservationServiceTestSuite) TestCreate() {
+	type args struct {
+		projectName string
+		svc         *timberv1.ObservationService
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want *timberv1.ObservationService
+		// helm values that's being overriden by observation service
+		wantOverrideHelmValues *values.ObservationServiceHelmValues
+		wantErr                bool
+	}{
+		{
+			name: "create",
+			args: args{
+				projectName: "my-project",
+				svc: &timberv1.ObservationService{
+					ProjectId: 1,
+					Name:      "my-observation-svc",
+					Source: &timberv1.ObservationServiceSource{
+						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+						Kafka: &timberv1.KafkaConfig{
+							Brokers: "kafka.brokers",
+							Topic:   "sample-topic",
+						},
+					},
+				},
+			},
+			wantOverrideHelmValues: &values.ObservationServiceHelmValues{
+				ObservationService: values.ObservationService{
+					APIConfig: osconfig.Config{
+						DeploymentConfig: osconfig.DeploymentConfig{
+							ProjectName: "my-project",
+							ServiceName: "my-observation-svc",
+						},
+						LogConsumerConfig: osconfig.LogConsumerConfig{
+							Kind: osconfig.LoggerKafkaConsumer,
+							KafkaConfig: &osconfig.KafkaConfig{
+								Brokers: "kafka.brokers",
+								Topic:   "sample-topic",
+							},
+						},
+						LogProducerConfig: osconfig.LogProducerConfig{
+							Kind: osconfig.LoggerFluentdProducer,
+							FluentdConfig: &osconfig.FluentdConfig{
+								Kind: osconfig.LoggerBQSinkFluentdProducer,
+								Host: "os-my-observation-svc-fluentd.my-project",
+								BQConfig: &osconfig.BQConfig{
+									Project: "my-gcp-project",
+									Dataset: "caraml_my_project",
+									Table:   "os_my_observation_svc",
+								},
+							},
+						},
+						MonitoringConfig: osconfig.MonitoringConfig{},
+					},
+				},
+				Fluentd: values.FluentdHelmValues{
+					ExtraEnvs: values.MerveEnvs(s.obs.defaults.Fluentd.ExtraEnvs, []values.Env{
+						{
+							Name:  values.FluentdBQDatasetEnv,
+							Value: "caraml_my_project",
+						},
+						{
+							Name:  values.FluentdGCPProjectEnv,
+							Value: "my-gcp-project",
+						},
+						{
+							Name:  values.FluentdBQTableEnv,
+							Value: "os_my_observation_svc",
+						},
+					}),
+				},
+			},
+			want: &timberv1.ObservationService{
+				ProjectId: 1,
+				Name:      "my-observation-svc",
+				Source: &timberv1.ObservationServiceSource{
+					Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+					Kafka: &timberv1.KafkaConfig{
+						Brokers: "kafka.brokers",
+						Topic:   "sample-topic",
+					},
+				},
+				Status: timberv1.Status_STATUS_DEPLOYED,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			s.mockHelmClient.On("Install",
+				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
+				tt.args.projectName,
+				s.obs.helmChart,
+				mock.Anything,
+				mock.Anything,
+			).
+				Return(&release.Release{
+					Info: &release.Info{
+						Status: release.StatusDeployed,
+					},
+				}, nil)
+			got, err := s.obs.Create(tt.args.projectName, tt.args.svc)
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			assert.Equal(s.T(), tt.want, got)
+
+			// validate that the helm values passed to helm client is as expected
+			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
+			s.assertHelmValuesOverride(tt.wantOverrideHelmValues)
+			s.mockHelmClient.AssertExpectations(s.T())
+		})
+	}
+}
+
+func (s *ObservationServiceTestSuite) TestUpdate() {
+	type args struct {
+		projectName string
+		svc         *timberv1.ObservationService
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want *timberv1.ObservationService
+		// helm values that's being overriden by observation service
+		wantOverrideHelmValues *values.ObservationServiceHelmValues
+		wantErr                bool
+	}{
+		{
+			name: "update",
+			args: args{
+				projectName: "my-project",
+				svc: &timberv1.ObservationService{
+					ProjectId: 1,
+					Name:      "my-observation-svc",
+					Source: &timberv1.ObservationServiceSource{
+						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+						Kafka: &timberv1.KafkaConfig{
+							Brokers: "kafka.brokers",
+							Topic:   "sample-topic",
+						},
+					},
+				},
+			},
+			wantOverrideHelmValues: &values.ObservationServiceHelmValues{
+				ObservationService: values.ObservationService{
+					APIConfig: osconfig.Config{
+						DeploymentConfig: osconfig.DeploymentConfig{
+							ProjectName: "my-project",
+							ServiceName: "my-observation-svc",
+						},
+						LogConsumerConfig: osconfig.LogConsumerConfig{
+							Kind: osconfig.LoggerKafkaConsumer,
+							KafkaConfig: &osconfig.KafkaConfig{
+								Brokers: "kafka.brokers",
+								Topic:   "sample-topic",
+							},
+						},
+						LogProducerConfig: osconfig.LogProducerConfig{
+							Kind: osconfig.LoggerFluentdProducer,
+							FluentdConfig: &osconfig.FluentdConfig{
+								Kind: osconfig.LoggerBQSinkFluentdProducer,
+								Host: "os-my-observation-svc-fluentd.my-project",
+								BQConfig: &osconfig.BQConfig{
+									Project: "my-gcp-project",
+									Dataset: "caraml_my_project",
+									Table:   "os_my_observation_svc",
+								},
+							},
+						},
+						MonitoringConfig: osconfig.MonitoringConfig{},
+					},
+				},
+				Fluentd: values.FluentdHelmValues{
+					ExtraEnvs: values.MerveEnvs(s.obs.defaults.Fluentd.ExtraEnvs, []values.Env{
+						{
+							Name:  values.FluentdBQDatasetEnv,
+							Value: "caraml_my_project",
+						},
+						{
+							Name:  values.FluentdGCPProjectEnv,
+							Value: "my-gcp-project",
+						},
+						{
+							Name:  values.FluentdBQTableEnv,
+							Value: "os_my_observation_svc",
+						},
+					}),
+				},
+			},
+			want: &timberv1.ObservationService{
+				ProjectId: 1,
+				Name:      "my-observation-svc",
+				Source: &timberv1.ObservationServiceSource{
+					Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+					Kafka: &timberv1.KafkaConfig{
+						Brokers: "kafka.brokers",
+						Topic:   "sample-topic",
+					},
+				},
+				Status: timberv1.Status_STATUS_DEPLOYED,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		s.Run(tt.name, func() {
+			s.mockHelmClient.On("Upgrade",
+				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
+				tt.args.projectName,
+				s.obs.helmChart,
+				mock.Anything,
+				mock.Anything,
+			).
+				Return(&release.Release{
+					Info: &release.Info{
+						Status: release.StatusDeployed,
+					},
+				}, nil)
+			got, err := s.obs.Update(tt.args.projectName, tt.args.svc)
+			if (err != nil) != tt.wantErr {
+				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			assert.Equal(s.T(), tt.want, got)
+
+			// validate that the helm values passed to helm client is as expected
+			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
+			s.assertHelmValuesOverride(tt.wantOverrideHelmValues)
+			s.mockHelmClient.AssertExpectations(s.T())
+		})
+	}
+}
+
+func (s *ObservationServiceTestSuite) assertHelmValuesOverride(override *values.ObservationServiceHelmValues) {
+	// copy first to avoid s.obs.defaults getting overwritten by test
+	expHelmValues := values.ObservationServiceHelmValues{}
+	err := copier.CopyWithOption(&expHelmValues, s.obs.defaults, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	s.NoError(err)
+
+	// merge expHelmValues (that contains copy of s.obs.defaults) with expected override
+	err = mergo.Merge(&expHelmValues, override, mergo.WithOverride)
+	s.NoError(err)
+
+	// compare against the value received by mock helm client
+	gotHelmValues := s.mockHelmClient.Calls[0].Arguments[3]
+	wantRawValues, err := values.ToRaw(expHelmValues)
+	s.NoError(err)
+
+	assert.Equal(s.T(), wantRawValues, gotHelmValues)
+}
+
+func TestObservationService(t *testing.T) {
+	suite.Run(t, new(ObservationServiceTestSuite))
+}

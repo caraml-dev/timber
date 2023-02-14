@@ -1,5 +1,7 @@
 package values
 
+import "encoding/json"
+
 // Docker image configuration
 type ImageConfig struct {
 	// docker registry
@@ -92,4 +94,19 @@ func MerveEnvs(left []Env, right []Env) []Env {
 	}
 
 	return left
+}
+
+func ToRaw(val any) (map[string]any, error) {
+	var interfaceValues map[string]any
+	byteArr, err := json.Marshal(val)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(byteArr, &interfaceValues)
+	if err != nil {
+		return nil, err
+	}
+
+	return interfaceValues, nil
 }

@@ -30,3 +30,21 @@ type FluentdHelmValues struct {
 	// FluentdHelmValues enable flag is used when deploying observation service
 	Enabled bool `json:"enabled,omitempty"`
 }
+
+const (
+	// Fluentd environment variable to modify GCP Project name
+	FluentdGCPProjectEnv = "FLUENTD_GCP_PROJECT"
+	// Fluentd environment variable to modify BQ dataset name to write into
+	FluentdBQDatasetEnv = "FLUENTD_BQ_DATASET"
+	// Fluentd environment variable to modify BQ table name to write into
+	FluentdBQTableEnv = "FLUENTD_BQ_TABLE"
+
+	// Fluentd environment variable to source kafka broker
+	FluentdKafkaBrokerEnv = "FLUENTD_KAFKA_BROKER"
+	// Fluentd environment variable to modify source kafka topic
+	FluentdKafkaTopicEnv = "FLUENTD_KAFKA_TOPIC"
+	// Fluentd environment variable to modify protobuf name for parsing kafka payload
+	FluentdProtoClassNameEnv = "FLUENTD_KAFKA_PROTO_CLASS_NAME"
+	// Fluentd environment variable to modify tag name
+	FluentdTagEnv = "FLUENTD_TAG"
+)
