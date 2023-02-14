@@ -43,9 +43,8 @@ func TestDefaultConfigs(t *testing.T) {
 			},
 		},
 		LogProducerConfig: LogProducerConfig{
-			Kind:                 "",
-			QueueLength:          100,
-			FlushIntervalSeconds: 1,
+			Kind:        "",
+			QueueLength: 100000,
 			KafkaConfig: &KafkaConfig{
 				Brokers:          "",
 				Topic:            "",
@@ -118,9 +117,8 @@ func TestLoadConfigFiles(t *testing.T) {
 					},
 				},
 				LogProducerConfig: LogProducerConfig{
-					Kind:                 "",
-					QueueLength:          100,
-					FlushIntervalSeconds: 1,
+					Kind:        "",
+					QueueLength: 100000,
 					KafkaConfig: &KafkaConfig{
 						Brokers:          "",
 						Topic:            "",

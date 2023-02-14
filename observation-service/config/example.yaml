@@ -1,5 +1,4 @@
-HTTPPort: 8081
-GRPCPort: 9001
+Port: 9001
 
 DeploymentConfig:
   EnvironmentType: local
@@ -21,3 +20,28 @@ SentryConfig:
   DSN: xxx.xxx.xxx
   Labels:
     App: observation-service
+
+## Eg. Consume messages asynchronously from Kafka
+# LogConsumerConfig:
+#   Kind: kafka
+#   KafkaConfig:
+#     Brokers: localhost:9092
+#     Topic: local-test-source
+
+## Eg. Produce messages to Fluentd
+# LogProducerConfig:
+#   Kind: fluentd
+#   KafkaConfig:
+#     Brokers: localhost:9092
+#     Topic: local-test-source
+  
+#   FluentdConfig:
+#     Kind: bq
+#     Host: localhost
+#     Port: 24224
+#     Tag: observation-service
+#     BufferLimit: 8192
+#     BQConfig:
+#       Project: my-bq-project
+#       Dataset: my-bq-dataset
+#       Table: my-bq-table

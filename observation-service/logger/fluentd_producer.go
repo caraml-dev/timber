@@ -60,20 +60,18 @@ func NewFluentdLogProducer(
 }
 
 // Produce logs ObservationLog via Fluentd to the configured sink
-func (p *FluentdLogProducer) Produce(logs []*types.ObservationLogEntry) {
-	for _, observationLog := range logs {
-		logFormattedVal, err := observationLog.Value()
-		if err != nil {
-			// TODO: Send failed ObservationLog to deadletter sink
-			p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-			log.Error(err)
-		}
-		err = p.logger.Post(p.tag, logFormattedVal)
-		if err != nil {
-			p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-			log.Error(err)
-		}
-		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs)
+func (p *FluentdLogProducer) Produce(observationLog *types.ObservationLogEntry) {
+	logFormattedVal, err := observationLog.Value()
+	if err != nil {
+		// TODO: Send failed ObservationLog to deadletter sink
+		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
+		log.Error(err)
 	}
+	err = p.logger.Post(p.tag, logFormattedVal)
+	if err != nil {
+		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
+		log.Error(err)
+	}
+	p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
+	p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs)
 }

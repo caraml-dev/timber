@@ -113,10 +113,8 @@ const (
 type LogProducerConfig struct {
 	// The type of Data Sink for Observation logs
 	Kind ObservationLoggerProducerKind `default:""`
-	// Maximum no. of Observation logs to be stored in-memory prior to flushing to Data sink
-	QueueLength int `default:"100"`
-	// Duration that specifies how often in-memory Observation logs should be flushed to Data sink
-	FlushIntervalSeconds int `default:"1"`
+	// Maximum no. of Observation logs to be stored in Go channel
+	QueueLength int `default:"100000"`
 
 	// KafkaConfig captures the config related to initializing a Kafka Producer
 	KafkaConfig *KafkaConfig
