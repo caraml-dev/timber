@@ -9,6 +9,8 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v0.9.1
 	github.com/gojek/mlp v1.7.5-0.20230117024729-05ede139570e
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
+	github.com/imdario/mergo v0.3.12
+	github.com/jinzhu/copier v0.3.5
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
@@ -92,7 +94,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jdxcode/netrc v0.0.0-20210204082910-926c7f70242a // indirect
 	github.com/jmoiron/sqlx v1.3.5 // indirect
