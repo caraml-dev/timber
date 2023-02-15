@@ -2,7 +2,7 @@ package values
 
 import obsconfig "github.com/caraml-dev/timber/observation-service/config"
 
-// Type for configuring observation service deployment via helm
+// ObservationServiceHelmValues Observation service helm values
 type ObservationServiceHelmValues struct {
 	// Full name override
 	FullNameOverride string `json:"fullNameOverride,omitempty"`
@@ -12,7 +12,7 @@ type ObservationServiceHelmValues struct {
 	Fluentd FluentdHelmValues `json:"fluentd,omitempty"`
 }
 
-// Observation service deployment configurations
+// ObservationService Observation service deployment configurations
 type ObservationService struct {
 	// Observation service image to be deployed
 	Image ImageConfig `json:"image,omitempty"`

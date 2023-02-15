@@ -1,6 +1,6 @@
 package values
 
-// Type for configuring fluentd deployment via helm
+// FluentdHelmValues Fluentd helm values
 type FluentdHelmValues struct {
 	// Full name override
 	NameOverride string `json:"nameOverride,omitempty"`
@@ -32,19 +32,19 @@ type FluentdHelmValues struct {
 }
 
 const (
-	// Fluentd environment variable to modify GCP Project name
+	// FluentdGCPProjectEnv Fluentd environment variable to modify GCP Project name
 	FluentdGCPProjectEnv = "FLUENTD_GCP_PROJECT"
-	// Fluentd environment variable to modify BQ dataset name to write into
+	// FluentdBQDatasetEnv Fluentd environment variable to modify BQ dataset name to write into
 	FluentdBQDatasetEnv = "FLUENTD_BQ_DATASET"
-	// Fluentd environment variable to modify BQ table name to write into
+	// FluentdBQTableEnv Fluentd environment variable to modify BQ table name to write into
 	FluentdBQTableEnv = "FLUENTD_BQ_TABLE"
 
-	// Fluentd environment variable to source kafka broker
+	// FluentdKafkaBrokerEnv Fluentd environment variable to source kafka broker
 	FluentdKafkaBrokerEnv = "FLUENTD_KAFKA_BROKER"
-	// Fluentd environment variable to modify source kafka topic
+	// FluentdKafkaTopicEnv Fluentd environment variable to modify source kafka topic
 	FluentdKafkaTopicEnv = "FLUENTD_KAFKA_TOPIC"
-	// Fluentd environment variable to modify protobuf name for parsing kafka payload
+	// FluentdProtoClassNameEnv Fluentd environment variable to modify protobuf name for parsing kafka payload
 	FluentdProtoClassNameEnv = "FLUENTD_KAFKA_PROTO_CLASS_NAME"
-	// Fluentd environment variable to modify tag name
+	// FluentdTagEnv Fluentd environment variable to modify tag name
 	FluentdTagEnv = "FLUENTD_TAG"
 )

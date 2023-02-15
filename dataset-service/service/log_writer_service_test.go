@@ -46,7 +46,7 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 		name string
 		args args
 		want *timberv1.LogWriter
-		// helm values that's being overriden by observation service
+		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.FluentdHelmValues
 		wantErr                bool
 	}{
@@ -243,7 +243,7 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 		name string
 		args args
 		want *timberv1.LogWriter
-		// helm values that's being overriden by observation service
+		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.FluentdHelmValues
 		wantErr                bool
 	}{

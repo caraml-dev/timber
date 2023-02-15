@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// Docker image configuration
+// ImageConfig Docker image configuration
 type ImageConfig struct {
 	// docker registry
 	Registry string `json:"registry,omitempty"`
@@ -18,7 +18,7 @@ type ImageConfig struct {
 	PullPolicy string `json:"pullPolicy,omitempty"`
 }
 
-// K8S Resource configuration
+// ResourcesConfig resource configurations for controlling requests/limits
 type ResourcesConfig struct {
 	// Resource requests
 	Requests Resource `json:"requests,omitempty"`
@@ -26,7 +26,7 @@ type ResourcesConfig struct {
 	Limits Resource `json:"limits,omitempty"`
 }
 
-// Resource
+// Resource CPU and Memory resource configuration
 type Resource struct {
 	// CPU resource
 	CPU string `json:"cpu,omitempty"`
@@ -34,7 +34,7 @@ type Resource struct {
 	Memory string `json:"memory,omitempty"`
 }
 
-// Autoscaling configuration
+// AutoscalingConfig Autoscaling configuration
 type AutoscalingConfig struct {
 	// Enable/disable autoscaling flag
 	Enabled bool `json:"enabled,omitempty"`
@@ -46,7 +46,7 @@ type AutoscalingConfig struct {
 	TargetCPUUtilizationPercentage int `json:"targetCPUUtilizationPercentage,omitempty"`
 }
 
-// Persistent volume claim configuration
+// PVCConfig Persistent volume claim configuration
 type PVCConfig struct {
 	// Name of pvc
 	Name string `json:"name,omitempty"`
@@ -56,7 +56,7 @@ type PVCConfig struct {
 	Storage string `json:"storage,omitempty"`
 }
 
-// Environment variable
+// Env environment variable
 type Env struct {
 	// Environment variable name
 	Name string `json:"name,omitempty"`
@@ -64,19 +64,29 @@ type Env struct {
 	Value string `json:"value,omitempty"`
 }
 
+// GCPServiceAccount configuration for setting the GCP service account to use
 type GCPServiceAccount struct {
-	CredentialsData string      `json:"credentialsData,omitempty"`
-	Credentials     Credentials `json:"credentials,omitempty"`
+	// String containing base64 of the GCP service account json
+	CredentialsData string `json:"credentialsData,omitempty"`
+	// Credentials allow mounting an existing secret
+	Credentials Credentials `json:"credentials,omitempty"`
 }
 
+// Credentials existing secret
 type Credentials struct {
+	// Name of secret
 	Name string `json:"name,omitempty"`
-	Key  string `json:"key,omitempty"`
+	// Key of secret
+	Key string `json:"key,omitempty"`
 }
 
+// Service K8S service configuration
 type Service struct {
-	Type         string `json:"type,omitempty"`
+	// Type of the service
+	Type string `json:"type,omitempty"`
+	// Port exposed by the service
 	ExternalPort string `json:"externalPort,omitempty"`
+	// Pod's port being mapped to the external port
 	InternalPort string `json:"internalPort,omitempty"`
 }
 
@@ -84,7 +94,7 @@ type Service struct {
 func MerveEnvs(left []Env, right []Env) []Env {
 	newSlice := make([]Env, len(left))
 
-	copier.CopyWithOption(&newSlice, &left, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	_ = copier.CopyWithOption(&newSlice, &left, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	for _, e := range right {
 		found := false
 		for i, d := range newSlice {
@@ -103,6 +113,7 @@ func MerveEnvs(left []Env, right []Env) []Env {
 	return newSlice
 }
 
+// ToRaw converts struct value to map[string]any
 func ToRaw(val any) (map[string]any, error) {
 	var interfaceValues map[string]any
 	byteArr, err := json.Marshal(val)

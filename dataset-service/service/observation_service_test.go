@@ -47,7 +47,7 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 		name string
 		args args
 		want *timberv1.ObservationService
-		// helm values that's being overriden by observation service
+		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.ObservationServiceHelmValues
 		wantErr                bool
 	}{
@@ -177,7 +177,7 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 		name string
 		args args
 		want *timberv1.ObservationService
-		// helm values that's being overriden by observation service
+		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.ObservationServiceHelmValues
 		wantErr                bool
 	}{

@@ -12,14 +12,14 @@ import (
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 )
 
-// Helm client
+// Client is interface for a helm client
 type Client interface {
 	// ReadChart read a helm chart given by the chart path.
 	ReadChart(chartPath string) (*chart.Chart, error)
 	// Install installs a new helm release. Failed if there is an existing release.
-	Install(releaseName string, namespaceName string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
+	Install(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
 	// Upgrade upgrades an existing helm release. Failed if there are no existing release.
-	Upgrade(releaseName string, namespaceName string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
+	Upgrade(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
 	// GetRelease get a helm release.
 	GetRelease(releaseName string, namespaceName string, actionConfig *action.Configuration) (*release.Release, error)
 }
@@ -72,18 +72,23 @@ func (h *helmClient) ReadChart(chartPath string) (*chart.Chart, error) {
 }
 
 // Install a new helm release
-func (h *helmClient) Install(releaseName string, namespaceName string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error) {
-	actionConfig, err := h.initializeConfig(actionConfig, namespaceName)
+func (h *helmClient) Install(release string,
+	namespace string,
+	chart *chart.Chart,
+	values map[string]any,
+	actionConfig *action.Configuration) (*release.Release, error) {
+
+	actionConfig, err := h.initializeConfig(actionConfig, namespace)
 	if err != nil {
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
 	installation := action.NewInstall(actionConfig)
-	installation.ReleaseName = releaseName
-	installation.Namespace = namespaceName
+	installation.ReleaseName = release
+	installation.Namespace = namespace
 	installation.CreateNamespace = true
 
-	log.Debugf("installing helm release: %s, namespace: %s, chart: %s, chart version: %s", releaseName, namespaceName, chart.Name(), chart.Metadata.Version)
+	log.Debugf("installing helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
 	r, err := installation.Run(chart, values)
 	if err != nil {
 		return nil, err
@@ -94,17 +99,22 @@ func (h *helmClient) Install(releaseName string, namespaceName string, chart *ch
 }
 
 // Updgrade an existing helm release
-func (h *helmClient) Upgrade(releaseName string, namespaceName string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error) {
-	actionConfig, err := h.initializeConfig(actionConfig, namespaceName)
+func (h *helmClient) Upgrade(release string,
+	namespace string,
+	chart *chart.Chart,
+	values map[string]any,
+	actionConfig *action.Configuration) (*release.Release, error) {
+
+	actionConfig, err := h.initializeConfig(actionConfig, namespace)
 	if err != nil {
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
 	upgrade := action.NewUpgrade(actionConfig)
-	upgrade.Namespace = namespaceName
+	upgrade.Namespace = namespace
 
-	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", releaseName, namespaceName, chart.Name(), chart.Metadata.Version)
-	r, err := upgrade.Run(releaseName, chart, values)
+	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
+	r, err := upgrade.Run(release, chart, values)
 	if err != nil {
 		return nil, err
 	}

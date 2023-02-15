@@ -142,7 +142,7 @@ jobs:
       
       - name: Run Dataset Service test
         working-directory: dataset-service
-        run: make test-dataset-service
+        run: make test
 
   unit-tests-upi-logs-parser:
     runs-on: ubuntu-latest

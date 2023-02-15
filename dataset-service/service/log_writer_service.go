@@ -39,6 +39,7 @@ type logWriterService struct {
 	defaults           *values.FluentdHelmValues
 }
 
+// NewLogWriterService create a new instance of log writer service
 func NewLogWriterService(commonDeployConfig *config.CommonDeploymentConfig, logWriterConfig *config.LogWriterConfig) (LogWriterService, error) {
 	helmClient := helm.NewClient(commonDeployConfig.KubeConfig)
 	helmChart, err := helmClient.ReadChart(logWriterConfig.HelmChartPath)
@@ -116,7 +117,10 @@ func (l *logWriterService) createHelmValues(projectName string, logWriter *timbe
 	return values.ToRaw(val)
 }
 
-func (l *logWriterService) configureSource(val *values.FluentdHelmValues, kafkaConfig *timberv1.KafkaConfig, logType timberv1.LogWriterSourceType) (*values.FluentdHelmValues, error) {
+func (l *logWriterService) configureSource(val *values.FluentdHelmValues,
+	kafkaConfig *timberv1.KafkaConfig,
+	logType timberv1.LogWriterSourceType) (*values.FluentdHelmValues, error) {
+
 	protoName := predictionLogProto
 	if logType == timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG {
 		protoName = routerLogProto
@@ -147,7 +151,10 @@ func (l *logWriterService) configureSource(val *values.FluentdHelmValues, kafkaC
 	return val, nil
 }
 
-func (l *logWriterService) configureSink(val *values.FluentdHelmValues, projectName string, kafkaConfig *timberv1.KafkaConfig) (*values.FluentdHelmValues, error) {
+func (l *logWriterService) configureSink(val *values.FluentdHelmValues,
+	projectName string,
+	kafkaConfig *timberv1.KafkaConfig) (*values.FluentdHelmValues, error) {
+
 	datasetName := bq.DatasetFromProject(l.commonDeployConfig.BQConfig, projectName)
 	tableName := bq.TableFromKafkaTopic(kafkaConfig.Topic)
 	val.ExtraEnvs = values.MerveEnvs(

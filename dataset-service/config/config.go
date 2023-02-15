@@ -22,6 +22,7 @@ type Config struct {
 	LogWriterConfig *LogWriterConfig
 }
 
+// DatasetServiceConfig configuration for dataset-service
 type DatasetServiceConfig struct {
 	// Port to be used by dataset service
 	Port int `envconfig:"PORT" default:"8080"`
@@ -35,6 +36,7 @@ type DatasetServiceConfig struct {
 	SentryConfig *sentry.Config
 }
 
+// CommonDeploymentConfig configuration common to both observation-service and log writer deployment
 type CommonDeploymentConfig struct {
 	// environment type of the deployment
 	EnvironmentType string `default:"local"`
@@ -44,6 +46,7 @@ type CommonDeploymentConfig struct {
 	BQConfig *BQConfig
 }
 
+// BQConfig BigQuery configuration
 type BQConfig struct {
 	// GCPProject specifies the GCP project where BQ logs will be written to via FluentdHelmValues
 	GCPProject string
@@ -53,7 +56,7 @@ type BQConfig struct {
 	ObservationBQTablePrefix string `default:"os"`
 }
 
-// ObservationServiceConfig captures the configuration used for log storage
+// ObservationServiceConfig configuration for deploying observation service
 type ObservationServiceConfig struct {
 	// link to Observation Service Helm chart for deployment
 	HelmChartPath string
@@ -61,10 +64,11 @@ type ObservationServiceConfig struct {
 	DefaultValues *values.ObservationServiceHelmValues
 }
 
+// LogWriterConfig configuration for deploying log writer
 type LogWriterConfig struct {
 	// link to Log Writer Helm chart for deployment
 	HelmChartPath string
-	// Default helm valus to be used when deploying log writer
+	// Default helm values to be used when deploying log writer
 	DefaultValues *values.FluentdHelmValues
 }
 

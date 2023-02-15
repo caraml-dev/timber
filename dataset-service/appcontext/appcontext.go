@@ -37,6 +37,10 @@ func NewAppContext(cfg *config.Config) (*AppContext, error) {
 		cfg.LogWriterConfig,
 	)
 
+	if err != nil {
+		return nil, err
+	}
+
 	allServices = service.NewServices(
 		mlpSvc,
 		obsSvc,

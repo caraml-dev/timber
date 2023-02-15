@@ -140,7 +140,12 @@ func setLogConsumerConfig(
 
 // setLogProducerConfig configures destination to which the observation service (in particular fluentd) write into
 // to reduce complexity, it's limited to the bigquery
-func setLogProducerConfig(releaseName string, projectName string, val *values.ObservationServiceHelmValues, svc *timberv1.ObservationService, bqConfig *config.BQConfig) (*values.ObservationServiceHelmValues, error) {
+func setLogProducerConfig(releaseName string,
+	projectName string,
+	val *values.ObservationServiceHelmValues,
+	svc *timberv1.ObservationService,
+	bqConfig *config.BQConfig) (*values.ObservationServiceHelmValues, error) {
+
 	// configure fluentd and BQ as default
 	val.ObservationService.APIConfig.LogProducerConfig.Kind = osconfig.LoggerFluentdProducer
 	val.ObservationService.APIConfig.LogProducerConfig.FluentdConfig.Kind = osconfig.LoggerBQSinkFluentdProducer
