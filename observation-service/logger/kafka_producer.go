@@ -92,6 +92,13 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 	}, deliveryChan)
 	if err != nil {
 		log.Error(err)
+		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
+		p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
+		// Log E2E latency
+		labels = map[string]string{
+			"component": "e2e",
+		}
+		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
 	} else {
 		// Log kafka latency
 		p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)

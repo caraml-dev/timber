@@ -74,8 +74,14 @@ func (p *FluentdLogProducer) Produce(observationLog *types.ObservationLogEntry) 
 	fluentdFlushStartTime := time.Now()
 	err = p.logger.Post(p.tag, logFormattedVal)
 	if err != nil {
-		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 		log.Error(err)
+		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
+		p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
+		// Log E2E latency
+		labels = map[string]string{
+			"component": "e2e",
+		}
+		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
 	} else {
 		// Log fluentd latency
 		p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
