@@ -6,16 +6,23 @@ OBSERVATION_SVC_BIN_NAME=$(if $(OBSERVATION_SVC_NAME),$(OBSERVATION_SVC_NAME),ob
 # ==================================
 # Build recipes
 # ==================================
+## Build observation service binary
 .PHONY: build
 build: version
 	@echo "Building binary..."
 	go build -o ./bin/${OBSERVATION_SVC_BIN_NAME} ./cmd/${OBSERVATION_SVC_PATH}/main.go
 
+## Build observation service docker image
 .PHONY: build-image
 build-image: vendor version
 	@$(eval IMAGE_TAG = $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/,)${BIN_NAME}:${VERSION})
 	@echo "Building docker image: ${IMAGE_TAG}"
 	docker build --tag ${IMAGE_TAG} . -f ${DOCKER_FILE}
+
+## Build fluentd image
+.PHONY: build-fluentd-image
+build-fluentd-image:
+	$(MAKE) -C ../images/fluentd build-image
 
 # ==================================
 # General
@@ -39,18 +46,26 @@ tidy:
 format: 
 	gofmt -s -w .
 
+.PHONY: dev-env
+dev-env:
+	cd ../infra/local/observation-service && docker-compose up -d
+
+
+.PHONY: clean-dev-env
+clean-dev-env:
+	cd ../infra/local/observation-service && docker-compose down
+
 # ==================================
-# Setup Services
+# Run Services
 # ==================================
 
-.PHONY: observation-service
-observation-service:
+.PHONY: run
+run:
 	go run cmd/observation-service/main.go serve --config="config/example.yaml"
 
 # ==================================
 # Test recipes
 # ==================================
-
 .PHONY: test
 test: tidy vendor
 	@echo "> Running Observation Service tests ..."

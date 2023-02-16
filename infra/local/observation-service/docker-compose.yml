@@ -29,7 +29,7 @@ services:
     command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
 
   fluentd:
-    image: observation-service-fluentd
+    image: fluentd
     container_name: fluentd
     volumes:
       - ./service-account.json:/etc/gcp_service_account/service-account.json
