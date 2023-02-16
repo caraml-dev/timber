@@ -58,7 +58,7 @@ format:
 # ==================================
 .PHONY: generate
 ## Generate code from protobuf definition
-generate: lint
+generate:
 	@buf generate
 
 .PHONY: lint
