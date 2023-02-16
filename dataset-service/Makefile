@@ -3,7 +3,7 @@
 # ==================================
 .PHONY: build
 ## Build dataset-service binary
-build: generate
+build:
 	@echo "> Building dataset service"
 	go build -o ./bin/dataset-service ./cmd/dataset-service
 
