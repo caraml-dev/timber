@@ -13,6 +13,7 @@ import (
 	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/soheilhy/cmux"
+	_ "go.uber.org/automaxprocs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"

@@ -11,4 +11,4 @@ func NewNoopLogProducer() (*NoopLogProducer, error) {
 }
 
 // Produce does nothing to ObservationLog
-func (k *NoopLogProducer) Produce(log []*types.ObservationLogEntry) {}
+func (k *NoopLogProducer) Produce(log *types.ObservationLogEntry) {}

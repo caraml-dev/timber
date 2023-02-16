@@ -64,7 +64,7 @@ func GetCounterMap() map[metrics.MetricName]metrics.PrometheusCounterVec {
 
 // GetHistogramMap configures histogram metrics
 func GetHistogramMap() map[metrics.MetricName]metrics.PrometheusHistogramVec {
-	allLabels := []string{"project_name", "service_name", "response_code"}
+	allLabels := []string{"project_name", "service_name", "response_code", "component"}
 
 	histogramMap := map[metrics.MetricName]metrics.PrometheusHistogramVec{
 		RequestDurationMs: prometheus.NewHistogramVec(prometheus.HistogramOpts{
