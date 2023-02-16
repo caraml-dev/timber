@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/caraml-dev/timber/common/errors"
 	"github.com/caraml-dev/timber/common/log"
@@ -76,7 +77,15 @@ func NewServer(configFiles []string) (*Server, error) {
 	}
 
 	// Creating mux for gRPC gateway. This will multiplex or route request to different gRPC service.
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseProtoNames: true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
+	)
 	// Register custom controller gRPC service
 	grpcServer, srv := controller.NewDatasetServiceController(appCtx)
 	reflection.Register(grpcServer)
