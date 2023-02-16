@@ -1,4 +1,8 @@
 zookeeper:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
   persistence:
     enabled: false
 persistence:
@@ -6,5 +10,5 @@ persistence:
 autoCreateTopicsEnable: true
 resources:
   requests:
-    cpu: 500m
-    memory: 1Gi
+    cpu: 100m
+    memory: 512Mi
