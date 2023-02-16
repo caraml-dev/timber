@@ -227,9 +227,8 @@ func TestLoadConfigFiles(t *testing.T) {
 									},
 								},
 								LogProducerConfig: config.LogProducerConfig{
-									Kind:                 "fluentd",
-									QueueLength:          100,
-									FlushIntervalSeconds: 10,
+									Kind:        "fluentd",
+									QueueLength: 100,
 									KafkaConfig: &config.KafkaConfig{
 										Brokers:          "",
 										Topic:            "",

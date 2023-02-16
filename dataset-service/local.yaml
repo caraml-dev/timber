@@ -75,7 +75,6 @@ observationServiceConfig:
             maxMessageBytes: 1048589
             autoOffsetReset: earliest
         logProducerConfig:
-          flushIntervalSeconds: 10
           kind: fluentd
           fluentdConfig:
             host: obs-timber-observation-service-fluentd # will be modified per deployment
