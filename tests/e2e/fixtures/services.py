@@ -25,7 +25,7 @@ def _service_dir(service_name) -> Path:
 def _default_bin_path(service_name) -> Path:
     return Path.joinpath(
         _service_dir(service_name),
-        f"cmd/{DATASET_SERVICE_NAME}/bin",
+        "bin",
         DATASET_SERVICE_NAME,
     )
 
