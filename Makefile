@@ -5,42 +5,51 @@ DATASET_SVC_PATH=dataset-service
 OBSERVATION_SVC_PATH=observation-service
 
 # ==================================
-# General
+# Build recipes
 # ==================================
+## Build all
+.PHONY: build
+build: build-dataset-service build-observation-service
 
-.PHONY: format
-format: format-go format-python
+## Build dataset service
+.PHONY: build-dataset-service
+build-dataset-service: version
+	$(MAKE) -C dataset-service build
 
-format-go:
-	@echo "> Formatting code"
-	gofmt -s -w ${OBSERVATION_SVC_PATH}
+## Build observation service
+.PHONY: build-observation-service
+build-observation-service: version
+	$(MAKE) -C observation-service build
 
-format-python:
-	$(MAKE) -C tests format
-
+## Generate version
 .PHONY: version
 version:
 	$(eval VERSION=$(if $(OVERWRITE_VERSION),$(OVERWRITE_VERSION),v$(shell scripts/vertagen/vertagen.sh)))
 	@echo "API version:" $(VERSION)
 
 # ==================================
-# Build recipes
+# General
 # ==================================
 
-.PHONY: build-dataset-service
-build-dataset-service: version
-	@echo "Building dataset service binary..."
-	$(MAKE) -C dataset-service build
+## Format all source code
+.PHONY: format
+format: format-go format-python
 
-.PHONY: build-image
-build-image: version
-	@$(eval IMAGE_TAG = $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/,)${BIN_NAME}:${VERSION})
-	@echo "Building docker image: ${IMAGE_TAG}"
-	docker build --tag ${IMAGE_TAG} . -f ${DOCKER_FILE}
+## Format all golang source code
+format-go:
+	@echo "> Formatting code"
+	$(MAKE) -C observation-service format
+	$(MAKE) -C dataset-service format
+
+## Format all python source code
+format-python:
+	$(MAKE) -C tests format
 
 # ==================================
 # Code dependencies recipes
 # ==================================
+
+## Setup dependencies
 .PHONY: setup
 setup:
 	@echo "> Initializing dependencies ..."
@@ -50,6 +59,11 @@ setup:
 	@test -x "$(which pre-commit)" || pip install pre-commit
 	@pre-commit install
 	@pre-commit install-hooks
+
+## Install Python dependencies
+.PHONY: dep-python
+dep-python:
+	$(MAKE) -C tests dep
 
 # ==================================
 # Linting recipes
@@ -62,8 +76,8 @@ lint: lint-go lint-python
 .PHONY: lint-go
 lint-go:
 	@echo "> Linting code..."
-	cd ${DATASET_SVC_PATH} && golangci-lint run --timeout 5m
-	cd ${OBSERVATION_SVC_PATH} && golangci-lint run --timeout 5m
+	$(MAKE) -C dataset-service lint
+	$(MAKE) -C observation-service lint
 	cd ${COMMON_MODULE_PATH} && golangci-lint run --timeout 5m
 
 ## Run python linter
@@ -71,27 +85,23 @@ lint-go:
 lint-python:
 	$(MAKE) -C tests lint
 
-## Install Python dependencies
-.PHONY: dep-python
-dep-python:
-	$(MAKE) -C tests dep
-
 # ==================================
 # Development environment
 # ==================================
 
 ## Setup development environment, the same environment is also used for end to end test
+.PHONY: dev-env
 dev-env:
 	$(MAKE) -C infra/local/dataset-service dev-env
 
 ## Tear down development environment
+.PHONY: clean-dev-env
 clean-dev-env:
 	$(MAKE) -C infra/local/dataset-service clean-dev-env
 
 # ==================================
 # E2E Test
 # ==================================
-
 ## Setup e2e test environment and dependencies
 .PHONY: setup-e2e
 setup-e2e: dev-env build-dataset-service

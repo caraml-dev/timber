@@ -40,6 +40,10 @@ setup: tidy vendor
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
+.PHONY: format
+format: 
+	@gofmt -s -w .
+
 # ==================================
 # Codegen recipes
 # ==================================
@@ -51,7 +55,7 @@ generate: lint
 .PHONY: lint
 lint: 
 	@buf lint
-
+	@golangci-lint run --timeout 5m
 
 # ==================================
 # Development Environment
