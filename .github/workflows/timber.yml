@@ -167,9 +167,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-      - name: Start containers
-        working-directory: infra/tests/e2e
-        run: docker-compose -f "docker-compose.yml" up -d
       - name: Setup Python
         id: setup-python
         uses: actions/setup-python@v4
