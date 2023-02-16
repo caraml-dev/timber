@@ -23,7 +23,7 @@ build-observation-service: version
 
 .PHONY: build-image
 ## Build docker image
-build-image: vendor version
+build-image: version
 	@$(eval IMAGE_TAG = $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/,)${BIN_NAME}:${VERSION})
 	@echo "Building docker image: ${IMAGE_TAG}"
 	docker build --tag ${IMAGE_TAG} . -f ${DOCKER_FILE}
