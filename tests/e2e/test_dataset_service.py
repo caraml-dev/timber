@@ -92,6 +92,78 @@ def test_simple_observation_service_updation(
     )
 
 
+def test_simple_router_log_writer_creation(
+    dataset_service_client: DatasetServiceClient,
+    k8s_client: client.AppsV1Api,
+):
+    # Create router log wrtier
+    req_body = {
+        "log_writer": {
+            "project_id": 1,
+            "name": "my-router-log",
+            "source": {
+                "type": "LOG_WRITER_SOURCE_TYPE_ROUTER_LOG",
+                "router_log_source": {
+                    "router_id": 1,
+                    "router_name": "my-router",
+                    "kafka": {
+                        "brokers": "kafka.mlp.svc.cluster.local",
+                        "topic": "my-router-log",
+                    },
+                },
+            },
+        }
+    }
+    resp = dataset_service_client.create_log_writer(TEST_PROJECT_ID, req_body)
+
+    assert resp.status_code == 200
+    assert resp.content
+    body = resp.json()
+
+    # TODO: Improve the assertion once DB is implemented
+    assert body["log_writer"]
+    assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
+
+    wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "lw-my-router-log-fluentd")
+
+
+def test_simple_prediction_log_writer_creation(
+    dataset_service_client: DatasetServiceClient,
+    k8s_client: client.AppsV1Api,
+):
+    # Create prediction log writer
+    req_body = {
+        "log_writer": {
+            "project_id": 1,
+            "name": "my-model-log",
+            "source": {
+                "type": "LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG",
+                "prediction_log_source": {
+                    "model_id": 1,
+                    "model_name": "my-model",
+                    "kafka": {
+                        "brokers": "kafka.mlp.svc.cluster.local",
+                        "topic": "my-prediction-log",
+                    },
+                },
+            },
+        }
+    }
+    resp = dataset_service_client.create_log_writer(TEST_PROJECT_ID, req_body)
+
+    assert resp.status_code == 200
+    assert resp.content
+    body = resp.json()
+
+    # TODO: Improve the assertion once DB is implemented
+    assert body["log_writer"]
+    assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
+
+    wait_statefulset_ready(
+        k8s_client, TEST_PROJECT_NAME, "lw-my-prediction-log-fluentd"
+    )
+
+
 def wait_deployment_ready(
     k8s_client: client.AppsV1Api,
     namespace: str,

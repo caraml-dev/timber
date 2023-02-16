@@ -45,3 +45,14 @@ class DatasetServiceClient:
             data=json.dumps(update_observation_service_request),
             headers={"Content-Type": "application/json"},
         )
+
+    def create_log_writer(
+        self,
+        project_id: int,
+        create_log_writer_request: typing.Dict[str, typing.Any],
+    ):
+        return requests.post(
+            f"{self._dataset_service_url}/projects/{project_id}/log_writers",
+            data=json.dumps(create_log_writer_request),
+            headers={"Content-Type": "application/json"},
+        )
