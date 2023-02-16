@@ -46,6 +46,7 @@ setup: tidy vendor
 		google.golang.org/protobuf/cmd/protoc-gen-go \
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+	@test -x ${GOPATH}/bin/golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.40.1
 
 .PHONY: format
 ## Format code
