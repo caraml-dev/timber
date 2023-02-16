@@ -71,6 +71,11 @@ lint-go:
 lint-python:
 	$(MAKE) -C tests lint
 
+## Install Python dependencies
+.PHONY: dep-python
+dep-python:
+	$(MAKE) -C tests dep
+
 # ==================================
 # Development environment
 # ==================================
