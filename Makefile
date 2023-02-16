@@ -21,6 +21,13 @@ build-dataset-service: version
 build-observation-service: version
 	$(MAKE) -C observation-service build
 
+.PHONY: build-image
+## Build docker image
+build-image: vendor version
+	@$(eval IMAGE_TAG = $(if $(DOCKER_REGISTRY),$(DOCKER_REGISTRY)/,)${BIN_NAME}:${VERSION})
+	@echo "Building docker image: ${IMAGE_TAG}"
+	docker build --tag ${IMAGE_TAG} . -f ${DOCKER_FILE}
+
 .PHONY: version
 ## Generate version
 version:
