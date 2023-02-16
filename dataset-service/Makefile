@@ -16,7 +16,7 @@ test:
 .PHONY: run
 run:
 	@echo "> Running Dataset Service locally"
-	go run ./cmd/dataset-service/main.go serve --config config/local.yaml
+	go run ./cmd/dataset-service/main.go serve --config local.yaml
 
 .PHONY: version
 version:
@@ -59,3 +59,7 @@ lint:
 .PHONY: dev-env
 dev-env:
 	$(MAKE) -C ../infra/local/dataset-service dev-env
+
+.PHONY: clean-dev-env
+clean-dev-env:
+	$(MAKE) -C ../infra/local/dataset-service clean-dev-env
