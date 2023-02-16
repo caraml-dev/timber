@@ -176,12 +176,15 @@ jobs:
         with:
           python-version: "3.9"
           architecture: x64
-      - name: Install dependencies
-        run: make install-python-ci-dependencies
+      - name: Download k3d
+        run: |
+          curl --silent --fail https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.4.1 bash
+      - name: Setup E2E test dependencies
+        run: make setup-e2e
       - name: Build Dataset Service binary
         run: make build-dataset-service
       - name: Run E2E tests
-        run: make e2e-ci
+        run: make e2e
 
   release-rules:
     runs-on: ubuntu-latest
