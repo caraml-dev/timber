@@ -16,9 +16,7 @@ format-go:
 	gofmt -s -w ${OBSERVATION_SVC_PATH}
 
 format-python:
-	cd tests ; isort e2e/
-	cd tests ; flake8 e2e/
-	cd tests ; black e2e/
+	$(MAKE) -C tests format
 
 .PHONY: version
 version:
@@ -31,8 +29,8 @@ version:
 
 .PHONY: build-dataset-service
 build-dataset-service: version
-	@echo "Building binary..."
-	@cd ${DATASET_SVC_PATH}/cmd/${DATASET_SVC_PATH} && go build -o ./bin/${DATASET_SVC_PATH}
+	@echo "Building dataset service binary..."
+	$(MAKE) -C dataset-service build
 
 .PHONY: build-image
 build-image: version
@@ -56,46 +54,45 @@ setup:
 # ==================================
 # Linting recipes
 # ==================================
-
+## Run all linter
 .PHONY: lint
 lint: lint-go lint-python
 
+## Run golang linter
+.PHONY: lint-go
 lint-go:
 	@echo "> Linting code..."
 	cd ${DATASET_SVC_PATH} && golangci-lint run --timeout 5m
 	cd ${OBSERVATION_SVC_PATH} && golangci-lint run --timeout 5m
 	cd ${COMMON_MODULE_PATH} && golangci-lint run --timeout 5m
 
+## Run python linter
+.PHONY: lint-python
 lint-python:
-	cd tests ; isort e2e/ --check-only
-	cd tests ; flake8 e2e/
-	cd tests ; black e2e/ --check
+	$(MAKE) -C tests lint
 
 # ==================================
-# Setup Services
+# Development environment
 # ==================================
 
-.PHONY: dependency-services
-dependency-services:
-	cd infra/local && docker-compose up -d
-
-# ==================================
-# Python E2E tests
-# ==================================
-
-install-python-ci-dependencies:
-	pip install -r tests/requirements.txt
-
-e2e-clean-up:
-	cd infra/tests/e2e && docker-compose down
-
-e2e: build-dataset-service e2e-clean-up
-	cd infra/tests/e2e && docker-compose down
-	cd infra/tests/e2e && docker-compose up -d
-	cd tests/e2e; python -m pytest -s -v
-
-e2e-ci:
-	cd tests/e2e; python -m pytest -s -v
-
+## Setup development environment, the same environment is also used for end to end test
 dev-env:
 	$(MAKE) -C infra/local/dataset-service dev-env
+
+## Tear down development environment
+clean-dev-env:
+	$(MAKE) -C infra/local/dataset-service clean-dev-env
+
+# ==================================
+# E2E Test
+# ==================================
+
+## Setup e2e test environment and dependencies
+.PHONY: setup-e2e
+setup-e2e: dev-env build-dataset-service
+	$(MAKE) -C tests dep
+
+## Run e2e test for dataset-service
+.PHONY: e2e
+e2e:
+	$(MAKE) -C tests test
