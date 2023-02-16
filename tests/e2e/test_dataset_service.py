@@ -124,7 +124,7 @@ def test_simple_router_log_writer_creation(
     assert body["log_writer"]
     assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
 
-    wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "lw-my-router-log-fluentd")
+    wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "rl-my-router-log-fluentd")
 
 
 def test_simple_prediction_log_writer_creation(
@@ -160,7 +160,7 @@ def test_simple_prediction_log_writer_creation(
     assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
 
     wait_statefulset_ready(
-        k8s_client, TEST_PROJECT_NAME, "lw-my-prediction-log-fluentd"
+        k8s_client, TEST_PROJECT_NAME, "pl-my-prediction-log-fluentd"
     )
 
 
