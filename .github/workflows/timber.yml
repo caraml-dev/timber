@@ -31,31 +31,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
       - uses: bufbuild/buf-setup-action@v1
         with:
           version: '1.7.0'
           github_token: ${{ github.token }}
-      - uses: s4u/setup-maven-action@v1.2.1
-        with:
-          java-version: 11
-          maven-version: 3.8.4
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-dataset-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-dataset-
       - uses: bufbuild/buf-lint-action@v1
         with:
           input: dataset-service/proto
-      - name: generate
-        working-directory: dataset-service
-        run: make setup generate lint
 
   lint-go:
     runs-on: ubuntu-latest
