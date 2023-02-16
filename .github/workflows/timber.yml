@@ -123,7 +123,7 @@ jobs:
       
       - name: Run Observation Service test
         working-directory: observation-service
-        run: make test-observation-service
+        run: make test
   
   unit-tests-dataset-service:
     runs-on: ubuntu-latest
