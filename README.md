@@ -1,4 +1,4 @@
-# timber
+# Timber
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://github.com/caraml-dev/timber/blob/master/LICENSE)
 
@@ -17,8 +17,6 @@ Observation Service provides an interface for reporting observations from Client
 ### Log Writer
 
 Log writer is the component responsible for collecting prediction log and router log.
-
-
 
 
 ## Contributing

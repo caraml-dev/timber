@@ -7,22 +7,22 @@ OBSERVATION_SVC_PATH=observation-service
 # ==================================
 # Build recipes
 # ==================================
-## Build all
 .PHONY: build
+## Build all
 build: build-dataset-service build-observation-service
 
-## Build dataset service
 .PHONY: build-dataset-service
+## Build dataset service
 build-dataset-service: version
 	$(MAKE) -C dataset-service build
 
-## Build observation service
 .PHONY: build-observation-service
+## Build observation service
 build-observation-service: version
 	$(MAKE) -C observation-service build
 
-## Generate version
 .PHONY: version
+## Generate version
 version:
 	$(eval VERSION=$(if $(OVERWRITE_VERSION),$(OVERWRITE_VERSION),v$(shell scripts/vertagen/vertagen.sh)))
 	@echo "API version:" $(VERSION)
@@ -31,16 +31,18 @@ version:
 # General
 # ==================================
 
-## Format all source code
 .PHONY: format
+## Format all sousrce code
 format: format-go format-python
 
+.PHONY: format-go
 ## Format all golang source code
 format-go:
 	@echo "> Formatting code"
 	$(MAKE) -C observation-service format
 	$(MAKE) -C dataset-service format
 
+.PHONY: format-python
 ## Format all python source code
 format-python:
 	$(MAKE) -C tests format
@@ -49,8 +51,8 @@ format-python:
 # Code dependencies recipes
 # ==================================
 
-## Setup dependencies
 .PHONY: setup
+## Setup dependencies
 setup:
 	@echo "> Initializing dependencies ..."
 	@test -x ${GOPATH}/bin/golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.40.1
@@ -60,28 +62,28 @@ setup:
 	@pre-commit install
 	@pre-commit install-hooks
 
-## Install Python dependencies
 .PHONY: dep-python
+## Install Python dependencies
 dep-python:
 	$(MAKE) -C tests dep
 
 # ==================================
 # Linting recipes
 # ==================================
-## Run all linter
 .PHONY: lint
+## Run all linter
 lint: lint-go lint-python
 
-## Run golang linter
 .PHONY: lint-go
+## Run golang linter
 lint-go:
 	@echo "> Linting code..."
 	$(MAKE) -C dataset-service lint
 	$(MAKE) -C observation-service lint
 	cd ${COMMON_MODULE_PATH} && golangci-lint run --timeout 5m
 
-## Run python linter
 .PHONY: lint-python
+## Run python linter
 lint-python:
 	$(MAKE) -C tests lint
 
@@ -89,25 +91,84 @@ lint-python:
 # Development environment
 # ==================================
 
-## Setup development environment, the same environment is also used for end to end test
 .PHONY: dev-env
+## Setup development environment, the same environment is also used for end to end test
 dev-env:
 	$(MAKE) -C infra/local/dataset-service dev-env
 
-## Tear down development environment
 .PHONY: clean-dev-env
+## Tear down development environment
 clean-dev-env:
 	$(MAKE) -C infra/local/dataset-service clean-dev-env
 
 # ==================================
 # E2E Test
 # ==================================
-## Setup e2e test environment and dependencies
 .PHONY: setup-e2e
+## Setup e2e test environment and dependencies
 setup-e2e: dev-env build-dataset-service
 	$(MAKE) -C tests dep
 
-## Run e2e test for dataset-service
 .PHONY: e2e
+## Run e2e test for dataset-service
 e2e:
 	$(MAKE) -C tests test
+
+#################################################################################
+# Self Documenting Commands
+#################################################################################
+.DEFAULT_GOAL := show-help
+# Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
+# sed script explained:
+# /^##/:
+# 	* save line in hold space
+# 	* purge line
+# 	* Loop:
+# 		* append newline + line to hold space
+# 		* go to next line
+# 		* if line starts with doc comment, strip comment character off and loop
+# 	* remove target prerequisites
+# 	* append hold space (+ newline) to line
+# 	* replace newline plus comments by `---`
+# 	* print line
+# Separate expressions are necessary because labels cannot be delimited by
+# semicolon; see <http://stackoverflow.com/a/11799865/1968>
+## Show help
+show-help:
+	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
+	@echo
+	@sed -n -e "/^## / { \
+		h; \
+		s/.*//; \
+		:doc" \
+		-e "H; \
+		n; \
+		s/^## //; \
+		t doc" \
+		-e "s/:.*//; \
+		G; \
+		s/\\n## /---/; \
+		s/\\n/ /g; \
+		p; \
+	}" ${MAKEFILE_LIST} \
+	| LC_ALL='C' sort --ignore-case \
+	| awk -F '---' \
+		-v ncol=$$(tput cols) \
+		-v indent=19 \
+		-v col_on="$$(tput setaf 6)" \
+		-v col_off="$$(tput sgr0)" \
+	'{ \
+		printf "%s%*s%s ", col_on, -indent, $$1, col_off; \
+		n = split($$2, words, " "); \
+		line_length = ncol - indent; \
+		for (i = 1; i <= n; i++) { \
+			line_length -= length(words[i]) + 1; \
+			if (line_length <= 0) { \
+				line_length = ncol - indent - length(words[i]) - 1; \
+				printf "\n%*s ", -indent, " "; \
+			} \
+			printf "%s ", words[i]; \
+		} \
+		printf "\n"; \
+	}' \
+	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
