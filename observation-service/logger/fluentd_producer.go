@@ -68,28 +68,23 @@ func (p *FluentdLogProducer) Produce(observationLog *types.ObservationLogEntry) 
 		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
 		log.Error(err)
 	}
+	fluentdFlushStartTime := time.Now()
+	err = p.logger.Post(p.tag, logFormattedVal)
+
+	// Metric logging
 	labels := map[string]string{
 		"component": "fluentd",
 	}
-	fluentdFlushStartTime := time.Now()
-	err = p.logger.Post(p.tag, logFormattedVal)
+	status := http.StatusOK
 	if err != nil {
+		status = http.StatusInternalServerError
 		log.Error(err)
-		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-		p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
-		// Log E2E latency
-		labels = map[string]string{
-			"component": "e2e",
-		}
-		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
-	} else {
-		// Log fluentd latency
-		p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
-		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-		// Log E2E latency
-		labels = map[string]string{
-			"component": "e2e",
-		}
-		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
 	}
+	p.metricsService.LogRequestCount(status, monitoring.FlushObservationCount)
+	p.metricsService.LogLatencyHistogram(fluentdFlushStartTime, status, monitoring.FlushDurationMs, labels)
+	// Log E2E latency
+	labels = map[string]string{
+		"component": "e2e",
+	}
+	p.metricsService.LogLatencyHistogram(observationLog.StartTime, status, monitoring.FlushDurationMs, labels)
 }

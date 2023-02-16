@@ -79,9 +79,6 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 		log.Error(err)
 	}
 
-	labels := map[string]string{
-		"component": "kafka",
-	}
 	kafkaFlushStartTime := time.Now()
 	err = p.producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{
@@ -90,25 +87,23 @@ func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 		Value: valueBytes,
 		Key:   keyBytes,
 	}, deliveryChan)
-	if err != nil {
-		log.Error(err)
-		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-		p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
-		// Log E2E latency
-		labels = map[string]string{
-			"component": "e2e",
-		}
-		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusInternalServerError, monitoring.FlushDurationMs, labels)
-	} else {
-		// Log kafka latency
-		p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
-		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-		// Log E2E latency
-		labels = map[string]string{
-			"component": "e2e",
-		}
-		p.metricsService.LogLatencyHistogram(observationLog.StartTime, http.StatusOK, monitoring.FlushDurationMs, labels)
+
+	// Metric logging
+	labels := map[string]string{
+		"component": "kafka",
 	}
+	status := http.StatusOK
+	if err != nil {
+		status = http.StatusInternalServerError
+		log.Error(err)
+	}
+	p.metricsService.LogRequestCount(status, monitoring.FlushObservationCount)
+	p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, status, monitoring.FlushDurationMs, labels)
+	// Log E2E latency
+	labels = map[string]string{
+		"component": "e2e",
+	}
+	p.metricsService.LogLatencyHistogram(observationLog.StartTime, status, monitoring.FlushDurationMs, labels)
 
 	// Get delivery response
 	event := <-deliveryChan
