@@ -43,9 +43,8 @@ func TestDefaultConfigs(t *testing.T) {
 			},
 		},
 		LogProducerConfig: LogProducerConfig{
-			Kind:                 "",
-			QueueLength:          100,
-			FlushIntervalSeconds: 1,
+			Kind:        "",
+			QueueLength: 100000,
 			KafkaConfig: &KafkaConfig{
 				Brokers:          "",
 				Topic:            "",
@@ -56,10 +55,11 @@ func TestDefaultConfigs(t *testing.T) {
 				AutoOffsetReset:  "latest",
 			},
 			FluentdConfig: &FluentdConfig{
-				Kind: "",
-				Host: "localhost",
-				Port: 24224,
-				Tag:  "observation-service",
+				Kind:        "",
+				Host:        "localhost",
+				Port:        24224,
+				Tag:         "observation-service",
+				BufferLimit: 8192,
 				BQConfig: &BQConfig{
 					Project: "",
 					Dataset: "",
@@ -117,9 +117,8 @@ func TestLoadConfigFiles(t *testing.T) {
 					},
 				},
 				LogProducerConfig: LogProducerConfig{
-					Kind:                 "",
-					QueueLength:          100,
-					FlushIntervalSeconds: 1,
+					Kind:        "",
+					QueueLength: 100000,
 					KafkaConfig: &KafkaConfig{
 						Brokers:          "",
 						Topic:            "",
@@ -130,10 +129,11 @@ func TestLoadConfigFiles(t *testing.T) {
 						AutoOffsetReset:  "latest",
 					},
 					FluentdConfig: &FluentdConfig{
-						Kind: "",
-						Host: "localhost",
-						Port: 24224,
-						Tag:  "observation-service",
+						Kind:        "",
+						Host:        "localhost",
+						Port:        24224,
+						Tag:         "observation-service",
+						BufferLimit: 8192,
 						BQConfig: &BQConfig{
 							Project: "",
 							Dataset: "",

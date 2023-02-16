@@ -61,9 +61,12 @@ func (s *MetricServiceTestSuite) TestGetLabels() {
 
 func (s *MetricServiceTestSuite) TestLogLatencyHistogram() {
 	statusCode := http.StatusOK
+	labels := map[string]string{
+		"component": "test",
+	}
 
 	stdout := testutils.CaptureStderrLogs(func() {
-		s.MetricService.LogLatencyHistogram(time.Now(), statusCode, monitoring.RequestDurationMs)
+		s.MetricService.LogLatencyHistogram(time.Now(), statusCode, monitoring.RequestDurationMs, labels)
 	})
 	s.Suite.Require().Equal("", stdout)
 }

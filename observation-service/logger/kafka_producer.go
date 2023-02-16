@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
@@ -69,37 +70,48 @@ func newKafkaProducer(
 }
 
 // Produce logs ObservationLog to a Kafka topic
-func (p *KafkaLogPublisher) Produce(logs []*types.ObservationLogEntry) {
+func (p *KafkaLogPublisher) Produce(observationLog *types.ObservationLogEntry) {
 	deliveryChan := make(chan kafka.Event, 1)
 	defer close(deliveryChan)
 
-	for _, l := range logs {
-		keyBytes, valueBytes, err := newKafkaLogEntry(l)
-		if err != nil {
-			log.Error(err)
-		}
+	keyBytes, valueBytes, err := newKafkaLogEntry(observationLog)
+	if err != nil {
+		log.Error(err)
+	}
 
-		err = p.producer.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{
-				Topic:     &p.topic,
-				Partition: kafka.PartitionAny},
-			Value: valueBytes,
-			Key:   keyBytes,
-		}, deliveryChan)
-		if err != nil {
-			log.Error(err)
-		}
+	kafkaFlushStartTime := time.Now()
+	err = p.producer.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{
+			Topic:     &p.topic,
+			Partition: kafka.PartitionAny},
+		Value: valueBytes,
+		Key:   keyBytes,
+	}, deliveryChan)
 
-		// Get delivery response
-		event := <-deliveryChan
-		msg := event.(*kafka.Message)
-		if msg.TopicPartition.Error != nil {
-			// TODO: Send failed ObservationLog to deadletter sink
-			p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
-			log.Errorf("delivery failed: %v", msg.TopicPartition.Error)
-		}
-		p.metricsService.LogRequestCount(http.StatusOK, monitoring.FlushObservationCount)
-		p.metricsService.LogLatencyHistogram(l.StartTime, http.StatusOK, monitoring.FlushDurationMs)
+	// Metric logging
+	labels := map[string]string{
+		"component": "kafka",
+	}
+	status := http.StatusOK
+	if err != nil {
+		status = http.StatusInternalServerError
+		log.Error(err)
+	}
+	p.metricsService.LogRequestCount(status, monitoring.FlushObservationCount)
+	p.metricsService.LogLatencyHistogram(kafkaFlushStartTime, status, monitoring.FlushDurationMs, labels)
+	// Log E2E latency
+	labels = map[string]string{
+		"component": "e2e",
+	}
+	p.metricsService.LogLatencyHistogram(observationLog.StartTime, status, monitoring.FlushDurationMs, labels)
+
+	// Get delivery response
+	event := <-deliveryChan
+	msg := event.(*kafka.Message)
+	if msg.TopicPartition.Error != nil {
+		// TODO: Send failed ObservationLog to deadletter sink
+		p.metricsService.LogRequestCount(http.StatusInternalServerError, monitoring.FlushObservationCount)
+		log.Errorf("delivery failed: %v", msg.TopicPartition.Error)
 	}
 }
 

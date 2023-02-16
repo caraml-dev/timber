@@ -14,7 +14,7 @@ import (
 
 // MetricService captures the exposed methods for logging performance/health metrics
 type MetricService interface {
-	LogLatencyHistogram(begin time.Time, statusCode int, loggingMetric metrics.MetricName)
+	LogLatencyHistogram(begin time.Time, statusCode int, loggingMetric metrics.MetricName, customLabels map[string]string)
 	LogRequestCount(statusCode int, loggingMetric metrics.MetricName)
 
 	GetLabels(labels map[string]string) map[string]string
@@ -48,9 +48,17 @@ func NewMetricService(deploymentCfg config.DeploymentConfig, monitoringCfg confi
 }
 
 // LogLatencyHistogram tracks histogram metrics
-func (ms *metricService) LogLatencyHistogram(begin time.Time, statusCode int, loggingMetric metrics.MetricName) {
+func (ms *metricService) LogLatencyHistogram(
+	begin time.Time,
+	statusCode int,
+	loggingMetric metrics.MetricName,
+	customLabels map[string]string,
+) {
 	baseLabels := map[string]string{
 		"response_code": strconv.Itoa(statusCode),
+	}
+	for k, v := range customLabels {
+		baseLabels[k] = v
 	}
 	labels := ms.GetLabels(baseLabels)
 
