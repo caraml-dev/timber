@@ -228,7 +228,7 @@ func TestLoadConfigFiles(t *testing.T) {
 								},
 								LogProducerConfig: config.LogProducerConfig{
 									Kind:        "fluentd",
-									QueueLength: 100,
+									QueueLength: 100000,
 									KafkaConfig: &config.KafkaConfig{
 										Brokers:          "",
 										Topic:            "",
@@ -239,10 +239,11 @@ func TestLoadConfigFiles(t *testing.T) {
 										AutoOffsetReset:  "latest",
 									},
 									FluentdConfig: &config.FluentdConfig{
-										Kind: "bq",
-										Host: "obs-timber-observation-service-fluentd",
-										Port: 24224,
-										Tag:  "observation-service.log",
+										Kind:        "bq",
+										Host:        "obs-timber-observation-service-fluentd",
+										Port:        24224,
+										Tag:         "observation-service.log",
+										BufferLimit: 8192,
 										BQConfig: &config.BQConfig{
 											Project: "my-project",
 											Dataset: "my-dataset",
