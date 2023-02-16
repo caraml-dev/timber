@@ -160,7 +160,7 @@ def test_simple_prediction_log_writer_creation(
     assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
 
     wait_statefulset_ready(
-        k8s_client, TEST_PROJECT_NAME, "pl-my-prediction-log-fluentd"
+        k8s_client, TEST_PROJECT_NAME, "pl-my-model-log-fluentd"
     )
 
 
