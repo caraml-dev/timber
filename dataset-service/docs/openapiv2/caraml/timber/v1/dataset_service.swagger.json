@@ -670,12 +670,12 @@
           "$ref": "#/definitions/timberv1Status",
           "title": "TODO: Add details of where the log is stored at\nStatus of the observation service"
         },
-        "createTime": {
+        "createdAt": {
           "type": "string",
           "format": "date-time",
           "title": "Creation timestamp"
         },
-        "updateTime": {
+        "updatedAt": {
           "type": "string",
           "format": "date-time",
           "title": "Last update timestamp"
@@ -736,12 +736,12 @@
           "$ref": "#/definitions/timberv1Status",
           "title": "TODO: Add details of where the log is stored at\nStatus of the observation service"
         },
-        "createTime": {
+        "createdAt": {
           "type": "string",
           "format": "date-time",
           "title": "Creation timestamp"
         },
-        "updateTime": {
+        "updatedAt": {
           "type": "string",
           "format": "date-time",
           "title": "Last update timestamp"

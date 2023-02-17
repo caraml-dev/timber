@@ -61,7 +61,7 @@ message LogWriter {
   // Status of the observation service
   Status status = 10;
   // Creation timestamp
-  google.protobuf.Timestamp create_time = 11;
+  google.protobuf.Timestamp created_at = 11;
   // Last update timestamp
-  google.protobuf.Timestamp update_time = 12;
+  google.protobuf.Timestamp updated_at = 12;
 }

@@ -208,8 +208,8 @@ LogWriter describes details of a Log Writer
 | name | [string](#string) |  | Name of the log writer |
 | source | [LogWriterSource](#caraml-timber-v1-LogWriterSource) |  | Log writer source |
 | status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the observation service |
-| create_time | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
-| update_time | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
+| created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
+| updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
 
 
@@ -309,8 +309,8 @@ ObservationServiceConfig describes details of a Observation Service
 | name | [string](#string) |  | Observation service name |
 | source | [ObservationServiceSource](#caraml-timber-v1-ObservationServiceSource) |  | Configuration for pull-based Observation Service data source. |
 | status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the observation service |
-| create_time | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
-| update_time | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
+| created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
+| updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
 
 
