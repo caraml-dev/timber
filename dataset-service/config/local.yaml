@@ -27,7 +27,7 @@ commonDeploymentConfig:
     bqDatasetPrefix: caraml
     observationBqTablePrefix: os
 observationServiceConfig:
-  # You can replace   helmChartPath to point to local directory
+  # You can replace helmChartPath to point to local directory
   helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/observation-svc-0.2.6/observation-svc-0.2.6.tgz
   defaultValues:
     observationService:
