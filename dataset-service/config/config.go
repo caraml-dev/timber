@@ -3,9 +3,10 @@ package config
 import (
 	"fmt"
 
-	"github.com/caraml-dev/timber/dataset-service/helm/values"
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
+
+	"github.com/caraml-dev/timber/dataset-service/helm/values"
 
 	commonconfig "github.com/caraml-dev/timber/common/config"
 )

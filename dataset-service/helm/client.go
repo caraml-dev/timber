@@ -3,13 +3,14 @@ package helm
 import (
 	"fmt"
 
-	"github.com/caraml-dev/timber/common/log"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/release"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+
+	"github.com/caraml-dev/timber/common/log"
 )
 
 // Client is interface for a helm client

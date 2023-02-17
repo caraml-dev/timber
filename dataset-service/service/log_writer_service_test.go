@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
-	"github.com/caraml-dev/timber/dataset-service/config"
-	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
-	"github.com/caraml-dev/timber/dataset-service/helm/values"
 	"github.com/imdario/mergo"
 	"github.com/jinzhu/copier"
 	"github.com/stretchr/testify/assert"
@@ -15,6 +11,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/release"
+
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/config"
+	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
+	"github.com/caraml-dev/timber/dataset-service/helm/values"
 )
 
 type LogWriterServicetestSuite struct {

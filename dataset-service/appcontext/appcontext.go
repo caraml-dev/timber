@@ -1,9 +1,10 @@
 package appcontext
 
 import (
+	"github.com/pkg/errors"
+
 	"github.com/caraml-dev/timber/dataset-service/mlp"
 	"github.com/caraml-dev/timber/dataset-service/service"
-	"github.com/pkg/errors"
 
 	"github.com/caraml-dev/timber/dataset-service/config"
 )

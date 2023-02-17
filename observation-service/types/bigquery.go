@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"cloud.google.com/go/bigquery"
+
 	"github.com/caraml-dev/timber/common/errors"
 )
 

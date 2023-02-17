@@ -3,6 +3,9 @@ package service
 import (
 	"fmt"
 
+	"github.com/jinzhu/copier"
+	"helm.sh/helm/v3/pkg/chart"
+
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/bq"
@@ -10,8 +13,6 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/helm"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
 	osconfig "github.com/caraml-dev/timber/observation-service/config"
-	"github.com/jinzhu/copier"
-	"helm.sh/helm/v3/pkg/chart"
 )
 
 const (

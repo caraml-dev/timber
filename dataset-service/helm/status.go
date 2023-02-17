@@ -1,8 +1,9 @@
 package helm
 
 import (
-	"github.com/caraml-dev/timber/dataset-service/api"
 	"helm.sh/helm/v3/pkg/release"
+
+	"github.com/caraml-dev/timber/dataset-service/api"
 )
 
 // ConvertStatus converts helm status to dataset service api status

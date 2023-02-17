@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/caraml-dev/timber/dataset-service/service"
 	mlp "github.com/gojek/mlp/api/client"
 	"github.com/stretchr/testify/suite"
 
@@ -12,6 +11,7 @@ import (
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
 	"github.com/caraml-dev/timber/dataset-service/mlp/mocks"
+	"github.com/caraml-dev/timber/dataset-service/service"
 )
 
 type MetadataControllerTestSuite struct {

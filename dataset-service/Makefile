@@ -52,6 +52,8 @@ setup: tidy vendor
 ## Format code
 format: 
 	@gofmt -s -w .
+	@goimports -w -local github.com/caraml-dev/timber/common,github.com/caraml-dev/timber/dataset-service,github.com/caraml-dev/timber/observation-service \
+		$$(find . -type f -name '*.go' -not -path "**/vendor/*")
 
 # ==================================
 # Codegen recipes

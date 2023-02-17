@@ -4,12 +4,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/caraml-dev/timber/dataset-service/helm/values"
-	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/caraml-dev/timber/observation-service/config"
 )
 
 var obsFluentdConf = `# Set fluentd log level to error

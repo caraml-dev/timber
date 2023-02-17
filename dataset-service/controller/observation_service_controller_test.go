@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"testing"
 
+	mlp "github.com/gojek/mlp/api/client"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
 	mlpMock "github.com/caraml-dev/timber/dataset-service/mlp/mocks"
 	"github.com/caraml-dev/timber/dataset-service/service"
 	"github.com/caraml-dev/timber/dataset-service/service/mocks"
-	mlp "github.com/gojek/mlp/api/client"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/suite"
 )
 
 type ObservationServiceControllerTestSuite struct {

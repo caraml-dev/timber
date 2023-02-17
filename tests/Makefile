@@ -15,9 +15,9 @@ lint:
 ## Format
 .PHONY: format
 format:
-	isort e2e/
-	black e2e/
-	flake8 e2e/
+	@isort e2e/
+	@black e2e/
+	@flake8 e2e/
 
 ## Install python dependencies
 .PHONY: dep

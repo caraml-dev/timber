@@ -9,10 +9,11 @@ import (
 	"cloud.google.com/go/bigquery"
 	"go.einride.tech/protobuf-bigquery/encoding/protobq"
 
+	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
+
 	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/caraml-dev/timber/observation-service/types"
-	upiv1 "github.com/caraml-dev/universal-prediction-interface/gen/go/grpc/caraml/upi/v1"
 )
 
 // BigQueryLogger defines methods implemented by the logger
