@@ -648,7 +648,7 @@ Request message for UpdateObservationService method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
-| id | [int64](#int64) |  | The ID of Log Writer to update. |
+| id | [int64](#int64) |  | The ID of Observation Service to update. |
 | observation_service | [ObservationService](#caraml-timber-v1-ObservationService) |  | Details of single Observation Service to be updated by Dataset Service. |
 
 

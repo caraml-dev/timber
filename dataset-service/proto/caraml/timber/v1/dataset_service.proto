@@ -215,7 +215,7 @@ message CreateObservationServiceResponse {
 message UpdateObservationServiceRequest {
     // The CaraML project ID to write log resource from.
     int64 project_id = 1;
-    // The ID of Log Writer to update.
+    // The ID of Observation Service to update.
     int64 id = 2;
     // Details of single Observation Service to be updated by Dataset Service.
     ObservationService observation_service = 3;

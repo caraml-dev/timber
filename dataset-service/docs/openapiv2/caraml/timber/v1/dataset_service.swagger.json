@@ -411,7 +411,7 @@
           },
           {
             "name": "id",
-            "description": "The ID of Log Writer to update.",
+            "description": "The ID of Observation Service to update.",
             "in": "path",
             "required": true,
             "type": "string",

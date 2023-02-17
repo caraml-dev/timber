@@ -974,7 +974,7 @@ type UpdateObservationServiceRequest struct {
 
 	// The CaraML project ID to write log resource from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// The ID of Log Writer to update.
+	// The ID of Observation Service to update.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	// Details of single Observation Service to be updated by Dataset Service.
 	ObservationService *ObservationService `protobuf:"bytes,3,opt,name=observation_service,json=observationService,proto3" json:"observation_service,omitempty"`
