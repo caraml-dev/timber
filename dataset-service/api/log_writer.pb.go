@@ -290,7 +290,7 @@ type LogWriter struct {
 	// Log writer source
 	Source *LogWriterSource `protobuf:"bytes,4,opt,name=source,proto3" json:"source,omitempty"`
 	// TODO: Add details of where the log is stored at
-	// Status of the observation service
+	// Status of the log writer deployment
 	Status Status `protobuf:"varint,10,opt,name=status,proto3,enum=caraml.timber.v1.Status" json:"status,omitempty"`
 	// Creation timestamp
 	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`

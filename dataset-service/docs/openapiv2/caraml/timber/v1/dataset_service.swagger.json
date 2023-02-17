@@ -668,7 +668,7 @@
         },
         "status": {
           "$ref": "#/definitions/timberv1Status",
-          "title": "TODO: Add details of where the log is stored at\nStatus of the observation service"
+          "title": "TODO: Add details of where the log is stored at\nStatus of the log writer deployment"
         },
         "createdAt": {
           "type": "string",

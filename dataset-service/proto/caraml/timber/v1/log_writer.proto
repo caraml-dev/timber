@@ -58,7 +58,7 @@ message LogWriter {
   // Log writer source
   LogWriterSource source = 4;
   // TODO: Add details of where the log is stored at
-  // Status of the observation service
+  // Status of the log writer deployment
   Status status = 10;
   // Creation timestamp
   google.protobuf.Timestamp created_at = 11;

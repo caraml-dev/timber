@@ -207,7 +207,7 @@ LogWriter describes details of a Log Writer
 | id | [int64](#int64) |  | Log writer&#39;s ID |
 | name | [string](#string) |  | Name of the log writer |
 | source | [LogWriterSource](#caraml-timber-v1-LogWriterSource) |  | Log writer source |
-| status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the observation service |
+| status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the log writer deployment |
 | created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
 | updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
