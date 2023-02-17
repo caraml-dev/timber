@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/caraml-dev/timber/common/log"
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -15,6 +14,8 @@ import (
 	"helm.sh/helm/v3/pkg/storage"
 	"helm.sh/helm/v3/pkg/storage/driver"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+
+	"github.com/caraml-dev/timber/common/log"
 )
 
 func actionConfigFixture(t *testing.T) *action.Configuration {
