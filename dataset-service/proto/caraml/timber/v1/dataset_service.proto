@@ -202,7 +202,7 @@ message CreateObservationServiceRequest {
     // The CaraML project ID that will own the observation service.
     int64 project_id = 1;
     // Details of single Observation Service to be deployed by Dataset Service.
-    ObservationService observation_service = 3;
+    ObservationService observation_service = 2;
 }
 
 // Response message for CreateObservationService method.
