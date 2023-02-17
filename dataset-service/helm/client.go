@@ -21,7 +21,7 @@ type Client interface {
 	// Upgrade upgrades an existing helm release. Failed if there are no existing release.
 	Upgrade(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
 	// GetRelease get a helm release.
-	GetRelease(releaseName string, namespaceName string, actionConfig *action.Configuration) (*release.Release, error)
+	GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error)
 }
 
 const (
@@ -124,8 +124,8 @@ func (h *helmClient) Upgrade(release string,
 }
 
 // GetRelease get release name in the given namespace
-func (h helmClient) GetRelease(releaseName string, namespaceName string, actionConfig *action.Configuration) (*release.Release, error) {
-	actionConfig, err := h.initializeConfig(actionConfig, namespaceName)
+func (h helmClient) GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error) {
+	actionConfig, err := h.initializeConfig(actionConfig, namespace)
 	if err != nil {
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
@@ -135,10 +135,10 @@ func (h helmClient) GetRelease(releaseName string, namespaceName string, actionC
 }
 
 // initializeConfig initialize action config
-func (h *helmClient) initializeConfig(actionConfig *action.Configuration, namespaceName string) (*action.Configuration, error) {
+func (h *helmClient) initializeConfig(actionConfig *action.Configuration, namespace string) (*action.Configuration, error) {
 	if actionConfig == nil {
 		actionConfig = new(action.Configuration)
-		err := actionConfig.Init(h.clientGetter, namespaceName, helmDriver, log.Debugf)
+		err := actionConfig.Init(h.clientGetter, namespace, helmDriver, log.Debugf)
 		if err != nil {
 			return nil, err
 		}
