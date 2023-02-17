@@ -42,8 +42,10 @@ type AutoscalingConfig struct {
 	MinReplicas int `json:"minReplicas,omitempty"`
 	// Maximum number of replicas for the deployment
 	MaxReplicas int `json:"maxReplicas,omitempty"`
-	// CPU target utilization in percentage
+	// CPU utilization target in percentage
 	TargetCPUUtilizationPercentage int `json:"targetCPUUtilizationPercentage,omitempty"`
+	// Memory utilization target in percentage
+	TargetMemoryUtilizationPercentage int `json:"targetMemoryUtilizationPercentage,omitempty"`
 }
 
 // PVCConfig Persistent volume claim configuration
