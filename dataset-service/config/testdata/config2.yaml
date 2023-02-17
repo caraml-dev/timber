@@ -1,5 +1,4 @@
 commonDeploymentConfig:
-  environmentType: local
   kubeConfig: /tmp/kubeconfig-timber-dev.yaml
   bqConfig:
     gcpProject: my-gcp-project

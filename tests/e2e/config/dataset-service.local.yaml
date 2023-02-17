@@ -21,7 +21,6 @@ datasetServiceConfig:
     labels:
       app: dataset-service
 commonDeploymentConfig:
-  environmentType: local
   kubeConfig: /tmp/kubeconfig-timber-dev.yaml
   bqConfig:
     gcpProject: my-gcp-project

@@ -159,8 +159,7 @@ func TestLoadConfigFiles(t *testing.T) {
 					},
 				},
 				CommonDeploymentConfig: &CommonDeploymentConfig{
-					EnvironmentType: "local",
-					KubeConfig:      "/tmp/kubeconfig-timber-dev.yaml",
+					KubeConfig: "/tmp/kubeconfig-timber-dev.yaml",
 					BQConfig: &BQConfig{
 						GCPProject:               "my-gcp-project",
 						BQDatasetPrefix:          "caraml",

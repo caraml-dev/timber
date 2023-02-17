@@ -63,7 +63,6 @@ func NewServer(configFiles []string) (*Server, error) {
 
 	// Init Sentry client
 	if cfg.DatasetServiceConfig.SentryConfig.Enabled {
-		cfg.DatasetServiceConfig.SentryConfig.Labels["environment"] = cfg.CommonDeploymentConfig.EnvironmentType
 		if err := sentry.InitSentry(*cfg.DatasetServiceConfig.SentryConfig); err != nil {
 			return nil, errors.Newf(errors.GetType(err), fmt.Sprintf("Failed initializing Sentry Client: %v", err))
 		}
