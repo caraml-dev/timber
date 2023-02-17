@@ -1,10 +1,12 @@
 # Dataset Service
 
-Dataset Service is responsible for managing deployment of log collection component (i.e. log writer and observation service), organizing the collected data, and generating dataset from the collected data.
+Dataset Service is responsible for managing deployment of log collection components (i.e. log writer and observation service), organizing the collected data, and generating dataset from the collected data.
 
 ## API Specification
 
-Dataset Service API is defined as [protobuf](proto/caraml/timber/v1/dataset_service.proto). The service exposes the API both as gRPC API and REST API. The REST API documentation can be found in [dataset_service.swagger.json](docs/openapiv2/caraml/timber/v1/dataset_service.swagger.json).
+Dataset Service API is defined as [protobuf](proto/caraml/timber/v1/dataset_service.proto). 
+The service exposes the API both as gRPC API and REST API. 
+The REST API documentation can be found in [dataset_service.swagger.json](docs/openapiv2/caraml/timber/v1/dataset_service.swagger.json).
 
 ## Getting Started
 
