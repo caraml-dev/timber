@@ -23,23 +23,24 @@ make setup
 
 To build dataset service binary execute
 
-``` bash
+```bash
 make build
 ```
 
 To perform test
 
-``` bash
+```bash
 make test
 ```
 
-To setup local development environment. This command will create a k3d cluster and install dependency services (MLP and Kafka) in the cluster
+To setup local development environment. This command will create a k3d cluster and install dependency services (MLP and Kafka) in the cluster.
 
 ```bash
 make dev-env
 ```
 
-Once the local development environment is ready, you can run dataset-service locally using. The [local.yaml](config/local.yaml) is preconfigured to target the k3d cluster for deployment of log writer and observation service. 
+Once the local development environment is ready, you can run dataset-service locally using following command. 
+The command will use [local.yaml](config/local.yaml) configuration, which is preconfigured to target the k3d cluster for deployment of log writer and observation service. 
 
 ```bash
 make run
