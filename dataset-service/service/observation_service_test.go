@@ -97,7 +97,7 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 					},
 				},
 				Fluentd: values.FluentdHelmValues{
-					ExtraEnvs: values.MerveEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
+					ExtraEnvs: values.MergeEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
 						{
 							Name:  values.FluentdBQDatasetEnv,
 							Value: "caraml_my_project",
@@ -227,7 +227,7 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 					},
 				},
 				Fluentd: values.FluentdHelmValues{
-					ExtraEnvs: values.MerveEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
+					ExtraEnvs: values.MergeEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
 						{
 							Name:  values.FluentdBQDatasetEnv,
 							Value: "caraml_my_project",

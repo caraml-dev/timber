@@ -68,8 +68,8 @@ func TestMerveEnvs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MerveEnvs(tt.args.left, tt.args.right); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MerveEnvs() = %v, want %v", got, tt.want)
+			if got := MergeEnvs(tt.args.left, tt.args.right); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MergeEnvs() = %v, want %v", got, tt.want)
 			}
 		})
 	}

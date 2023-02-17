@@ -90,8 +90,8 @@ type Service struct {
 	InternalPort string `json:"internalPort,omitempty"`
 }
 
-// MerveEnvs merge 2 slices of Env and give priority for right slice
-func MerveEnvs(left []Env, right []Env) []Env {
+// MergeEnvs merge 2 slices of Env and give priority for right slice
+func MergeEnvs(left []Env, right []Env) []Env {
 	newSlice := make([]Env, len(left))
 
 	_ = copier.CopyWithOption(&newSlice, &left, copier.Option{IgnoreEmpty: true, DeepCopy: true})

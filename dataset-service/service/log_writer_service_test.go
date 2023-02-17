@@ -71,7 +71,7 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 				},
 			},
 			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MerveEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
+				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
 					{
 						Name:  values.FluentdKafkaBrokerEnv,
 						Value: "kafka-brokers.svc",
@@ -140,7 +140,7 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 				},
 			},
 			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MerveEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
+				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
 					{
 						Name:  values.FluentdKafkaBrokerEnv,
 						Value: "kafka-brokers.svc",
@@ -268,7 +268,7 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 				},
 			},
 			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MerveEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
+				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
 					{
 						Name:  values.FluentdKafkaBrokerEnv,
 						Value: "kafka-brokers.svc",
@@ -337,7 +337,7 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 				},
 			},
 			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MerveEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
+				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
 					{
 						Name:  values.FluentdKafkaBrokerEnv,
 						Value: "kafka-brokers.svc",

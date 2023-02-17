@@ -126,7 +126,7 @@ func (l *logWriterService) configureSource(val *values.FluentdHelmValues,
 		protoName = routerLogProto
 	}
 
-	val.ExtraEnvs = values.MerveEnvs(
+	val.ExtraEnvs = values.MergeEnvs(
 		val.ExtraEnvs,
 		[]values.Env{
 			{
@@ -157,7 +157,7 @@ func (l *logWriterService) configureSink(val *values.FluentdHelmValues,
 
 	datasetName := bq.DatasetFromProject(l.commonDeployConfig.BQConfig, projectName)
 	tableName := bq.TableFromKafkaTopic(kafkaConfig.Topic)
-	val.ExtraEnvs = values.MerveEnvs(
+	val.ExtraEnvs = values.MergeEnvs(
 		val.ExtraEnvs,
 		[]values.Env{
 			{

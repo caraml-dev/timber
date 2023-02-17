@@ -160,7 +160,7 @@ func setLogProducerConfig(releaseName string,
 	val.ObservationService.APIConfig.LogProducerConfig.FluentdConfig.BQConfig.Dataset = datasetName
 	val.ObservationService.APIConfig.LogProducerConfig.FluentdConfig.BQConfig.Table = tableName
 
-	val.Fluentd.ExtraEnvs = values.MerveEnvs(
+	val.Fluentd.ExtraEnvs = values.MergeEnvs(
 		val.Fluentd.ExtraEnvs,
 		[]values.Env{
 			{
