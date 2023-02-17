@@ -370,7 +370,7 @@ Request message for CreateLogWriter method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID that will own the new Log Writer. |
 | log_writer | [LogWriter](#caraml-timber-v1-LogWriter) |  | Details of single Log Writer to be deployed by Dataset Service. |
 
 
@@ -401,7 +401,7 @@ Request message for CreateObservationService method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID that will own the observation service. |
 | observation_service | [ObservationService](#caraml-timber-v1-ObservationService) |  | Details of single Observation Service to be deployed by Dataset Service. |
 
 
@@ -432,7 +432,7 @@ Request message for GetLogMetadata method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log metadata from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve Log Metadata from. |
 | id | [int64](#int64) |  | The ID of the log metadata to retrieve. |
 
 
@@ -463,7 +463,7 @@ Request message for GetLogWriter method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve the Log Writer from. |
 | id | [int64](#int64) |  | The ID of the Log Writer resource to retrieve. |
 
 
@@ -494,7 +494,7 @@ Request message for GetObservationService method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve the Observation Service from. |
 | id | [int64](#int64) |  | The ID of the Observation Service resource to retrieve. |
 
 
@@ -525,7 +525,7 @@ Request message for ListLogMetadata method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log metadata from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Log Metadata from. |
 
 
 
@@ -555,7 +555,7 @@ Request message for ListLogWriters method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Log Writers from. |
 
 
 
@@ -585,7 +585,7 @@ Request message for ListObservationServices method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to retrieve log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Observation Services from. |
 
 
 
@@ -615,7 +615,7 @@ Request message for UpdateLogWriter method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID that owns the Log Writer to be updated. |
 | id | [int64](#int64) |  | The ID of Log Writer to update. |
 | log_writer | [LogWriter](#caraml-timber-v1-LogWriter) |  | Details of single Log Writer to be updated by Dataset Service. |
 
@@ -647,7 +647,7 @@ Request message for UpdateObservationService method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| project_id | [int64](#int64) |  | The CaraML project ID to write log resource from. |
+| project_id | [int64](#int64) |  | The CaraML project ID that owns the Observation Service to be updated. |
 | id | [int64](#int64) |  | The ID of Observation Service to update. |
 | observation_service | [ObservationService](#caraml-timber-v1-ObservationService) |  | Details of single Observation Service to be updated by Dataset Service. |
 

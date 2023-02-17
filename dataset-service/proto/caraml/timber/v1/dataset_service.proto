@@ -85,7 +85,7 @@ service DatasetService {
 
 // Request message for ListLogMetadata method.
 message ListLogMetadataRequest {
-    // The CaraML project ID to retrieve log metadata from.
+    // The CaraML project ID to retrieve list of Log Metadata from.
     int64 project_id = 1;
 }
 
@@ -97,7 +97,7 @@ message ListLogMetadataResponse {
 
 // Request message for GetLogMetadata method.
 message GetLogMetadataRequest {
-    // The CaraML project ID to retrieve log metadata from.
+    // The CaraML project ID to retrieve Log Metadata from.
     int64 project_id = 1;
     // The ID of the log metadata to retrieve.
     int64 id = 2;
@@ -114,7 +114,7 @@ message GetLogMetadataResponse {
 *******************************************/
 // Request message for ListLogWriters method.
 message ListLogWritersRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve list of Log Writers from.
     int64 project_id = 1;
 }
 
@@ -126,7 +126,7 @@ message ListLogWritersResponse {
 
 // Request message for GetLogWriter method.
 message GetLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID to retrieve the Log Writer from.
     int64 project_id = 1;
     // The ID of the Log Writer resource to retrieve.
     int64 id = 2;
@@ -140,7 +140,7 @@ message GetLogWriterResponse {
 
 // Request message for CreateLogWriter method.
 message CreateLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that will own the new Log Writer.
     int64 project_id = 1;
     // Details of single Log Writer to be deployed by Dataset Service.
     LogWriter log_writer = 2;
@@ -154,7 +154,7 @@ message CreateLogWriterResponse {
 
 // Request message for UpdateLogWriter method.
 message UpdateLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that owns the Log Writer to be updated.
     int64 project_id = 1;
     // The ID of Log Writer to update.
     int64 id = 2;
@@ -173,7 +173,7 @@ message UpdateLogWriterResponse {
 *******************************************/
 // Request message for ListObservationServices method.
 message ListObservationServicesRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve list of Observation Services from.
     int64 project_id = 1;
 }
 
@@ -185,7 +185,7 @@ message ListObservationServicesResponse {
 
 // Request message for GetObservationService method.
 message GetObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve the Observation Service from.
     int64 project_id = 1;
     // The ID of the Observation Service resource to retrieve.
     int64 id = 2;
@@ -199,7 +199,7 @@ message GetObservationServiceResponse {
 
 // Request message for CreateObservationService method.
 message CreateObservationServiceRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that will own the observation service.
     int64 project_id = 1;
     // Details of single Observation Service to be deployed by Dataset Service.
     ObservationService observation_service = 3;
@@ -213,7 +213,7 @@ message CreateObservationServiceResponse {
 
 // Request message for UpdateObservationService method.
 message UpdateObservationServiceRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that owns the Observation Service to be updated.
     int64 project_id = 1;
     // The ID of Observation Service to update.
     int64 id = 2;

@@ -37,7 +37,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log metadata from.",
+            "description": "The CaraML project ID to retrieve list of Log Metadata from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -70,7 +70,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log metadata from.",
+            "description": "The CaraML project ID to retrieve Log Metadata from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -111,7 +111,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve list of Log Writers from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -142,7 +142,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that will own the new Log Writer.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -190,7 +190,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID to retrieve the Log Writer from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -229,7 +229,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that owns the Log Writer to be updated.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -285,7 +285,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve list of Observation Services from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -316,7 +316,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that will own the observation service.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -364,7 +364,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve the Observation Service from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -403,7 +403,7 @@
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that owns the Observation Service to be updated.",
             "in": "path",
             "required": true,
             "type": "string",

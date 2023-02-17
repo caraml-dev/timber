@@ -27,7 +27,7 @@ type ListLogMetadataRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to retrieve log metadata from.
+	// The CaraML project ID to retrieve list of Log Metadata from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 }
 
@@ -125,7 +125,7 @@ type GetLogMetadataRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to retrieve log metadata from.
+	// The CaraML project ID to retrieve Log Metadata from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The ID of the log metadata to retrieve.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -232,7 +232,7 @@ type ListLogWritersRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to retrieve log resource from.
+	// The CaraML project ID to retrieve list of Log Writers from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 }
 
@@ -330,7 +330,7 @@ type GetLogWriterRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to write log resource from.
+	// The CaraML project ID to retrieve the Log Writer from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The ID of the Log Writer resource to retrieve.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -437,7 +437,7 @@ type CreateLogWriterRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to write log resource from.
+	// The CaraML project ID that will own the new Log Writer.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Details of single Log Writer to be deployed by Dataset Service.
 	LogWriter *LogWriter `protobuf:"bytes,2,opt,name=log_writer,json=logWriter,proto3" json:"log_writer,omitempty"`
@@ -544,7 +544,7 @@ type UpdateLogWriterRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to write log resource from.
+	// The CaraML project ID that owns the Log Writer to be updated.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The ID of Log Writer to update.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -660,7 +660,7 @@ type ListObservationServicesRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to retrieve log resource from.
+	// The CaraML project ID to retrieve list of Observation Services from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 }
 
@@ -758,7 +758,7 @@ type GetObservationServiceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to retrieve log resource from.
+	// The CaraML project ID to retrieve the Observation Service from.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The ID of the Observation Service resource to retrieve.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -865,7 +865,7 @@ type CreateObservationServiceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to write log resource from.
+	// The CaraML project ID that will own the observation service.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Details of single Observation Service to be deployed by Dataset Service.
 	ObservationService *ObservationService `protobuf:"bytes,3,opt,name=observation_service,json=observationService,proto3" json:"observation_service,omitempty"`
@@ -972,7 +972,7 @@ type UpdateObservationServiceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The CaraML project ID to write log resource from.
+	// The CaraML project ID that owns the Observation Service to be updated.
 	ProjectId int64 `protobuf:"varint,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// The ID of Observation Service to update.
 	Id int64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
