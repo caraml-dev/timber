@@ -54,7 +54,6 @@ observationServiceConfig:
       apiConfig:
         port: 8080
         deploymentConfig:
-          environmentType: local
           projectName: my-project # will be modified per deployment
           serviceName: observation-service # will be modified per deployment
           logLevel: DEBUG

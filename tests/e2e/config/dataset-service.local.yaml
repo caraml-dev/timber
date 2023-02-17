@@ -61,7 +61,6 @@ observationServiceConfig:
       apiConfig:
         port: 9001
         deploymentConfig:
-          environmentType: local
           projectName: my-project # will be modified per deployment
           serviceName: observation-service # will be modified per deployment
           logLevel: DEBUG

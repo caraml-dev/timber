@@ -38,8 +38,6 @@ type DatasetServiceConfig struct {
 
 // CommonDeploymentConfig configuration common to both observation-service and log writer deployment
 type CommonDeploymentConfig struct {
-	// environment type of the deployment
-	EnvironmentType string `default:"local"`
 	// KubeConfig specifies the file path to the configuration for which Kubernetes cluster to connect to
 	KubeConfig string
 	// BQ Config

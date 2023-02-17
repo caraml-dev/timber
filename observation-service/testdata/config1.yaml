@@ -16,4 +16,4 @@ SentryConfig:
     app: observation-service
 
 DeploymentConfig:
-  EnvironmentType: dev
+

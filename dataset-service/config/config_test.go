@@ -198,11 +198,10 @@ func TestLoadConfigFiles(t *testing.T) {
 							APIConfig: config.Config{
 								Port: 8080,
 								DeploymentConfig: config.DeploymentConfig{
-									EnvironmentType: "local",
-									ProjectName:     "my-project",
-									ServiceName:     "observation-service",
-									LogLevel:        "DEBUG",
-									MaxGoRoutines:   1000,
+									ProjectName:   "my-project",
+									ServiceName:   "observation-service",
+									LogLevel:      "DEBUG",
+									MaxGoRoutines: 1000,
 								},
 								NewRelicConfig: newrelic.Config{
 									Enabled:           false,

@@ -1,8 +1,5 @@
 Port: 9001
 
-DeploymentConfig:
-  EnvironmentType: local
-
 NewRelicConfig:
   Enabled: false
   AppName: observation-service

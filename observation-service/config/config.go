@@ -32,8 +32,6 @@ const (
 
 // DeploymentConfig captures the config related to the deployment of Timber Services
 type DeploymentConfig struct {
-	// EnvironmentType describes the environment Timber services are deployed in
-	EnvironmentType string `default:"local"`
 	// ProjectName describes the CaraML project Timber services are deployed for
 	ProjectName string `default:""`
 	// ServiceName describes the CaraML Timber service name
