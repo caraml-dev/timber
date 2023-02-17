@@ -27,5 +27,5 @@ make dep
 Lastly, execute the end to end test
 
 ```bash
-make e2e
+make test
 ```
