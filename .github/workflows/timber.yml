@@ -151,10 +151,6 @@ jobs:
         with:
           python-version: "3.9"
           architecture: x64
-      - uses: bufbuild/buf-setup-action@v1
-        with:
-          version: '1.7.0'
-          github_token: ${{ github.token }}
       - name: Download k3d
         run: |
           curl --silent --fail https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.4.1 bash
