@@ -16,8 +16,8 @@ type FluentdHelmValues struct {
 	Resources ResourcesConfig `json:"resources,omitempty"`
 	// kubernetes service account to be mounted to the pod created by the deployment
 	KubernetesServiceAccount string `json:"kubernetesServiceAccount,omitempty"`
-	// Google Service account to be mounted to the pod created by the deployment
-	// The service account is used as the identity when flusing logs to BQ
+	// Google Service account to be mounted on the pod created by the deployment
+	// The service account is used as the identity when flushing logs to BQ
 	GCPServiceAccount GCPServiceAccount `json:"gcpServiceAccount,omitempty"`
 	// Persistent volume claim configuration
 	PVCConfig PVCConfig `json:"pvcConfig,omitempty"`
