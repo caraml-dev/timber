@@ -4,11 +4,11 @@
 
 ## Overview
 
-Timber is CaraML component responsible for log collection, model monitoring, and dataset creation. It consists of several components:
+Timber is the CaraML component responsible for log collection, model monitoring, and dataset creation. It consists of several components:
 
 ### Dataset Service
 
-Dataset service is the orchestrator within Timber ecosystem. It manages deployment of dataset service and observation service.
+Dataset service is the orchestrator within Timber ecosystem. It manages deployment of log writer and observation service.
 
 ### Observation Service
 
@@ -16,7 +16,7 @@ Observation Service provides an interface for reporting observations from Client
 
 ### Log Writer
 
-Log writer is the component responsible for collecting prediction log and router log.
+Log writer is the component responsible for collecting prediction log and router log and store it in the persistent storage to be used for downstream use case such as dataset generation or model monitoring.
 
 
 ## Contributing
