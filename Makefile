@@ -39,7 +39,7 @@ version:
 # ==================================
 
 .PHONY: format
-## Format all sousrce code
+## Format all source codes
 format: format-go format-python
 
 .PHONY: format-go
