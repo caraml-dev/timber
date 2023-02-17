@@ -27,4 +27,4 @@ dep:
 ## Setup e2e test environment and dependencies
 .PHONY: setup-e2e
 setup-e2e:
-	$(MAKE) -C ../ dep
+	$(MAKE) -C ../ setup-e2e
