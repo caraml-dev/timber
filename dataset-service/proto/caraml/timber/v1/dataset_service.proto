@@ -5,7 +5,7 @@ option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/tim
 
 import "google/api/annotations.proto";
 
-import "caraml/timber/v1/log.proto";
+import "caraml/timber/v1/log_metadata.proto";
 import "caraml/timber/v1/log_writer.proto";
 import "caraml/timber/v1/observation_service.proto";
 
@@ -85,7 +85,7 @@ service DatasetService {
 
 // Request message for ListLogMetadata method.
 message ListLogMetadataRequest {
-    // The CaraML project ID to retrieve log metadata from.
+    // The CaraML project ID to retrieve list of Log Metadata from.
     int64 project_id = 1;
 }
 
@@ -97,7 +97,7 @@ message ListLogMetadataResponse {
 
 // Request message for GetLogMetadata method.
 message GetLogMetadataRequest {
-    // The CaraML project ID to retrieve log metadata from.
+    // The CaraML project ID to retrieve Log Metadata from.
     int64 project_id = 1;
     // The ID of the log metadata to retrieve.
     int64 id = 2;
@@ -114,7 +114,7 @@ message GetLogMetadataResponse {
 *******************************************/
 // Request message for ListLogWriters method.
 message ListLogWritersRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve list of Log Writers from.
     int64 project_id = 1;
 }
 
@@ -126,7 +126,7 @@ message ListLogWritersResponse {
 
 // Request message for GetLogWriter method.
 message GetLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID to retrieve the Log Writer from.
     int64 project_id = 1;
     // The ID of the Log Writer resource to retrieve.
     int64 id = 2;
@@ -140,7 +140,7 @@ message GetLogWriterResponse {
 
 // Request message for CreateLogWriter method.
 message CreateLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that will own the new Log Writer.
     int64 project_id = 1;
     // Details of single Log Writer to be deployed by Dataset Service.
     LogWriter log_writer = 2;
@@ -154,7 +154,7 @@ message CreateLogWriterResponse {
 
 // Request message for UpdateLogWriter method.
 message UpdateLogWriterRequest {
-    // The CaraML project ID to write log resource from.
+    // The CaraML project ID that owns the Log Writer to be updated.
     int64 project_id = 1;
     // The ID of Log Writer to update.
     int64 id = 2;
@@ -173,19 +173,19 @@ message UpdateLogWriterResponse {
 *******************************************/
 // Request message for ListObservationServices method.
 message ListObservationServicesRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve list of Observation Services from.
     int64 project_id = 1;
 }
 
 // Response message for ListObservationServices method.
 message ListObservationServicesResponse {
     // Observation Services deployed by Dataset Service for a particular CaraML project.
-    repeated ObservationServiceConfig observation_services = 1;
+    repeated ObservationService observation_services = 1;
 }
 
 // Request message for GetObservationService method.
 message GetObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID to retrieve the Observation Service from.
     int64 project_id = 1;
     // The ID of the Observation Service resource to retrieve.
     int64 id = 2;
@@ -194,35 +194,35 @@ message GetObservationServiceRequest {
 // Response message for GetObservationService method.
 message GetObservationServiceResponse {
     // Details of single Observation Service deployed by Dataset Service.
-    ObservationServiceConfig observation_service = 1;
+    ObservationService observation_service = 1;
 }
 
 // Request message for CreateObservationService method.
 message CreateObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID that will own the observation service.
     int64 project_id = 1;
     // Details of single Observation Service to be deployed by Dataset Service.
-    ObservationServiceConfig observation_service = 2;
+    ObservationService observation_service = 2;
 }
 
 // Response message for CreateObservationService method.
 message CreateObservationServiceResponse {
     // Details of single Observation Service deployed by Dataset Service.
-    ObservationServiceResponse observation_service = 1;
+    ObservationService observation_service = 1;
 }
 
 // Request message for UpdateObservationService method.
 message UpdateObservationServiceRequest {
-    // The CaraML project ID to retrieve log resource from.
+    // The CaraML project ID that owns the Observation Service to be updated.
     int64 project_id = 1;
     // The ID of Observation Service to update.
     int64 id = 2;
     // Details of single Observation Service to be updated by Dataset Service.
-    ObservationServiceConfig observation_service = 3;
+    ObservationService observation_service = 3;
 }
 
 // Response message for UpdateObservationService method.
 message UpdateObservationServiceResponse {
     // Details of single Observation Service updated by Dataset Service.
-    ObservationServiceResponse observation_service = 1;
+    ObservationService observation_service = 1;
 }

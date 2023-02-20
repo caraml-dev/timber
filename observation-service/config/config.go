@@ -11,9 +11,8 @@ import (
 
 // Config captures the config related to starting Observation Service
 type Config struct {
-	Port int `envconfig:"PORT" default:"9001"`
-
-	DeploymentConfig  commonconfig.DeploymentConfig
+	Port              int `envconfig:"PORT" default:"9001"`
+	DeploymentConfig  DeploymentConfig
 	NewRelicConfig    newrelic.Config
 	SentryConfig      sentry.Config
 	LogConsumerConfig LogConsumerConfig
@@ -30,6 +29,18 @@ const (
 	// LoggerKafkaConsumer is a Kafka ObservationLog Consumer
 	LoggerKafkaConsumer ObservationLoggerConsumerKind = "kafka"
 )
+
+// DeploymentConfig captures the config related to the deployment of Timber Services
+type DeploymentConfig struct {
+	// ProjectName describes the CaraML project Timber services are deployed for
+	ProjectName string `default:""`
+	// ServiceName describes the CaraML Timber service name
+	ServiceName string `default:""`
+	// LogLevel captures the selected supported logging level
+	LogLevel commonconfig.LogLevel `split_words:"false" default:"INFO"`
+	// Maximum no. of go-routines that is allowed
+	MaxGoRoutines int `default:"1000"`
+}
 
 // LogConsumerConfig captures the config related to consuming ObservationLog via a background process
 type LogConsumerConfig struct {

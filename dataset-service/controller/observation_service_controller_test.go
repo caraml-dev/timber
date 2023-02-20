@@ -12,8 +12,9 @@ import (
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
-	"github.com/caraml-dev/timber/dataset-service/services"
-	"github.com/caraml-dev/timber/dataset-service/services/mocks"
+	mlpMock "github.com/caraml-dev/timber/dataset-service/mlp/mocks"
+	"github.com/caraml-dev/timber/dataset-service/service"
+	"github.com/caraml-dev/timber/dataset-service/service/mocks"
 )
 
 type ObservationServiceControllerTestSuite struct {
@@ -21,18 +22,24 @@ type ObservationServiceControllerTestSuite struct {
 	ctrl *ObservationServiceController
 }
 
+var observationServiceStub = timberv1.ObservationService{
+	ProjectId: 0,
+	Id:        1,
+	Name:      "observation-svc",
+	Status:    timberv1.Status_STATUS_DEPLOYED,
+}
+
 func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	s.Suite.T().Log("Setting up ObservationServiceControllerTestSuite")
 
 	// Create mock MLP service and set up with test responses
-	mlpSvc := &mocks.MLPService{}
+	mlpSvc := &mlpMock.Client{}
 	projectID := int64(0)
 	projectName := "test-project"
-	expectedProject := &mlp.Project{Id: 0, Name: projectName}
+	expectedProject := &mlp.Project{ID: 0, Name: projectName}
 	failedProjectID := int64(4)
 	failedProjectName := "failed-test-project"
-	expectedFailedProject := &mlp.Project{Id: 4, Name: failedProjectName}
-	observationServiceResponse := ""
+	expectedFailedProject := &mlp.Project{ID: 4, Name: failedProjectName}
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
 	mlpSvc.On("GetProject", failedProjectID).Return(expectedFailedProject, nil)
 	mlpSvc.On(
@@ -41,14 +48,14 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 
 	// Create mock Observation service and set up with test responses
 	observationSvc := &mocks.ObservationService{}
-	observationSvc.On("CreateService", projectName, mock.Anything).Return(&observationServiceResponse, nil)
-	observationSvc.On("UpdateService", projectName, int(projectID), mock.Anything).Return(&observationServiceResponse, nil)
-	observationSvc.On("CreateService", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
-	observationSvc.On("UpdateService", failedProjectName, int(failedProjectID), mock.Anything).Return(nil, fmt.Errorf("failed update"))
+	observationSvc.On("Create", projectName, mock.Anything).Return(&observationServiceStub, nil)
+	observationSvc.On("Update", projectName, mock.Anything).Return(&observationServiceStub, nil)
+	observationSvc.On("Create", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
+	observationSvc.On("Update", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed update"))
 
 	s.ctrl = &ObservationServiceController{
 		appCtx: &appcontext.AppContext{
-			Services: services.Services{
+			Services: service.Services{
 				MLPService:         mlpSvc,
 				ObservationService: observationSvc,
 			},
@@ -141,7 +148,7 @@ func (s *ObservationServiceControllerTestSuite) TestCreateObservationService() {
 			name:      "success",
 			projectID: 0,
 			req:       &timberv1.CreateObservationServiceRequest{},
-			resp:      &timberv1.CreateObservationServiceResponse{ObservationService: &timberv1.ObservationServiceResponse{}},
+			resp:      &timberv1.CreateObservationServiceResponse{ObservationService: &observationServiceStub},
 		},
 		{
 			name:      "failure | observation service creation",
@@ -181,7 +188,7 @@ func (s *ObservationServiceControllerTestSuite) TestUpdateObservationService() {
 			name:      "success",
 			projectID: 0,
 			req:       &timberv1.UpdateObservationServiceRequest{},
-			resp:      &timberv1.UpdateObservationServiceResponse{ObservationService: &timberv1.ObservationServiceResponse{}},
+			resp:      &timberv1.UpdateObservationServiceResponse{ObservationService: &observationServiceStub},
 		},
 		{
 			name:      "failure | project not found",

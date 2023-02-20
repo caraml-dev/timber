@@ -10,8 +10,8 @@ import (
 	"github.com/caraml-dev/timber/common/errors"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
-	"github.com/caraml-dev/timber/dataset-service/services"
-	"github.com/caraml-dev/timber/dataset-service/services/mocks"
+	"github.com/caraml-dev/timber/dataset-service/mlp/mocks"
+	"github.com/caraml-dev/timber/dataset-service/service"
 )
 
 type MetadataControllerTestSuite struct {
@@ -23,9 +23,9 @@ func (s *MetadataControllerTestSuite) SetupSuite() {
 	s.Suite.T().Log("Setting up MetadataControllerTestSuite")
 
 	// Create mock MLP service and set up with test responses
-	mlpSvc := &mocks.MLPService{}
+	mlpSvc := &mocks.Client{}
 	projectID := int64(0)
-	expectedProject := &mlp.Project{Id: 0}
+	expectedProject := &mlp.Project{ID: 0}
 	mlpSvc.On("GetProject", projectID).Return(expectedProject, nil)
 	mlpSvc.On(
 		"GetProject", int64(3),
@@ -33,7 +33,7 @@ func (s *MetadataControllerTestSuite) SetupSuite() {
 
 	s.ctrl = &MetadataController{
 		appCtx: &appcontext.AppContext{
-			Services: services.Services{
+			Services: service.Services{
 				MLPService: mlpSvc,
 			},
 		},

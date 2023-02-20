@@ -3,8 +3,9 @@ package logger
 import (
 	"testing"
 
-	"github.com/caraml-dev/timber/observation-service/types"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/caraml-dev/timber/observation-service/types"
 )
 
 func TestNoopLogConsumer(t *testing.T) {

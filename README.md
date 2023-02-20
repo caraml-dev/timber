@@ -1,54 +1,23 @@
-# timber
+# Timber
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://github.com/caraml-dev/timber/blob/master/LICENSE)
 
 ## Overview
 
-Timber comprises of multiple services, central to logging in CaraML ecosystem.
+Timber is the CaraML component responsible for log collection, model monitoring, and dataset creation. It consists of several components:
+
+### Dataset Service
+
+Dataset service is the orchestrator within Timber ecosystem. It manages deployment of log writer and observation service.
+
+### Observation Service
 
 Observation Service provides an interface for reporting observations from Client-owned systems back to CaraML platform. The logged observations will be used for evaluating the effectiveness of a given prediction instance.
 
-## Development Environment
+### Log Writer
 
-### Quick Start
+Log writer is the component responsible for collecting prediction log and router log and store it in the persistent storage to be used for downstream use case such as dataset generation or model monitoring.
 
-#### a. Build dependencies
-```bash
-# Build Fluentd image
-make build-fluentd-image
-```
-
-#### b. Setup dependencies
-
-Fluentd BQ logging requires a GCP service account to be present at infra/local directory to work properly. Without it, logs will only be flushed to stdout.
-
-```bash
-# Starts Kafka, Fluentd services
-make dependency-services
-```
-
-#### c. Setup Observation Service
-```bash
-cd observation-service && make observation-service
-```
-
-#### d. Sample Requests
-
-`GRPC requests`
-```bash
-# LogObservations API
-grpcurl -plaintext -d '{ "observations": [{"prediction_id": "1", "row_id": "1", "target_name": "accepted", "observation_values": [], "observation_context": []}] }' \
-  localhost:9001 caraml.upi.v1.ObservationService/LogObservations
-
-# Health checks
-grpcurl -plaintext -d '{ "service": "caraml.upi.v1.ObservationService" }' \
-  localhost:9001 grpc.health.v1.Health/Watch
-grpcurl -plaintext -d '{ "service": "caraml.upi.v1.ObservationService" }' \
-  localhost:9001 grpc.health.v1.Health/Check
-
-# Service description
-grpcurl -plaintext localhost:9001 describe
-```
 
 ## Contributing
 

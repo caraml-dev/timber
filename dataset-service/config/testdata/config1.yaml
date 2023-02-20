@@ -1,0 +1,297 @@
+datasetServiceConfig:
+  port: 9000
+  logLevel: DEBUG
+  mlpUrl: http://mlp.mlp.127.0.0.1.nip.io/v1
+  newRelicConfig:
+    enabled: false
+    appName: dataset-service
+    license: newrelic-license-secret
+    ignoreStatusCodes:
+      - 400
+      - 401
+      - 403
+      - 404
+      - 405
+      - 412
+    labels:
+      app: dataset-service
+  sentryConfig:
+    enabled: false
+    dsn: xxx.xxx.xxx
+    labels:
+      app: dataset-service
+
+observationServiceConfig:
+  # You can replace   helmChartPath to point to local directory
+  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/observation-svc-0.2.5/observation-svc-0.2.6.tgz
+  defaultValues:
+    observationService:
+      image:
+        registry: ghcr.io
+        repository: caraml-dev/timber/observation-service
+        tag: v0.0.0-build.15-b8afdb5
+        pullPolicy: IfNotPresent
+      annotations:
+        key: value
+      extraLabels:
+        key: value
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          cpu: 1
+          memory: 100Mi
+      autoscaling:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 2
+        targetCPUUtilizationPercentage: 50
+      extraEnvs:
+        name: EXTRA1
+        value: VALUE1
+      apiConfig:
+        port: 8080
+        deploymentConfig:
+          projectName: my-project # will be modified per deployment
+          serviceName: observation-service # will be modified per deployment
+          logLevel: DEBUG
+          maxGoRoutines: 1000
+        logConsumerConfig:
+          kind: kafka
+          kafkaConfig:
+            brokers: kafka.mlp.svc.cluster.local # will be modified per deployment
+            topic: test-topic # will be modified per deployment
+            maxMessageBytes: 1048589
+            autoOffsetReset: earliest
+        logProducerConfig:
+          kind: fluentd
+          fluentdConfig:
+            host: obs-timber-observation-service-fluentd # will be modified per deployment
+            port: 24224
+            kind: bq
+            tag: observation-service.log # will be modified per deployment
+            bqConfig:
+              project: my-project # will be modified per deployment
+              dataset: my-dataset # will be modified per deployment
+              table: my-table # will be modified per deployment
+        monitoringConfig:
+          kind: prometheus
+    fluentd:
+      nameOverride: fluentd
+      replicaCount: 1
+      image:
+        registry: ghcr.io
+        repository: caraml-dev/timber/fluentd
+        tag: v0.0.0-build.16-01ac82e
+        pullPolicy: IfNotPresent
+      annotations:
+        key: value
+      extraLabels:
+        key: value
+      enabled: true
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          cpu: 1
+          memory: 100Mi
+      gcpServiceAccount:
+        credentialsData: ZHVtbXkK # dummy
+      extraEnvs:
+        - name: FLUENTD_WORKER_COUNT
+          value: "1"
+        - name: FLUENTD_LOG_LEVEL
+          value: debug
+        - name: FLUENTD_BUFFER_LIMIT
+          value: 1g
+        - name: FLUENTD_FLUSH_INTERVAL_SECONDS
+          value: "30"
+        - name: FLUENTD_LOG_PATH
+          value: /fluentd/cache/log
+        - name: FLUENTD_TAG
+          value: observation-service.log
+        - name: FLUENTD_GCP_JSON_KEY_PATH
+          value: /etc/gcp_service_account/service-account.json
+        - name: FLUENTD_GCP_PROJECT
+          value: my-project
+        - name: FLUENTD_BQ_DATASET
+          value: my-dataset
+        - name: FLUENTD_BQ_TABLE
+          value: my-table
+      # -- Fluentd config
+      pvcConfig:
+        name: cache-volume
+        mountPath: /cache
+        storage: 3Gi
+      fluentdConfig: |-
+        # Set fluentd log level to error
+        <system>
+          log_level "#{ENV['FLUENTD_LOG_LEVEL']}"
+          workers "#{ENV['FLUENTD_WORKER_COUNT']}"
+        </system>
+
+        # Accept HTTP input
+        <source>
+          @type http
+          port 9880
+          bind 0.0.0.0
+          body_size_limit 32m
+          keepalive_timeout 10s
+        </source>
+
+        # Accept events on tcp socket
+        <source>
+          @type forward
+          port 24224
+          bind 0.0.0.0
+        </source>
+
+        # Buffer and output to multiple sinks
+        <match "#{ENV['FLUENTD_TAG']}">
+          @type copy
+          <store>
+            @type stdout
+          </store>
+          <store>
+            @type bigquery_load
+
+            <buffer>
+              @type file
+
+              path "#{ENV['FLUENTD_LOG_PATH']}"
+              timekey_use_utc
+
+              flush_at_shutdown true
+              flush_mode interval
+              flush_interval "#{ENV['FLUENTD_FLUSH_INTERVAL_SECONDS']}"
+              retry_max_times 3
+
+              chunk_limit_size 1g
+              compress gzip
+              total_limit_size "#{ENV['FLUENTD_BUFFER_LIMIT']}"
+
+              delayed_commit_timeout 150
+              disable_chunk_backup true
+            </buffer>
+
+            # Authenticate with BigQuery using a json key
+            auth_method json_key
+            json_key "#{ENV['FLUENTD_GCP_JSON_KEY_PATH']}"
+            project "#{ENV['FLUENTD_GCP_PROJECT']}"
+            dataset "#{ENV['FLUENTD_BQ_DATASET']}"
+            table "#{ENV['FLUENTD_BQ_TABLE']}"
+            fetch_schema true
+          </store>
+        </match>
+
+logWriterConfig:
+  # You can replace helmChartPath to point to local directory
+  helmChartPath: https://github.com/caraml-dev/helm-charts/releases/download/fluentd-0.1.4/fluentd-0.1.5.tgz
+  defaultValues:
+    image:
+      registry: ghcr.io
+      repository: caraml-dev/timber/fluentd
+      tag: v0.0.0-build.16-01ac82e
+      pullPolicy: IfNotPresent
+    annotations:
+      key: value
+    extraLabels:
+      key: value
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: 1
+        memory: 100Mi
+    gcpServiceAccount:
+      credentialsData: ZHVtbXkK # dummy
+    pvcConfig:
+      name: cache-volume
+      mountPath: /cache
+      storage: 3Gi
+    extraEnvs:
+      - name: FLUENTD_WORKER_COUNT
+        value: "1"
+      - name: FLUENTD_LOG_LEVEL
+        value: debug
+      - name: FLUENTD_BUFFER_LIMIT
+        value: 1g
+      - name: FLUENTD_FLUSH_INTERVAL_SECONDS
+        value: "30"
+      - name: FLUENTD_LOG_PATH
+        value: /fluentd/cache/log
+      - name: FLUENTD_TAG
+        value: observation-service.log
+      - name: FLUENTD_GCP_JSON_KEY_PATH
+        value: /etc/gcp_service_account/service-account.json
+      - name: FLUENTD_GCP_PROJECT
+        value: my-project #Fill in GCP PROJECT
+      - name: FLUENTD_BQ_DATASET
+        value: my-dataset #Fill in BQ Dataset
+      - name: FLUENTD_BQ_TABLE
+        value: my-table #Fill in BQ Table
+      - name: FLUENTD_KAFKA_BROKER
+        value: kafka.default.svc.cluster.local #Modify Accordingly
+      - name: FLUENTD_KAFKA_TOPIC
+        value: quickstart #Modify Accordingly
+      - name: FLUENTD_KAFKA_PROTO_CLASS_NAME
+        value: caraml.upi.v1.PredictionLog #Prediction or Observation logs supported
+    fluentdConfig: |-
+      # Set fluentd log level to error
+      <system>
+        log_level "#{ENV['FLUENTD_LOG_LEVEL']}"
+        workers "#{ENV['FLUENTD_WORKER_COUNT']}"
+      </system>
+
+      <source>
+        @type kafka
+
+        brokers "#{ENV['FLUENTD_KAFKA_BROKER']}" #broker:9092
+        topics "#{ENV['FLUENTD_KAFKA_TOPIC']}" #quickstart
+
+        format upi_logs
+        class_name "#{ENV['FLUENTD_KAFKA_PROTO_CLASS_NAME']}" #"caraml.upi.v1.PredictionLog"
+      </source>
+
+      # Buffer and output to multiple sinks
+      <match "#{ENV['FLUENTD_KAFKA_TOPIC']}">
+        @type copy
+        <store>
+          @type stdout
+        </store>
+        <store>
+          @type bigquery_load
+
+          <buffer>
+            @type file
+
+            path "#{ENV['FLUENTD_LOG_PATH']}"
+            timekey_use_utc
+
+            flush_at_shutdown true
+            flush_mode interval
+            flush_interval "#{ENV['FLUENTD_FLUSH_INTERVAL_SECONDS']}"
+            retry_max_times 3
+
+            chunk_limit_size 1g
+            compress gzip
+            total_limit_size "#{ENV['FLUENTD_BUFFER_LIMIT']}"
+
+            delayed_commit_timeout 150
+            disable_chunk_backup true
+          </buffer>
+
+          # Authenticate with BigQuery using a json key
+          auth_method json_key
+          json_key "#{ENV['FLUENTD_GCP_JSON_KEY_PATH']}"
+          project "#{ENV['FLUENTD_GCP_PROJECT']}"
+          dataset "#{ENV['FLUENTD_BQ_DATASET']}"
+          table "#{ENV['FLUENTD_BQ_TABLE']}"
+          fetch_schema true
+        </store>
+      </match>

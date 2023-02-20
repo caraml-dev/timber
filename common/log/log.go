@@ -17,12 +17,12 @@ func newDefaultGlobalLogger() *zap.SugaredLogger {
 }
 
 // InitGlobalLogger creates a new SugaredLogger and assigns it as the global logger
-func InitGlobalLogger(deploymentCfg *config.DeploymentConfig) {
+func InitGlobalLogger(loglevel config.LogLevel) {
 	cfg := zap.NewProductionConfig()
 	// Disable annotation of logs with the calling function's file name and line number
 	cfg.DisableCaller = true
 
-	setLogLevel(&cfg, deploymentCfg.LogLevel)
+	setLogLevel(&cfg, loglevel)
 
 	// Build logger
 	logger, _ := cfg.Build()

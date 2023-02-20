@@ -30,14 +30,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log metadata from.",
+            "description": "The CaraML project ID to retrieve list of Log Metadata from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -63,14 +63,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log metadata from.",
+            "description": "The CaraML project ID to retrieve Log Metadata from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -104,14 +104,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve list of Log Writers from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -135,14 +135,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that will own the new Log Writer.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -183,14 +183,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID to retrieve the Log Writer from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -222,14 +222,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to write log resource from.",
+            "description": "The CaraML project ID that owns the Log Writer to be updated.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -278,14 +278,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve list of Observation Services from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -309,14 +309,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID that will own the observation service.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -330,7 +330,7 @@
               "type": "object",
               "properties": {
                 "observationService": {
-                  "$ref": "#/definitions/v1ObservationServiceConfig",
+                  "$ref": "#/definitions/v1ObservationService",
                   "description": "Details of single Observation Service to be deployed by Dataset Service."
                 }
               },
@@ -357,14 +357,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID to retrieve the Observation Service from.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -396,14 +396,14 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/googlerpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "projectId",
-            "description": "The CaraML project ID to retrieve log resource from.",
+            "description": "The CaraML project ID that owns the Observation Service to be updated.",
             "in": "path",
             "required": true,
             "type": "string",
@@ -425,7 +425,7 @@
               "type": "object",
               "properties": {
                 "observationService": {
-                  "$ref": "#/definitions/v1ObservationServiceConfig",
+                  "$ref": "#/definitions/v1ObservationService",
                   "description": "Details of single Observation Service to be updated by Dataset Service."
                 }
               },
@@ -440,16 +440,7 @@
     }
   },
   "definitions": {
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
+    "googlerpcStatus": {
       "type": "object",
       "properties": {
         "code": {
@@ -467,6 +458,27 @@
         }
       }
     },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "timberv1Status": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "STATUS_DEPLOYED",
+        "STATUS_UNINSTALLED",
+        "STATUS_FAILED",
+        "STATUS_PENDING"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "title": "Deployment status"
+    },
     "v1CreateLogWriterResponse": {
       "type": "object",
       "properties": {
@@ -481,66 +493,11 @@
       "type": "object",
       "properties": {
         "observationService": {
-          "$ref": "#/definitions/v1ObservationServiceResponse",
+          "$ref": "#/definitions/v1ObservationService",
           "description": "Details of single Observation Service deployed by Dataset Service."
         }
       },
       "description": "Response message for CreateObservationService method."
-    },
-    "v1FluentdConfig": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "$ref": "#/definitions/v1FluentdOutputType",
-          "title": "The type of Data Sink where Observation logs would be flushed to"
-        },
-        "host": {
-          "type": "string",
-          "title": "Fluentd Host to connect to"
-        },
-        "port": {
-          "type": "integer",
-          "format": "int32",
-          "title": "Fluentd Port to connect to"
-        },
-        "tag": {
-          "type": "string",
-          "title": "Fluentd Tag to match messages"
-        },
-        "config": {
-          "$ref": "#/definitions/v1FluentdOutputBQConfig"
-        }
-      },
-      "title": "Fluentd Data sink configurations"
-    },
-    "v1FluentdOutputBQConfig": {
-      "type": "object",
-      "properties": {
-        "project": {
-          "type": "string",
-          "title": "GCP Project"
-        },
-        "dataset": {
-          "type": "string",
-          "title": "GCP Dataset"
-        },
-        "table": {
-          "type": "string",
-          "title": "GCP Table"
-        }
-      },
-      "title": "Fluentd BQ Data sink configurations"
-    },
-    "v1FluentdOutputType": {
-      "type": "string",
-      "enum": [
-        "FLUENTD_OUTPUT_TYPE_UNSPECIFIED",
-        "FLUENTD_OUTPUT_TYPE_STDOUT",
-        "FLUENTD_OUTPUT_TYPE_BQ"
-      ],
-      "default": "FLUENTD_OUTPUT_TYPE_UNSPECIFIED",
-      "description": "- FLUENTD_OUTPUT_TYPE_STDOUT: Fluentd will publish logs to standard output\n - FLUENTD_OUTPUT_TYPE_BQ: Fluentd will flush logs to BigQuery",
-      "title": "Data sink where logs would be flushed to via Fluentd"
     },
     "v1GetLogMetadataResponse": {
       "type": "object",
@@ -566,7 +523,7 @@
       "type": "object",
       "properties": {
         "observationService": {
-          "$ref": "#/definitions/v1ObservationServiceConfig",
+          "$ref": "#/definitions/v1ObservationService",
           "description": "Details of single Observation Service deployed by Dataset Service."
         }
       },
@@ -582,43 +539,9 @@
         "topic": {
           "type": "string",
           "title": "Kafka Topic to produce to/consume from"
-        },
-        "maxMessageBytes": {
-          "type": "string",
-          "format": "int64",
-          "title": "Largest record batch size allowed by Kafka (after compression if compression is enabled)"
-        },
-        "compressionType": {
-          "type": "string",
-          "title": "The compression type for all data generated by the Producer"
-        },
-        "connectionTimeout": {
-          "type": "integer",
-          "format": "int32",
-          "title": "ConnectTimeoutMS is the maximum duration (ms) the Kafka Producer/Consumer will block for to get Metadata, before timing out"
-        },
-        "pollInterval": {
-          "type": "integer",
-          "format": "int32",
-          "title": "PollInterval is the maximum duration (ms) the Kafka Consumer will block for, before timing out"
-        },
-        "offsetReset": {
-          "$ref": "#/definitions/v1KafkaInitialOffset",
-          "title": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server"
         }
       },
       "title": "Kafka configurations"
-    },
-    "v1KafkaInitialOffset": {
-      "type": "string",
-      "enum": [
-        "KAFKA_INITIAL_OFFSET_UNSPECIFIED",
-        "KAFKA_INITIAL_OFFSET_EARLIEST",
-        "KAFKA_INITIAL_OFFSET_LATEST"
-      ],
-      "default": "KAFKA_INITIAL_OFFSET_UNSPECIFIED",
-      "description": "- KAFKA_INITIAL_OFFSET_EARLIEST: Automatically reset the offset to the earliest offset\n - KAFKA_INITIAL_OFFSET_LATEST: Automatically reset the offset to the latest offset",
-      "title": "Kafka initial offset config"
     },
     "v1ListLogMetadataResponse": {
       "type": "object",
@@ -652,7 +575,7 @@
         "observationServices": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1ObservationServiceConfig"
+            "$ref": "#/definitions/v1ObservationService"
           },
           "description": "Observation Services deployed by Dataset Service for a particular CaraML project."
         }
@@ -671,7 +594,7 @@
           "description": "Name of the log, generated by Dataset Service."
         },
         "type": {
-          "$ref": "#/definitions/v1LogType",
+          "$ref": "#/definitions/v1LogMetadataType",
           "description": "Source of the log."
         },
         "targetNames": {
@@ -692,6 +615,18 @@
       },
       "title": "LogMetadata is an entity/metadata in Dataset Service that represents an append-only\ndata produced by ingesting the observation, prediction, or router logs"
     },
+    "v1LogMetadataType": {
+      "type": "string",
+      "enum": [
+        "LOG_METADATA_TYPE_UNSPECIFIED",
+        "LOG_METADATA_TYPE_PREDICTION",
+        "LOG_METADATA_TYPE_OBSERVATION",
+        "LOG_METADATA_TYPE_ROUTER"
+      ],
+      "default": "LOG_METADATA_TYPE_UNSPECIFIED",
+      "description": "- LOG_METADATA_TYPE_PREDICTION: Log from Prediction service\n - LOG_METADATA_TYPE_OBSERVATION: Log from Observation service\n - LOG_METADATA_TYPE_ROUTER: Log from Router service",
+      "title": "LogType supported by UPI"
+    },
     "v1LogProducer": {
       "type": "object",
       "properties": {
@@ -710,118 +645,171 @@
       },
       "title": "LogProducer describes the service that generates the log"
     },
-    "v1LogType": {
-      "type": "string",
-      "enum": [
-        "LOG_TYPE_UNSPECIFIED",
-        "LOG_TYPE_PREDICTION",
-        "LOG_TYPE_OBSERVATION",
-        "LOG_TYPE_ROUTER"
-      ],
-      "default": "LOG_TYPE_UNSPECIFIED",
-      "description": "- LOG_TYPE_PREDICTION: Log from Prediction service\n - LOG_TYPE_OBSERVATION: Log from Observation service\n - LOG_TYPE_ROUTER: Log from Router service",
-      "title": "LogType supported by UPI"
-    },
     "v1LogWriter": {
       "type": "object",
       "properties": {
-        "type": {
-          "$ref": "#/definitions/v1LogWriterType"
+        "projectId": {
+          "type": "string",
+          "format": "int64",
+          "title": "Project id that owns the log writer"
         },
-        "fluentdConfig": {
-          "$ref": "#/definitions/v1FluentdConfig"
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "Log writer's ID"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name of the log writer"
+        },
+        "source": {
+          "$ref": "#/definitions/v1LogWriterSource",
+          "title": "Log writer source"
+        },
+        "status": {
+          "$ref": "#/definitions/timberv1Status",
+          "title": "TODO: Add details of where the log is stored at\nStatus of the log writer deployment"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Last update timestamp"
         }
       },
       "title": "LogWriter describes details of a Log Writer"
     },
-    "v1LogWriterType": {
-      "type": "string",
-      "enum": [
-        "LOG_WRITER_TYPE_UNSPECIFIED",
-        "LOG_WRITER_TYPE_FLUENTD"
-      ],
-      "default": "LOG_WRITER_TYPE_UNSPECIFIED",
-      "description": "- LOG_WRITER_TYPE_FLUENTD: Fluentd will be used for logging",
-      "title": "Type of logging application for specified log"
-    },
-    "v1ObservationServiceConfig": {
+    "v1LogWriterSource": {
       "type": "object",
       "properties": {
-        "serviceName": {
+        "type": {
+          "$ref": "#/definitions/v1LogWriterSourceType",
+          "description": "Log type. It determines whether prediction_log_source or router_log_source is populated.\nIf the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid.\nWhereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid."
+        },
+        "predictionLogSource": {
+          "$ref": "#/definitions/v1PredictionLogSource",
+          "title": "Prediction log source details"
+        },
+        "routerLogSource": {
+          "$ref": "#/definitions/v1RouterLogSource",
+          "title": "Router log source details"
+        }
+      },
+      "title": "Details of the log writer data source"
+    },
+    "v1LogWriterSourceType": {
+      "type": "string",
+      "enum": [
+        "LOG_WRITER_SOURCE_TYPE_UNSPECIFIED",
+        "LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG",
+        "LOG_WRITER_SOURCE_TYPE_ROUTER_LOG"
+      ],
+      "default": "LOG_WRITER_SOURCE_TYPE_UNSPECIFIED",
+      "title": "- LOG_WRITER_SOURCE_TYPE_UNSPECIFIED: log type is not specified\n - LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG: log type for consuming prediction log\n - LOG_WRITER_SOURCE_TYPE_ROUTER_LOG: log type for consuming router log"
+    },
+    "v1ObservationService": {
+      "type": "object",
+      "properties": {
+        "projectId": {
           "type": "string",
-          "title": "Required to postfix helm release name with provided Service name as a CaraML project could have multiple different services"
+          "format": "int64",
+          "title": "Project id that owns the observation service"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "Observation service id"
+        },
+        "name": {
+          "type": "string",
+          "title": "Observation service name"
         },
         "source": {
-          "$ref": "#/definitions/v1ObservationServiceDataSource",
+          "$ref": "#/definitions/v1ObservationServiceSource",
           "description": "Configuration for pull-based Observation Service data source."
         },
-        "sink": {
-          "$ref": "#/definitions/v1ObservationServiceDataSink",
-          "description": "Configuration for Observation Service data sink."
+        "status": {
+          "$ref": "#/definitions/timberv1Status",
+          "title": "TODO: Add details of where the log is stored at\nStatus of the observation service"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Last update timestamp"
         }
       },
       "title": "ObservationServiceConfig describes details of a Observation Service"
     },
-    "v1ObservationServiceDataSink": {
+    "v1ObservationServiceSource": {
       "type": "object",
       "properties": {
         "type": {
-          "$ref": "#/definitions/v1ObservationServiceDataSinkType"
+          "$ref": "#/definitions/v1ObservationServiceSourceType",
+          "title": "Data source of the observation service"
         },
-        "kafkaConfig": {
-          "$ref": "#/definitions/v1KafkaConfig"
-        },
-        "fluentdConfig": {
-          "$ref": "#/definitions/v1FluentdConfig"
-        }
-      },
-      "title": "Configurations of Data sink where Observation logs would be flushed to"
-    },
-    "v1ObservationServiceDataSinkType": {
-      "type": "string",
-      "enum": [
-        "OBSERVATION_SERVICE_DATA_SINK_TYPE_UNSPECIFIED",
-        "OBSERVATION_SERVICE_DATA_SINK_TYPE_NOOP",
-        "OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT",
-        "OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA",
-        "OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD"
-      ],
-      "default": "OBSERVATION_SERVICE_DATA_SINK_TYPE_UNSPECIFIED",
-      "description": "- OBSERVATION_SERVICE_DATA_SINK_TYPE_NOOP: No-Op represents no need to flush logs to any data sink\n - OBSERVATION_SERVICE_DATA_SINK_TYPE_STDOUT: Observation Service will publish logs to standard output\n - OBSERVATION_SERVICE_DATA_SINK_TYPE_KAFKA: Observation Service will flush logs to a Kafka sink\n - OBSERVATION_SERVICE_DATA_SINK_TYPE_FLUENTD: Observation Service will flush logs to Fluentd",
-      "title": "Data sink where Observation logs would be flushed to"
-    },
-    "v1ObservationServiceDataSource": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "$ref": "#/definitions/v1ObservationServiceDataSourceType"
-        },
-        "kafkaConfig": {
-          "$ref": "#/definitions/v1KafkaConfig"
+        "kafka": {
+          "$ref": "#/definitions/v1KafkaConfig",
+          "title": "Kafka configuration, required if the source type is SOURCE_TYPE_KAFKA"
         }
       },
       "title": "Configurations of Data source where Observation logs should be retrieved from"
     },
-    "v1ObservationServiceDataSourceType": {
+    "v1ObservationServiceSourceType": {
       "type": "string",
       "enum": [
-        "OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED",
-        "OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER",
-        "OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA"
+        "OBSERVATION_SERVICE_SOURCE_TYPE_UNSPECIFIED",
+        "OBSERVATION_SERVICE_SOURCE_TYPE_EAGER",
+        "OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA"
       ],
-      "default": "OBSERVATION_SERVICE_DATA_SOURCE_TYPE_UNSPECIFIED",
-      "description": "- OBSERVATION_SERVICE_DATA_SOURCE_TYPE_EAGER: No-Op represents no need to fetch logs from any data source, this should be selected if\nObservation Service should be deployed for just the eager API\n - OBSERVATION_SERVICE_DATA_SOURCE_TYPE_KAFKA: Observation Service will poll logs from a Kafka source",
+      "default": "OBSERVATION_SERVICE_SOURCE_TYPE_UNSPECIFIED",
+      "description": "- OBSERVATION_SERVICE_SOURCE_TYPE_EAGER: No-Op represents no need to fetch logs from any data source, this should be selected if\nObservation Service should be deployed for just the eager API\n - OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA: Observation Service will poll logs from a Kafka source",
       "title": "Data source where Observation logs should be retrieved from"
     },
-    "v1ObservationServiceResponse": {
+    "v1PredictionLogSource": {
       "type": "object",
       "properties": {
-        "id": {
+        "modelId": {
           "type": "string",
-          "description": "Unique identifier of an Observation Service deployed by Dataset Service."
+          "format": "int64",
+          "title": "id of the model producing the prediction log"
+        },
+        "modelName": {
+          "type": "string",
+          "title": "name of the model producing the prediction log"
+        },
+        "kafka": {
+          "$ref": "#/definitions/v1KafkaConfig",
+          "title": "kafka source configuration where the prediction logs are located"
         }
       },
-      "title": "ObservationServiceResponse describes details of a deployed Observation Service"
+      "title": "Prediction log source details"
+    },
+    "v1RouterLogSource": {
+      "type": "object",
+      "properties": {
+        "routerId": {
+          "type": "string",
+          "format": "int64",
+          "title": "id of the router producing the router logs"
+        },
+        "routerName": {
+          "type": "string",
+          "title": "name of the router producing the router logs"
+        },
+        "kafka": {
+          "$ref": "#/definitions/v1KafkaConfig",
+          "title": "kafka source configuration where the router logs are located"
+        }
+      }
     },
     "v1UpdateLogWriterResponse": {
       "type": "object",
@@ -837,7 +825,7 @@
       "type": "object",
       "properties": {
         "observationService": {
-          "$ref": "#/definitions/v1ObservationServiceResponse",
+          "$ref": "#/definitions/v1ObservationService",
           "description": "Details of single Observation Service updated by Dataset Service."
         }
       },

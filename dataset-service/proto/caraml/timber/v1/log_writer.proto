@@ -3,17 +3,65 @@ syntax = "proto3";
 package caraml.timber.v1;
 option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1;api";
 
-import "caraml/timber/v1/log.proto";
+import "caraml/timber/v1/kafka.proto";
+import "caraml/timber/v1/status.proto";
+import "google/protobuf/timestamp.proto";
 
-// Type of logging application for specified log
-enum LogWriterType {
-    LOG_WRITER_TYPE_UNSPECIFIED = 0;
-    // Fluentd will be used for logging
-    LOG_WRITER_TYPE_FLUENTD = 1;
+enum LogWriterSourceType {
+  // log type is not specified
+  LOG_WRITER_SOURCE_TYPE_UNSPECIFIED = 0;
+  // log type for consuming prediction log
+  LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG = 1;
+  // log type for consuming router log
+  LOG_WRITER_SOURCE_TYPE_ROUTER_LOG = 2;
+}
+
+// Details of the log writer data source
+message LogWriterSource {
+  // Log type. It determines whether prediction_log_source or router_log_source is populated.
+  // If the value is LOG_TYPE_PREDICTION_LOG, then prediction_log_source should be valid.
+  // Whereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be valid.
+  LogWriterSourceType type = 1;
+  // Prediction log source details
+  PredictionLogSource prediction_log_source = 2;
+  // Router log source details
+  RouterLogSource router_log_source = 3;
+}
+
+// Prediction log source details
+message PredictionLogSource {
+  // id of the model producing the prediction log
+  int64 model_id = 1;
+  // name of the model producing the prediction log
+  string model_name = 2;
+  // kafka source configuration where the prediction logs are located
+  KafkaConfig kafka = 3;
+}
+
+message RouterLogSource {
+  // id of the router producing the router logs
+  int64 router_id = 1;
+  // name of the router producing the router logs
+  string router_name = 2;
+  // kafka source configuration where the router logs are located
+  KafkaConfig kafka = 3;
 }
 
 // LogWriter describes details of a Log Writer
 message LogWriter {
-    LogWriterType type = 1;
-    FluentdConfig fluentd_config = 2;
+  // Project id that owns the log writer
+  int64 project_id = 1;
+  // Log writer's ID
+  int64 id = 2;
+  // Name of the log writer
+  string name = 3;
+  // Log writer source
+  LogWriterSource source = 4;
+  // TODO: Add details of where the log is stored at
+  // Status of the log writer deployment
+  Status status = 10;
+  // Creation timestamp
+  google.protobuf.Timestamp created_at = 11;
+  // Last update timestamp
+  google.protobuf.Timestamp updated_at = 12;
 }

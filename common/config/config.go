@@ -8,20 +8,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// DeploymentConfig captures the config related to the deployment of Timber Services
-type DeploymentConfig struct {
-	// EnvironmentType describes the environment Timber services are deployed in
-	EnvironmentType string `default:"local"`
-	// ProjectName describes the CaraML project Timber services are deployed for
-	ProjectName string `default:""`
-	// ServiceName describes the CaraML Timber service name
-	ServiceName string `default:""`
-	// LogLevel captures the selected supported logging level
-	LogLevel LogLevel `split_words:"false" default:"INFO"`
-	// Maximum no. of go-routines that is allowed
-	MaxGoRoutines int `default:"1000"`
-}
-
 // LogLevel type is used to capture the supported logging levels
 type LogLevel string
 

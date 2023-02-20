@@ -17,10 +17,9 @@ func TestDefaultConfigs(t *testing.T) {
 	emptyStringMap := make(map[string]string)
 	defaultCfg := Config{
 		Port: 9001,
-		DeploymentConfig: commonconfig.DeploymentConfig{
-			EnvironmentType: "local",
-			LogLevel:        commonconfig.InfoLevel,
-			MaxGoRoutines:   1000,
+		DeploymentConfig: DeploymentConfig{
+			LogLevel:      commonconfig.InfoLevel,
+			MaxGoRoutines: 1000,
 		},
 		NewRelicConfig: newrelic.Config{
 			Enabled:           false,
@@ -91,10 +90,9 @@ func TestLoadConfigFiles(t *testing.T) {
 			configFiles: []string{"../testdata/config1.yaml", "../testdata/config2.yaml"},
 			expected: Config{
 				Port: 9002,
-				DeploymentConfig: commonconfig.DeploymentConfig{
-					EnvironmentType: "dev",
-					LogLevel:        commonconfig.InfoLevel,
-					MaxGoRoutines:   1000,
+				DeploymentConfig: DeploymentConfig{
+					LogLevel:      commonconfig.InfoLevel,
+					MaxGoRoutines: 1000,
 				},
 				NewRelicConfig: newrelic.Config{
 					Enabled:           true,

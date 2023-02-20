@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package caraml.timber.v1;
+option go_package = "github.com/caraml-dev/timber/dataset-service/api/caraml/timber/v1;api";
+
+// Deployment status
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_DEPLOYED = 1;
+  STATUS_UNINSTALLED = 2;
+  STATUS_FAILED = 3;
+  STATUS_PENDING = 4;
+}

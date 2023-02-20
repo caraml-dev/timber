@@ -54,49 +54,47 @@ func (o ObservationServiceController) GetObservationService(
 
 // CreateObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (o ObservationServiceController) CreateObservationService(
-	c context.Context,
+	ctx context.Context,
 	r *timberv1.CreateObservationServiceRequest,
 ) (*timberv1.CreateObservationServiceResponse, error) {
 	// Check if the projectId is valid
 	projectID := r.GetProjectId()
 	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
+		log.Errorf("error finding project: %v", err)
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.CreateService(project.Name, r.GetObservationService())
+	result, err := o.appCtx.Services.ObservationService.Create(project.Name, r.GetObservationService())
 	if err != nil {
+		log.Errorf("error creating observation service: %v", err)
 		return nil, err
 	}
-	observationService := &timberv1.ObservationServiceResponse{
-		Id: *result,
-	}
 
-	resp := &timberv1.CreateObservationServiceResponse{ObservationService: observationService}
+	resp := &timberv1.CreateObservationServiceResponse{ObservationService: result}
 	return resp, nil
 }
 
 // UpdateObservationService definition: See dataset-service/api/caraml/timber/v1/dataset_service.proto
 func (o ObservationServiceController) UpdateObservationService(
-	c context.Context,
+	ctx context.Context,
 	r *timberv1.UpdateObservationServiceRequest,
 ) (*timberv1.UpdateObservationServiceResponse, error) {
 	// Check if the projectId is valid
 	projectID := r.GetProjectId()
 	project, err := o.appCtx.Services.MLPService.GetProject(projectID)
 	if err != nil {
+		log.Errorf("error finding project: %v", err)
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.UpdateService(project.Name, int(r.GetId()), r.GetObservationService())
+	result, err := o.appCtx.Services.ObservationService.Update(project.Name, r.GetObservationService())
 	if err != nil {
+		log.Errorf("error updating observation service: %v", err)
 		return nil, err
 	}
-	observationService := &timberv1.ObservationServiceResponse{
-		Id: *result,
-	}
 
-	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: observationService}
+	resp := &timberv1.UpdateObservationServiceResponse{ObservationService: result}
 	return resp, nil
 }
 

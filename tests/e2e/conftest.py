@@ -1,6 +1,6 @@
 import pytest
 
-from tests.e2e.dataset_service_client import DatasetServiceClient
+from e2e.dataset_service_client import DatasetServiceClient
 
 
 def pytest_addoption(parser):
@@ -16,8 +16,8 @@ def pytest_addoption(parser):
     parser.addoption("--env", action="store", help="path to env", default="local")
 
 
-from tests.e2e.fixtures.mockups.mlp_service import *  # noqa
-from tests.e2e.fixtures.services import *  # noqa
+from e2e.fixtures.mockups.mlp_service import *  # noqa
+from e2e.fixtures.services import *  # noqa
 
 
 @pytest.fixture

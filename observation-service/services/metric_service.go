@@ -7,7 +7,6 @@ import (
 
 	"github.com/gojek/mlp/api/pkg/instrumentation/metrics"
 
-	commonconfig "github.com/caraml-dev/timber/common/config"
 	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/observation-service/config"
 	"github.com/caraml-dev/timber/observation-service/monitoring"
@@ -23,11 +22,11 @@ type MetricService interface {
 
 type metricService struct {
 	Kind             config.MetricSinkKind
-	DeploymentConfig commonconfig.DeploymentConfig
+	DeploymentConfig config.DeploymentConfig
 }
 
 // NewMetricService initializes a metricService struct
-func NewMetricService(deploymentCfg commonconfig.DeploymentConfig, monitoringCfg config.MonitoringConfig) (MetricService, error) {
+func NewMetricService(deploymentCfg config.DeploymentConfig, monitoringCfg config.MonitoringConfig) (MetricService, error) {
 	switch monitoringCfg.Kind {
 	case config.NoopMetricSink:
 	case config.PrometheusMetricSink:
