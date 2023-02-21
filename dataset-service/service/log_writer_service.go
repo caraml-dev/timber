@@ -12,6 +12,7 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/caraml-dev/timber/dataset-service/model"
 )
 
 const (
@@ -28,9 +29,9 @@ const (
 // LogWriterService provides a set of methods for controlling the log writer's deployment
 type LogWriterService interface {
 	// Create creates a new log writer deployment
-	Create(projectName string, logWriter *timberv1.LogWriter) (*timberv1.LogWriter, error)
+	Create(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
 	// Update updates an existing log writer deployment
-	Update(projectName string, logWriter *timberv1.LogWriter) (*timberv1.LogWriter, error)
+	Update(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
 }
 
 type logWriterService struct {
@@ -56,7 +57,7 @@ func NewLogWriterService(commonDeployConfig *config.CommonDeploymentConfig, logW
 	}, nil
 }
 
-func (l *logWriterService) Create(projectName string, logWriter *timberv1.LogWriter) (*timberv1.LogWriter, error) {
+func (l *logWriterService) Create(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	// TODO: create BQ dataset and/or table before deploying the log writer
 	releaseName := createReleaseName(logWriter)
 	val, err := l.createHelmValues(projectName, logWriter)
@@ -71,11 +72,10 @@ func (l *logWriterService) Create(projectName string, logWriter *timberv1.LogWri
 	}
 
 	logWriter.Status = helm.ConvertStatus(r.Info.Status)
-	// TODO: store log writer in DB and update the status based on the final release status
 	return logWriter, nil
 }
 
-func (l *logWriterService) Update(projectName string, logWriter *timberv1.LogWriter) (*timberv1.LogWriter, error) {
+func (l *logWriterService) Update(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	releaseName := createReleaseName(logWriter)
 	val, err := l.createHelmValues(projectName, logWriter)
 	if err != nil {
@@ -93,7 +93,7 @@ func (l *logWriterService) Update(projectName string, logWriter *timberv1.LogWri
 	return logWriter, nil
 }
 
-func (l *logWriterService) createHelmValues(projectName string, logWriter *timberv1.LogWriter) (map[string]any, error) {
+func (l *logWriterService) createHelmValues(projectName string, logWriter *model.LogWriter) (map[string]any, error) {
 	val := &values.FluentdHelmValues{}
 	err := copier.CopyWithOption(val, l.defaults, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if err != nil {
@@ -179,7 +179,7 @@ func (l *logWriterService) configureSink(val *values.FluentdHelmValues,
 	return val, nil
 }
 
-func createReleaseName(logWriter *timberv1.LogWriter) string {
+func createReleaseName(logWriter *model.LogWriter) string {
 	switch logWriter.Source.Type {
 	case timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG:
 		return fmt.Sprintf("%s-%s", predictionLogWriterReleaseNamePrefix, logWriter.Name)
@@ -190,7 +190,7 @@ func createReleaseName(logWriter *timberv1.LogWriter) string {
 	}
 }
 
-func getKafkaConfig(logWriter *timberv1.LogWriter) (*timberv1.KafkaConfig, error) {
+func getKafkaConfig(logWriter *model.LogWriter) (*timberv1.KafkaConfig, error) {
 	switch logWriter.Source.Type {
 	case timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG:
 		return logWriter.Source.PredictionLogSource.Kafka, nil

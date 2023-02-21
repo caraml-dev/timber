@@ -67,7 +67,7 @@ func (o *observationService) Create(projectName string, svc *timberv1.Observatio
 		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
-	svc.Status = helm.ConvertStatus(r.Info.Status)
+	svc.Status = helm.ConvertStatusToProto(r.Info.Status)
 	// TODO: store observation service in DB and update the status based on the final release status
 	return svc, nil
 }
@@ -88,7 +88,7 @@ func (o *observationService) Update(projectName string, svc *timberv1.Observatio
 
 	log.Debugf("deployment manifest %s", r.Manifest)
 
-	svc.Status = helm.ConvertStatus(r.Info.Status)
+	svc.Status = helm.ConvertStatusToProto(r.Info.Status)
 
 	// TODO: store observation service in DB and update the status based on the final release status
 	return svc, nil

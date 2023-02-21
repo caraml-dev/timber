@@ -12,6 +12,8 @@ import (
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/release"
 
+	"github.com/caraml-dev/timber/dataset-service/model"
+
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
@@ -40,13 +42,13 @@ func (s *LogWriterServicetestSuite) TearDownSuite() {
 func (s *LogWriterServicetestSuite) TestCreate() {
 	type args struct {
 		projectName string
-		svc         *timberv1.LogWriter
+		svc         *model.LogWriter
 	}
 
 	tests := []struct {
 		name string
 		args args
-		want *timberv1.LogWriter
+		want *model.LogWriter
 		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.FluentdHelmValues
 		wantErr                bool
@@ -55,17 +57,21 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 			name: "create log writer for prediction log",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.LogWriter{
-					ProjectId: 1,
-					Name:      "prediction-log-writer",
-					Source: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-						PredictionLogSource: &timberv1.PredictionLogSource{
-							ModelName: "sample-model",
-							ModelId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-model-prediction-log",
+				svc: &model.LogWriter{
+					Base: model.Base{
+						ProjectID: 1,
+					},
+					Name: "prediction-log-writer",
+					Source: &model.LogWriterSource{
+						LogWriterSource: &timberv1.LogWriterSource{
+							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
+							PredictionLogSource: &timberv1.PredictionLogSource{
+								ModelName: "sample-model",
+								ModelId:   1,
+								Kafka: &timberv1.KafkaConfig{
+									Brokers: "kafka-brokers.svc",
+									Topic:   "sample-model-prediction-log",
+								},
 							},
 						},
 					},
@@ -103,38 +109,46 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 					},
 				}),
 			},
-			want: &timberv1.LogWriter{
-				ProjectId: 1,
-				Name:      "prediction-log-writer",
-				Source: &timberv1.LogWriterSource{
-					Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-					PredictionLogSource: &timberv1.PredictionLogSource{
-						ModelName: "sample-model",
-						ModelId:   1,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka-brokers.svc",
-							Topic:   "sample-model-prediction-log",
+			want: &model.LogWriter{
+				Base: model.Base{
+					ProjectID: 1,
+				},
+				Name: "prediction-log-writer",
+				Source: &model.LogWriterSource{
+					LogWriterSource: &timberv1.LogWriterSource{
+						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
+						PredictionLogSource: &timberv1.PredictionLogSource{
+							ModelName: "sample-model",
+							ModelId:   1,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka-brokers.svc",
+								Topic:   "sample-model-prediction-log",
+							},
 						},
 					},
 				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 		{
 			name: "create log writer for router log",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.LogWriter{
-					ProjectId: 1,
-					Name:      "router-log-writer",
-					Source: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-						RouterLogSource: &timberv1.RouterLogSource{
-							RouterName: "sample-router",
-							RouterId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-router-log",
+				svc: &model.LogWriter{
+					Base: model.Base{
+						ProjectID: 1,
+					},
+					Name: "router-log-writer",
+					Source: &model.LogWriterSource{
+						LogWriterSource: &timberv1.LogWriterSource{
+							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
+							RouterLogSource: &timberv1.RouterLogSource{
+								RouterName: "sample-router",
+								RouterId:   1,
+								Kafka: &timberv1.KafkaConfig{
+									Brokers: "kafka-brokers.svc",
+									Topic:   "sample-router-log",
+								},
 							},
 						},
 					},
@@ -172,21 +186,25 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 					},
 				}),
 			},
-			want: &timberv1.LogWriter{
-				ProjectId: 1,
-				Name:      "router-log-writer",
-				Source: &timberv1.LogWriterSource{
-					Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-					RouterLogSource: &timberv1.RouterLogSource{
-						RouterName: "sample-router",
-						RouterId:   1,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka-brokers.svc",
-							Topic:   "sample-router-log",
+			want: &model.LogWriter{
+				Base: model.Base{
+					ProjectID: 1,
+				},
+				Name: "router-log-writer",
+				Source: &model.LogWriterSource{
+					LogWriterSource: &timberv1.LogWriterSource{
+						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
+						RouterLogSource: &timberv1.RouterLogSource{
+							RouterName: "sample-router",
+							RouterId:   1,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka-brokers.svc",
+								Topic:   "sample-router-log",
+							},
 						},
 					},
 				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 	}
@@ -237,13 +255,13 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 func (s *LogWriterServicetestSuite) TestUpdate() {
 	type args struct {
 		projectName string
-		svc         *timberv1.LogWriter
+		svc         *model.LogWriter
 	}
 
 	tests := []struct {
 		name string
 		args args
-		want *timberv1.LogWriter
+		want *model.LogWriter
 		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.FluentdHelmValues
 		wantErr                bool
@@ -252,17 +270,21 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 			name: "update log writer for prediction log",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.LogWriter{
-					ProjectId: 1,
-					Name:      "prediction-log-writer",
-					Source: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-						PredictionLogSource: &timberv1.PredictionLogSource{
-							ModelName: "sample-model",
-							ModelId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-model-prediction-log",
+				svc: &model.LogWriter{
+					Base: model.Base{
+						ProjectID: 1,
+					},
+					Name: "prediction-log-writer",
+					Source: &model.LogWriterSource{
+						LogWriterSource: &timberv1.LogWriterSource{
+							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
+							PredictionLogSource: &timberv1.PredictionLogSource{
+								ModelName: "sample-model",
+								ModelId:   1,
+								Kafka: &timberv1.KafkaConfig{
+									Brokers: "kafka-brokers.svc",
+									Topic:   "sample-model-prediction-log",
+								},
 							},
 						},
 					},
@@ -300,38 +322,46 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 					},
 				}),
 			},
-			want: &timberv1.LogWriter{
-				ProjectId: 1,
-				Name:      "prediction-log-writer",
-				Source: &timberv1.LogWriterSource{
-					Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-					PredictionLogSource: &timberv1.PredictionLogSource{
-						ModelName: "sample-model",
-						ModelId:   1,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka-brokers.svc",
-							Topic:   "sample-model-prediction-log",
+			want: &model.LogWriter{
+				Base: model.Base{
+					ProjectID: 1,
+				},
+				Name: "prediction-log-writer",
+				Source: &model.LogWriterSource{
+					LogWriterSource: &timberv1.LogWriterSource{
+						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
+						PredictionLogSource: &timberv1.PredictionLogSource{
+							ModelName: "sample-model",
+							ModelId:   1,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka-brokers.svc",
+								Topic:   "sample-model-prediction-log",
+							},
 						},
 					},
 				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 		{
 			name: "update log writer for router log",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.LogWriter{
-					ProjectId: 1,
-					Name:      "router-log-writer",
-					Source: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-						RouterLogSource: &timberv1.RouterLogSource{
-							RouterName: "sample-router",
-							RouterId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-router-log",
+				svc: &model.LogWriter{
+					Base: model.Base{
+						ProjectID: 1,
+					},
+					Name: "router-log-writer",
+					Source: &model.LogWriterSource{
+						LogWriterSource: &timberv1.LogWriterSource{
+							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
+							RouterLogSource: &timberv1.RouterLogSource{
+								RouterName: "sample-router",
+								RouterId:   1,
+								Kafka: &timberv1.KafkaConfig{
+									Brokers: "kafka-brokers.svc",
+									Topic:   "sample-router-log",
+								},
 							},
 						},
 					},
@@ -369,21 +399,25 @@ func (s *LogWriterServicetestSuite) TestUpdate() {
 					},
 				}),
 			},
-			want: &timberv1.LogWriter{
-				ProjectId: 1,
-				Name:      "router-log-writer",
-				Source: &timberv1.LogWriterSource{
-					Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-					RouterLogSource: &timberv1.RouterLogSource{
-						RouterName: "sample-router",
-						RouterId:   1,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka-brokers.svc",
-							Topic:   "sample-router-log",
+			want: &model.LogWriter{
+				Base: model.Base{
+					ProjectID: 1,
+				},
+				Name: "router-log-writer",
+				Source: &model.LogWriterSource{
+					LogWriterSource: &timberv1.LogWriterSource{
+						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
+						RouterLogSource: &timberv1.RouterLogSource{
+							RouterName: "sample-router",
+							RouterId:   1,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka-brokers.svc",
+								Topic:   "sample-router-log",
+							},
 						},
 					},
 				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 	}
