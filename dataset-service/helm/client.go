@@ -2,6 +2,7 @@ package helm
 
 import (
 	"fmt"
+	"time"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -72,7 +73,7 @@ func (h *helmClient) ReadChart(chartPath string) (*chart.Chart, error) {
 	return c, nil
 }
 
-// Install a new helm release
+// Install a new helm release and block until completion
 func (h *helmClient) Install(release string,
 	namespace string,
 	chart *chart.Chart,
@@ -84,10 +85,7 @@ func (h *helmClient) Install(release string,
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
-	installation := action.NewInstall(actionConfig)
-	installation.ReleaseName = release
-	installation.Namespace = namespace
-	installation.CreateNamespace = true
+	installation := h.newInstallAction(actionConfig, release, namespace)
 
 	log.Debugf("installing helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
 	r, err := installation.Run(chart, values)
@@ -99,7 +97,19 @@ func (h *helmClient) Install(release string,
 	return r, nil
 }
 
-// Updgrade an existing helm release
+// create new install action
+func (h *helmClient) newInstallAction(actionConfig *action.Configuration, release string, namespace string) *action.Install {
+	installation := action.NewInstall(actionConfig)
+	installation.ReleaseName = release
+	installation.Namespace = namespace
+	installation.CreateNamespace = true
+	installation.Wait = true
+	installation.Timeout = time.Minute * 10 // TODO: make it configurable
+
+	return installation
+}
+
+// Upgrade an existing helm release
 func (h *helmClient) Upgrade(release string,
 	namespace string,
 	chart *chart.Chart,
@@ -111,8 +121,7 @@ func (h *helmClient) Upgrade(release string,
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
-	upgrade := action.NewUpgrade(actionConfig)
-	upgrade.Namespace = namespace
+	upgrade := h.newUpgradeAction(actionConfig, namespace)
 
 	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
 	r, err := upgrade.Run(release, chart, values)
@@ -124,8 +133,18 @@ func (h *helmClient) Upgrade(release string,
 	return r, nil
 }
 
+// create new action.Upgrade
+func (h *helmClient) newUpgradeAction(actionConfig *action.Configuration, namespace string) *action.Upgrade {
+	upgrade := action.NewUpgrade(actionConfig)
+	upgrade.Namespace = namespace
+	upgrade.Wait = true
+	upgrade.Timeout = time.Minute * 10 // TODO: make it configurable
+
+	return upgrade
+}
+
 // GetRelease get release name in the given namespace
-func (h helmClient) GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error) {
+func (h *helmClient) GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error) {
 	actionConfig, err := h.initializeConfig(actionConfig, namespace)
 	if err != nil {
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
