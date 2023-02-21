@@ -60,8 +60,10 @@ message LogWriter {
   // TODO: Add details of where the log is stored at
   // Status of the log writer deployment
   Status status = 10;
+  // Error message, will be populated if the status failed
+  string error = 11;
   // Creation timestamp
-  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp created_at = 12;
   // Last update timestamp
-  google.protobuf.Timestamp updated_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
 }
