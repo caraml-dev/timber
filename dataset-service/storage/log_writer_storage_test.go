@@ -13,7 +13,7 @@ import (
 type LogWriterStorageTestSuite struct {
 	suite.Suite
 	logWriterStorage logWriter
-	seedData         []model.LogWriter
+	seedData         []*model.LogWriter
 }
 
 func (s *LogWriterStorageTestSuite) SetupSuite() {
@@ -22,7 +22,7 @@ func (s *LogWriterStorageTestSuite) SetupSuite() {
 	s.logWriterStorage = logWriter{db: testDB}
 
 	for i := 0; i < 100; i++ {
-		c, err := s.logWriterStorage.Create(context.Background(), model.LogWriter{
+		c, err := s.logWriterStorage.Create(context.Background(), &model.LogWriter{
 			Base: model.Base{
 				ProjectID: 2,
 			},
@@ -110,7 +110,7 @@ func (s *LogWriterStorageTestSuite) TestList() {
 func (s *LogWriterStorageTestSuite) TestCreate() {
 	ctx := context.Background()
 
-	got, err := s.logWriterStorage.Create(ctx, model.LogWriter{
+	got, err := s.logWriterStorage.Create(ctx, &model.LogWriter{
 		Base: model.Base{
 			ProjectID: 3,
 		},
@@ -144,7 +144,7 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 func (s *LogWriterStorageTestSuite) TestUpdate() {
 	ctx := context.Background()
 
-	lw, err := s.logWriterStorage.Create(ctx, model.LogWriter{
+	lw, err := s.logWriterStorage.Create(ctx, &model.LogWriter{
 		Base: model.Base{
 			ProjectID: 3,
 		},
