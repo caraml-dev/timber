@@ -116,6 +116,8 @@ message GetLogMetadataResponse {
 message ListLogWritersRequest {
     // The CaraML project ID to retrieve list of Log Writers from.
     int64 project_id = 1;
+    // List request details
+    ListOption list = 2;
 }
 
 // Response message for ListLogWriters method.
@@ -225,4 +227,11 @@ message UpdateObservationServiceRequest {
 message UpdateObservationServiceResponse {
     // Details of single Observation Service updated by Dataset Service.
     ObservationService observation_service = 1;
+}
+
+message ListOption {
+    // Offset of the list request
+    int32 offset = 1;
+    // Number of entry to be returned by list request
+    int32 limit = 2;
 }
