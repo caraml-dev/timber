@@ -116,6 +116,22 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "list.offset",
+            "description": "Offset of the list request.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "list.limit",
+            "description": "Number of entry to be returned by list request.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -582,6 +598,21 @@
       },
       "description": "Response message for ListObservationServices method."
     },
+    "v1ListOption": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Offset of the list request"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Number of entry to be returned by list request"
+        }
+      }
+    },
     "v1LogMetadata": {
       "type": "object",
       "properties": {
@@ -669,6 +700,10 @@
         "status": {
           "$ref": "#/definitions/timberv1Status",
           "title": "TODO: Add details of where the log is stored at\nStatus of the log writer deployment"
+        },
+        "error": {
+          "type": "string",
+          "title": "Error message, will be populated if the status failed"
         },
         "createdAt": {
           "type": "string",
