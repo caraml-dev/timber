@@ -3,8 +3,9 @@ package model
 import (
 	"database/sql/driver"
 
-	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"google.golang.org/protobuf/encoding/protojson"
+
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 )
 
 // LogWriter data model for log writer
@@ -17,16 +18,18 @@ type LogWriter struct {
 	// DeletedAt DeletedAt `gorm:"index"`
 	Base
 	// Name of the log writer
-	Name string `gorm:"primaryKey"`
+	Name string
+	// Log Writer Source configuration
+	Source *LogWriterSource `gorm:"type:jsonb"`
 	// Deployment status of the log writer
 	Status Status
-	// Log Writer Source configuration
-	LogWriterSource *LogWriterSource `gorm:"type:jsonb"`
+	// Error message
+	Error string `gorm:"size:2048"`
 }
 
 // ToLogWriterProto convert internal LogWriter representation into LogWriter proto message
 func (w *LogWriter) ToLogWriterProto() *timberv1.LogWriter {
-	return nil
+	return &timberv1.LogWriter{}
 }
 
 // FromLogWriterProto convert LogWriter proto to internal representation of LogWriter

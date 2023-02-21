@@ -7,14 +7,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/caraml-dev/timber/common/log"
-	"github.com/caraml-dev/timber/dataset-service/storage/migration"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/stretchr/testify/suite"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/caraml-dev/timber/common/log"
+	"github.com/caraml-dev/timber/dataset-service/storage/migration"
 )
 
 var testDB *gorm.DB

@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 
+	"gorm.io/gorm"
+
 	dserrors "github.com/caraml-dev/timber/dataset-service/errors"
 	"github.com/caraml-dev/timber/dataset-service/model"
-	"gorm.io/gorm"
 )
 
 const LogWriterEntityName = "log_writer"
@@ -66,6 +67,12 @@ func (l *logWriter) Update(ctx context.Context, lw model.LogWriter) (model.LogWr
 // List all log writer given the list input
 func (l *logWriter) List(ctx context.Context, listInput ListInput) ([]model.LogWriter, error) {
 	var logWriters []model.LogWriter
-	tx := l.db.WithContext(ctx).Limit(listInput.Limit).Offset(listInput.Offset).Find(&logWriters)
+	tx := l.db.WithContext(ctx).Where(&model.LogWriter{
+		Base: model.Base{
+			ProjectID: listInput.ProjectID,
+		},
+	}).Limit(listInput.Limit).
+		Offset(listInput.Offset).
+		Find(&logWriters)
 	return logWriters, tx.Error
 }

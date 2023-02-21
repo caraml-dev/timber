@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/stretchr/testify/suite"
+
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/model"
-	"github.com/stretchr/testify/suite"
 )
 
 type LogWriterStorageTestSuite struct {
@@ -20,15 +21,15 @@ func (s *LogWriterStorageTestSuite) SetupSuite() {
 
 	s.logWriterStorage = logWriter{db: testDB}
 
-	var seedData []model.LogWriter
 	for i := 0; i < 100; i++ {
-		seedData = append(seedData, model.LogWriter{
+		c, err := s.logWriterStorage.Create(context.Background(), model.LogWriter{
 			Base: model.Base{
 				ProjectID: 2,
 			},
 			Name:   fmt.Sprintf("log-writer-%d", i),
 			Status: model.StatusDeployed,
-			LogWriterSource: &model.LogWriterSource{
+			Error:  fmt.Sprintf("log-writer-%d", i),
+			Source: &model.LogWriterSource{
 				LogWriterSource: &timberv1.LogWriterSource{
 					Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
 					RouterLogSource: &timberv1.RouterLogSource{
@@ -42,10 +43,7 @@ func (s *LogWriterStorageTestSuite) SetupSuite() {
 				},
 			},
 		})
-	}
 
-	for _, seed := range seedData {
-		c, err := s.logWriterStorage.Create(context.Background(), seed)
 		s.Assert().NoError(err)
 		s.seedData = append(s.seedData, c)
 	}
@@ -65,11 +63,12 @@ func (s *LogWriterStorageTestSuite) TestGet() {
 
 	// Test get with name
 	got, err = s.logWriterStorage.Get(ctx, GetInput{
-		Name: "log-writer-1",
+		Name: "log-writer-99",
 	})
 
 	s.Assert().NoError(err)
-	s.Assert().Equal(s.seedData[0], got)
+	s.Assert().Equal(s.seedData[99], got)
+	s.Assert().Equal(int64(100), got.ID)
 }
 
 func (s *LogWriterStorageTestSuite) TestList() {
@@ -77,8 +76,9 @@ func (s *LogWriterStorageTestSuite) TestList() {
 
 	// Test list first 5
 	got, err := s.logWriterStorage.List(ctx, ListInput{
-		Offset: 0,
-		Limit:  5,
+		ProjectID: 2,
+		Offset:    0,
+		Limit:     5,
 	})
 
 	s.Assert().NoError(err)
@@ -87,13 +87,24 @@ func (s *LogWriterStorageTestSuite) TestList() {
 
 	// Test list index 5 to 10
 	got, err = s.logWriterStorage.List(ctx, ListInput{
-		Offset: 5,
-		Limit:  5,
+		ProjectID: 2,
+		Offset:    5,
+		Limit:     5,
 	})
 
 	s.Assert().NoError(err)
 	s.Assert().Len(got, 5)
 	s.Assert().ElementsMatch(got, s.seedData[5:10])
+
+	// Test list index of empty project
+	got, err = s.logWriterStorage.List(ctx, ListInput{
+		ProjectID: 10,
+		Offset:    0,
+		Limit:     10,
+	})
+
+	s.Assert().NoError(err)
+	s.Assert().Len(got, 0)
 }
 
 func (s *LogWriterStorageTestSuite) TestCreate() {
@@ -105,7 +116,7 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 		},
 		Name:   fmt.Sprintf("log-writer-10"),
 		Status: model.StatusDeployed,
-		LogWriterSource: &model.LogWriterSource{
+		Source: &model.LogWriterSource{
 			LogWriterSource: &timberv1.LogWriterSource{
 				Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
 				RouterLogSource: &timberv1.RouterLogSource{
@@ -139,7 +150,7 @@ func (s *LogWriterStorageTestSuite) TestUpdate() {
 		},
 		Name:   fmt.Sprintf("my-log-writer"),
 		Status: model.StatusDeployed,
-		LogWriterSource: &model.LogWriterSource{
+		Source: &model.LogWriterSource{
 			LogWriterSource: &timberv1.LogWriterSource{
 				Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
 				RouterLogSource: &timberv1.RouterLogSource{
@@ -155,7 +166,8 @@ func (s *LogWriterStorageTestSuite) TestUpdate() {
 	})
 
 	lw.Status = model.StatusUninstalled
-	lw.LogWriterSource.RouterLogSource = &timberv1.RouterLogSource{
+	lw.Error = "updated error message"
+	lw.Source.RouterLogSource = &timberv1.RouterLogSource{
 		RouterId:   1,
 		RouterName: "router-1",
 		Kafka: &timberv1.KafkaConfig{
@@ -169,5 +181,6 @@ func (s *LogWriterStorageTestSuite) TestUpdate() {
 
 	s.Assert().NoError(err)
 	s.Assert().Equal(got.Status, lw.Status)
-	s.Assert().Equal(got.LogWriterSource, lw.LogWriterSource)
+	s.Assert().Equal(got.Source, lw.Source)
+	s.Assert().Equal(got.Error, lw.Error)
 }
