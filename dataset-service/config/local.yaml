@@ -20,6 +20,16 @@ datasetServiceConfig:
     dsn: xxx.xxx.xxx
     labels:
       app: dataset-service
+  databaseConfig:
+    host: localhost
+    port: 5432
+    user: timber
+    password: timber
+    database: timber
+    connMaxIdleTime: 60s
+    connMaxLifeTime: 3600s
+    maxIdleConns: 0
+    maxOpenConns: 0
 commonDeploymentConfig:
   kubeConfig: /tmp/kubeconfig-timber-dev.yaml
   bqConfig:

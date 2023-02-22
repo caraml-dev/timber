@@ -20,6 +20,16 @@ datasetServiceConfig:
     dsn: xxx.xxx.xxx
     labels:
       app: dataset-service
+  databaseConfig:
+    host: localhost
+    port: 5432
+    user: timber
+    password: dummy
+    database: timber
+    connMaxIdleTime: 60s
+    connMaxLifeTime: 3600s
+    maxIdleConns: 2
+    maxOpenConns: 1
 
 observationServiceConfig:
   # You can replace   helmChartPath to point to local directory

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
@@ -31,6 +32,8 @@ type DatasetServiceConfig struct {
 	LogLevel commonconfig.LogLevel `envconfig:"LOG_LEVEL" split_words:"false" default:"INFO"`
 	// MlpURL is URL for connecting to MLP API
 	MlpURL string `default:"localhost:3000"`
+	// DatabaseConfig Database configuration
+	DatabaseConfig *DatabaseConfig
 	// New relic configuration
 	NewRelicConfig *newrelic.Config
 	// Sentry configuration
@@ -69,6 +72,29 @@ type LogWriterConfig struct {
 	HelmChartPath string
 	// Default helm values to be used when deploying log writer
 	DefaultValues *values.FluentdHelmValues
+}
+
+// DatabaseConfig database configuration
+type DatabaseConfig struct {
+	// Host database host URL
+	Host string `envconfig:"DATABASE_HOST" required:"true"`
+	// Port database port
+	Port int `envconfig:"DATABASE_PORT" default:"5432"`
+	// User database user name
+	User string `envconfig:"DATABASE_USER" required:"true"`
+	// Password database password
+	Password string `envconfig:"DATABASE_PASSWORD" required:"true"`
+	// Database database name
+	Database string `envconfig:"DATABASE_NAME" default:"timber"`
+
+	// ConnMaxIdleTime maximum connection idle time
+	ConnMaxIdleTime time.Duration `default:"0s"`
+	// ConnMaxIdleTime maximum connection lifetime
+	ConnMaxLifetime time.Duration `default:"0s"`
+	// MaxIdleConns maximum number of idle connection
+	MaxIdleConns int `default:"0"`
+	// MaxIdleConns maximum number of open connection
+	MaxOpenConns int `default:"0"`
 }
 
 // ListenAddress returns the Dataset API app's port
