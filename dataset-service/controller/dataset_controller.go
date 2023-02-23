@@ -3,6 +3,8 @@ package controller
 import (
 	"google.golang.org/grpc"
 
+	"github.com/caraml-dev/timber/dataset-service/storage"
+
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/caraml-dev/timber/dataset-service/appcontext"
 )
@@ -21,10 +23,14 @@ func NewDatasetServiceController(
 	ctx *appcontext.AppContext,
 ) (*grpc.Server, *DatasetServiceController) {
 	gsrv := grpc.NewServer()
+
+	logWriterStorage := storage.NewLogWriter(ctx.DB)
+	logWriterController := NewLogWriterController(logWriterStorage, ctx.Services.LogWriterService, ctx.Services.MLPService)
+
 	srv := &DatasetServiceController{
 		appCtx:                       ctx,
 		MetadataController:           &MetadataController{appCtx: ctx},
-		LogWriterController:          &LogWriterController{appCtx: ctx},
+		LogWriterController:          logWriterController,
 		ObservationServiceController: &ObservationServiceController{appCtx: ctx},
 	}
 	timberv1.RegisterDatasetServiceServer(gsrv, srv)
