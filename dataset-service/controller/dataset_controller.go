@@ -27,11 +27,14 @@ func NewDatasetServiceController(
 	logWriterStorage := storage.NewLogWriter(ctx.DB)
 	logWriterController := NewLogWriterController(logWriterStorage, ctx.Services.LogWriterService, ctx.Services.MLPService)
 
+	observationServiceStorage := storage.NewObservationService(ctx.DB)
+	observationServiceController := NewObservationServiceController(observationServiceStorage, ctx.Services.ObservationService, ctx.Services.MLPService)
+
 	srv := &DatasetServiceController{
 		appCtx:                       ctx,
 		MetadataController:           &MetadataController{appCtx: ctx},
 		LogWriterController:          logWriterController,
-		ObservationServiceController: &ObservationServiceController{appCtx: ctx},
+		ObservationServiceController: observationServiceController,
 	}
 	timberv1.RegisterDatasetServiceServer(gsrv, srv)
 
