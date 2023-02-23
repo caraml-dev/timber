@@ -16,36 +16,13 @@ type Client struct {
 	mock.Mock
 }
 
-// GetRelease provides a mock function with given fields: releaseName, namespaceName, actionConfig
-func (_m *Client) GetRelease(releaseName string, namespaceName string, actionConfig *action.Configuration) (*release.Release, error) {
-	ret := _m.Called(releaseName, namespaceName, actionConfig)
-
-	var r0 *release.Release
-	if rf, ok := ret.Get(0).(func(string, string, *action.Configuration) *release.Release); ok {
-		r0 = rf(releaseName, namespaceName, actionConfig)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*release.Release)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, *action.Configuration) error); ok {
-		r1 = rf(releaseName, namespaceName, actionConfig)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Install provides a mock function with given fields: releaseName, namespaceName, _a2, values, actionConfig
-func (_m *Client) Install(releaseName string, namespaceName string, _a2 *chart.Chart, values map[string]interface{}, actionConfig *action.Configuration) (*release.Release, error) {
-	ret := _m.Called(releaseName, namespaceName, _a2, values, actionConfig)
+// InstallOrUpgrade provides a mock function with given fields: _a0, ns, _a2, values, actionConfig
+func (_m *Client) InstallOrUpgrade(_a0 string, ns string, _a2 *chart.Chart, values map[string]interface{}, actionConfig *action.Configuration) (*release.Release, error) {
+	ret := _m.Called(_a0, ns, _a2, values, actionConfig)
 
 	var r0 *release.Release
 	if rf, ok := ret.Get(0).(func(string, string, *chart.Chart, map[string]interface{}, *action.Configuration) *release.Release); ok {
-		r0 = rf(releaseName, namespaceName, _a2, values, actionConfig)
+		r0 = rf(_a0, ns, _a2, values, actionConfig)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*release.Release)
@@ -54,7 +31,7 @@ func (_m *Client) Install(releaseName string, namespaceName string, _a2 *chart.C
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string, string, *chart.Chart, map[string]interface{}, *action.Configuration) error); ok {
-		r1 = rf(releaseName, namespaceName, _a2, values, actionConfig)
+		r1 = rf(_a0, ns, _a2, values, actionConfig)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -85,27 +62,18 @@ func (_m *Client) ReadChart(chartPath string) (*chart.Chart, error) {
 	return r0, r1
 }
 
-// Upgrade provides a mock function with given fields: releaseName, namespaceName, _a2, values, actionConfig
-func (_m *Client) Upgrade(releaseName string, namespaceName string, _a2 *chart.Chart, values map[string]interface{}, actionConfig *action.Configuration) (*release.Release, error) {
-	ret := _m.Called(releaseName, namespaceName, _a2, values, actionConfig)
+// Uninstall provides a mock function with given fields: _a0, ns, actionConfig
+func (_m *Client) Uninstall(_a0 string, ns string, actionConfig *action.Configuration) error {
+	ret := _m.Called(_a0, ns, actionConfig)
 
-	var r0 *release.Release
-	if rf, ok := ret.Get(0).(func(string, string, *chart.Chart, map[string]interface{}, *action.Configuration) *release.Release); ok {
-		r0 = rf(releaseName, namespaceName, _a2, values, actionConfig)
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, *action.Configuration) error); ok {
+		r0 = rf(_a0, ns, actionConfig)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*release.Release)
-		}
+		r0 = ret.Error(0)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, *chart.Chart, map[string]interface{}, *action.Configuration) error); ok {
-		r1 = rf(releaseName, namespaceName, _a2, values, actionConfig)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 type mockConstructorTestingTNewClient interface {

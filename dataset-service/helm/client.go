@@ -1,6 +1,7 @@
 package helm
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/release"
+	"helm.sh/helm/v3/pkg/storage/driver"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 
 	"github.com/caraml-dev/timber/common/log"
@@ -18,12 +20,10 @@ import (
 type Client interface {
 	// ReadChart read a helm chart given by the chart path.
 	ReadChart(chartPath string) (*chart.Chart, error)
-	// Install installs a new helm release. Failed if there is an existing release.
-	Install(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
-	// Upgrade upgrades an existing helm release. Failed if there are no existing release.
-	Upgrade(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
-	// GetRelease get a helm release.
-	GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error)
+	// InstallOrUpgrade upgrades an existing helm release or install a new one.
+	InstallOrUpgrade(release string, ns string, chart *chart.Chart, values map[string]any, actionConfig *action.Configuration) (*release.Release, error)
+	// Uninstall uninstalls an existing helm release.
+	Uninstall(release string, ns string, actionConfig *action.Configuration) error
 }
 
 const (
@@ -73,8 +73,39 @@ func (h *helmClient) ReadChart(chartPath string) (*chart.Chart, error) {
 	return c, nil
 }
 
-// Install a new helm release and block until completion
-func (h *helmClient) Install(release string,
+// InstallOrUpgrade  install or upgrade an existing helm release
+func (h *helmClient) InstallOrUpgrade(release string,
+	namespace string,
+	chart *chart.Chart,
+	values map[string]any,
+	actionConfig *action.Configuration) (*release.Release, error) {
+
+	actionConfig, err := h.initializeConfig(actionConfig, namespace)
+	if err != nil {
+		return nil, fmt.Errorf("error initializeConfig: %w", err)
+	}
+
+	r, err := h.getRelease(release, namespace, actionConfig)
+	if err != nil {
+		if !errors.Is(err, driver.ErrReleaseNotFound) {
+			return nil, err
+		}
+
+		// install
+		return h.install(release, namespace, chart, values, actionConfig)
+	}
+
+	upgrade := h.newUpgradeAction(actionConfig, namespace)
+
+	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
+	r, err = upgrade.Run(release, chart, values)
+
+	log.Debugf("release manifest: %v", r.Manifest)
+	return r, nil
+}
+
+// install a new helm release and block until completion
+func (h *helmClient) install(release string,
 	namespace string,
 	chart *chart.Chart,
 	values map[string]any,
@@ -97,6 +128,31 @@ func (h *helmClient) Install(release string,
 	return r, nil
 }
 
+// Uninstall a helm release
+func (h *helmClient) Uninstall(release string, namespace string, actionConfig *action.Configuration) error {
+	actionConfig, err := h.initializeConfig(actionConfig, namespace)
+	if err != nil {
+		return fmt.Errorf("error initializeConfig: %w", err)
+	}
+
+	// check if release exists
+	_, err = h.getRelease(release, namespace, actionConfig)
+	if err != nil {
+		if !errors.Is(err, driver.ErrReleaseNotFound) {
+			return err
+		}
+
+		// install
+		log.Debugf("helm release: %s, namespace: %s does not exists", release, namespace)
+		return nil
+	}
+
+	uninstall := h.newUninstallAction(actionConfig)
+	log.Debugf("uninstalling helm release: %s, namespace: %s", release, namespace)
+	_, err = uninstall.Run(release)
+	return err
+}
+
 // create new install action
 func (h *helmClient) newInstallAction(actionConfig *action.Configuration, release string, namespace string) *action.Install {
 	installation := action.NewInstall(actionConfig)
@@ -109,31 +165,7 @@ func (h *helmClient) newInstallAction(actionConfig *action.Configuration, releas
 	return installation
 }
 
-// Upgrade an existing helm release
-func (h *helmClient) Upgrade(release string,
-	namespace string,
-	chart *chart.Chart,
-	values map[string]any,
-	actionConfig *action.Configuration) (*release.Release, error) {
-
-	actionConfig, err := h.initializeConfig(actionConfig, namespace)
-	if err != nil {
-		return nil, fmt.Errorf("error initializeConfig: %w", err)
-	}
-
-	upgrade := h.newUpgradeAction(actionConfig, namespace)
-
-	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
-	r, err := upgrade.Run(release, chart, values)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Debugf("release manifest: %v", r.Manifest)
-	return r, nil
-}
-
-// create new action.Upgrade
+// create new action.InstallOrUpgrade
 func (h *helmClient) newUpgradeAction(actionConfig *action.Configuration, namespace string) *action.Upgrade {
 	upgrade := action.NewUpgrade(actionConfig)
 	upgrade.Namespace = namespace
@@ -143,8 +175,16 @@ func (h *helmClient) newUpgradeAction(actionConfig *action.Configuration, namesp
 	return upgrade
 }
 
+func (h *helmClient) newUninstallAction(config *action.Configuration) *action.Uninstall {
+	uninstall := action.NewUninstall(config)
+	uninstall.Wait = true
+	uninstall.Timeout = time.Minute * 10 // TODO: make it configurable
+
+	return uninstall
+}
+
 // GetRelease get release name in the given namespace
-func (h *helmClient) GetRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error) {
+func (h *helmClient) getRelease(releaseName string, namespace string, actionConfig *action.Configuration) (*release.Release, error) {
 	actionConfig, err := h.initializeConfig(actionConfig, namespace)
 	if err != nil {
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
