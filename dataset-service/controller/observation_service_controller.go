@@ -65,7 +65,7 @@ func (o ObservationServiceController) CreateObservationService(
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.Create(project.Name, r.GetObservationService())
+	result, err := o.appCtx.Services.ObservationService.InstallOrUpgrade(project.Name, r.GetObservationService())
 	if err != nil {
 		log.Errorf("error creating observation service: %v", err)
 		return nil, err
@@ -88,7 +88,7 @@ func (o ObservationServiceController) UpdateObservationService(
 		return nil, err
 	}
 
-	result, err := o.appCtx.Services.ObservationService.Update(project.Name, r.GetObservationService())
+	result, err := o.appCtx.Services.ObservationService.InstallOrUpgrade(project.Name, r.GetObservationService())
 	if err != nil {
 		log.Errorf("error updating observation service: %v", err)
 		return nil, err

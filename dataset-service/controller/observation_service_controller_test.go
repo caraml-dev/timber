@@ -32,7 +32,7 @@ var observationServiceStub = timberv1.ObservationService{
 func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 	s.Suite.T().Log("Setting up ObservationServiceControllerTestSuite")
 
-	// Create mock MLP service and set up with test responses
+	// InstallOrUpgrade mock MLP service and set up with test responses
 	mlpSvc := &mlpMock.Client{}
 	projectID := int64(0)
 	projectName := "test-project"
@@ -46,11 +46,11 @@ func (s *ObservationServiceControllerTestSuite) SetupSuite() {
 		"GetProject", int64(3),
 	).Return(nil, errors.Newf(errors.NotFound, "MLP Project info for id %d not found in the cache", int64(3)))
 
-	// Create mock Observation service and set up with test responses
+	// InstallOrUpgrade mock Observation service and set up with test responses
 	observationSvc := &mocks.ObservationService{}
-	observationSvc.On("Create", projectName, mock.Anything).Return(&observationServiceStub, nil)
+	observationSvc.On("InstallOrUpgrade", projectName, mock.Anything).Return(&observationServiceStub, nil)
 	observationSvc.On("Update", projectName, mock.Anything).Return(&observationServiceStub, nil)
-	observationSvc.On("Create", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
+	observationSvc.On("InstallOrUpgrade", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed create"))
 	observationSvc.On("Update", failedProjectName, mock.Anything).Return(nil, fmt.Errorf("failed update"))
 
 	s.ctrl = &ObservationServiceController{
@@ -200,7 +200,7 @@ func (s *ObservationServiceControllerTestSuite) TestUpdateObservationService() {
 			name:      "failure | observation service update",
 			projectID: 4,
 			req:       &timberv1.UpdateObservationServiceRequest{Id: int64(4), ProjectId: int64(4)},
-			err:       "failed update",
+			err:       "failed create",
 		},
 	}
 
