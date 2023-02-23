@@ -66,6 +66,7 @@ def test_simple_observation_service_updation(
     service_name = "my-observation"
     req_body = {
         "observation_service": {
+            "id": 1,
             "project_id": 1,
             "name": service_name,
             "source": {
