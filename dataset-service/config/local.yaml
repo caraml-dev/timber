@@ -24,6 +24,7 @@ datasetServiceConfig:
     host: localhost
     port: 5432
     user: timber
+    # dummy value for testing
     password: timber
     database: timber
     connMaxIdleTime: 60s
