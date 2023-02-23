@@ -39,7 +39,7 @@ func (s *LogWriterServicetestSuite) TearDownSuite() {
 	s.Suite.T().Log("Cleaning up LogWriterServiceTestSuite")
 }
 
-func (s *LogWriterServicetestSuite) TestCreate() {
+func (s *LogWriterServicetestSuite) TestInstallOrUpgrade() {
 	type args struct {
 		projectName string
 		svc         *model.LogWriter
@@ -216,7 +216,7 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 				releaseName = fmt.Sprintf("%s-%s", routerLogWriterReleaseNamePrefix, tt.args.svc.Name)
 			}
 			mockHelmClient := &mocks.Client{}
-			mockHelmClient.On("Install",
+			mockHelmClient.On("InstallOrUpgrade",
 				releaseName,
 				tt.args.projectName,
 				s.helmChart,
@@ -236,222 +236,9 @@ func (s *LogWriterServicetestSuite) TestCreate() {
 				defaults:           s.config.LogWriterConfig.DefaultValues,
 			}
 
-			got, err := lws.Create(tt.args.projectName, tt.args.svc)
+			got, err := lws.InstallOrUpgrade(tt.args.projectName, tt.args.svc)
 			if (err != nil) != tt.wantErr {
-				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			assert.Equal(s.T(), tt.want, got)
-
-			// validate that the helm values passed to helm client is as expected
-			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
-			s.assertHelmValuesOverride(mockHelmClient, tt.wantOverrideHelmValues)
-			mockHelmClient.AssertExpectations(s.T())
-		})
-	}
-}
-
-func (s *LogWriterServicetestSuite) TestUpdate() {
-	type args struct {
-		projectName string
-		svc         *model.LogWriter
-	}
-
-	tests := []struct {
-		name string
-		args args
-		want *model.LogWriter
-		// helm values that's being overridden by observation service
-		wantOverrideHelmValues *values.FluentdHelmValues
-		wantErr                bool
-	}{
-		{
-			name: "update log writer for prediction log",
-			args: args{
-				projectName: "my-project",
-				svc: &model.LogWriter{
-					Base: model.Base{
-						ProjectID: 1,
-					},
-					Name: "prediction-log-writer",
-					Source: &model.LogWriterSource{
-						LogWriterSource: &timberv1.LogWriterSource{
-							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-							PredictionLogSource: &timberv1.PredictionLogSource{
-								ModelName: "sample-model",
-								ModelId:   1,
-								Kafka: &timberv1.KafkaConfig{
-									Brokers: "kafka-brokers.svc",
-									Topic:   "sample-model-prediction-log",
-								},
-							},
-						},
-					},
-				},
-			},
-			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
-					{
-						Name:  values.FluentdKafkaBrokerEnv,
-						Value: "kafka-brokers.svc",
-					},
-					{
-						Name:  values.FluentdKafkaTopicEnv,
-						Value: "sample-model-prediction-log",
-					},
-					{
-						Name:  values.FluentdProtoClassNameEnv,
-						Value: predictionLogProto,
-					},
-					{
-						Name:  values.FluentdTagEnv,
-						Value: "sample-model-prediction-log",
-					},
-					{
-						Name:  values.FluentdGCPProjectEnv,
-						Value: "my-gcp-project",
-					},
-					{
-						Name:  values.FluentdBQDatasetEnv,
-						Value: "caraml_my_project",
-					},
-					{
-						Name:  values.FluentdBQTableEnv,
-						Value: "sample_model_prediction_log",
-					},
-				}),
-			},
-			want: &model.LogWriter{
-				Base: model.Base{
-					ProjectID: 1,
-				},
-				Name: "prediction-log-writer",
-				Source: &model.LogWriterSource{
-					LogWriterSource: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_PREDICTION_LOG,
-						PredictionLogSource: &timberv1.PredictionLogSource{
-							ModelName: "sample-model",
-							ModelId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-model-prediction-log",
-							},
-						},
-					},
-				},
-				Status: model.StatusDeployed,
-			},
-		},
-		{
-			name: "update log writer for router log",
-			args: args{
-				projectName: "my-project",
-				svc: &model.LogWriter{
-					Base: model.Base{
-						ProjectID: 1,
-					},
-					Name: "router-log-writer",
-					Source: &model.LogWriterSource{
-						LogWriterSource: &timberv1.LogWriterSource{
-							Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-							RouterLogSource: &timberv1.RouterLogSource{
-								RouterName: "sample-router",
-								RouterId:   1,
-								Kafka: &timberv1.KafkaConfig{
-									Brokers: "kafka-brokers.svc",
-									Topic:   "sample-router-log",
-								},
-							},
-						},
-					},
-				},
-			},
-			wantOverrideHelmValues: &values.FluentdHelmValues{
-				ExtraEnvs: values.MergeEnvs(s.config.LogWriterConfig.DefaultValues.ExtraEnvs, []values.Env{
-					{
-						Name:  values.FluentdKafkaBrokerEnv,
-						Value: "kafka-brokers.svc",
-					},
-					{
-						Name:  values.FluentdKafkaTopicEnv,
-						Value: "sample-router-log",
-					},
-					{
-						Name:  values.FluentdProtoClassNameEnv,
-						Value: routerLogProto,
-					},
-					{
-						Name:  values.FluentdTagEnv,
-						Value: "sample-router-log",
-					},
-					{
-						Name:  values.FluentdGCPProjectEnv,
-						Value: "my-gcp-project",
-					},
-					{
-						Name:  values.FluentdBQDatasetEnv,
-						Value: "caraml_my_project",
-					},
-					{
-						Name:  values.FluentdBQTableEnv,
-						Value: "sample_router_log",
-					},
-				}),
-			},
-			want: &model.LogWriter{
-				Base: model.Base{
-					ProjectID: 1,
-				},
-				Name: "router-log-writer",
-				Source: &model.LogWriterSource{
-					LogWriterSource: &timberv1.LogWriterSource{
-						Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
-						RouterLogSource: &timberv1.RouterLogSource{
-							RouterName: "sample-router",
-							RouterId:   1,
-							Kafka: &timberv1.KafkaConfig{
-								Brokers: "kafka-brokers.svc",
-								Topic:   "sample-router-log",
-							},
-						},
-					},
-				},
-				Status: model.StatusDeployed,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			releaseName := fmt.Sprintf("%s-%s", predictionLogWriterReleaseNamePrefix, tt.args.svc.Name)
-			if tt.args.svc.Source.Type == timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG {
-				releaseName = fmt.Sprintf("%s-%s", routerLogWriterReleaseNamePrefix, tt.args.svc.Name)
-			}
-			mockHelmClient := &mocks.Client{}
-			mockHelmClient.On("Upgrade",
-				releaseName,
-				tt.args.projectName,
-				s.helmChart,
-				mock.Anything,
-				mock.Anything,
-			).
-				Return(&release.Release{
-					Info: &release.Info{
-						Status: release.StatusDeployed,
-					},
-				}, nil)
-
-			lws := &logWriterService{
-				helmClient:         mockHelmClient,
-				helmChart:          s.helmChart,
-				commonDeployConfig: s.config.CommonDeploymentConfig,
-				defaults:           s.config.LogWriterConfig.DefaultValues,
-			}
-
-			got, err := lws.Update(tt.args.projectName, tt.args.svc)
-			if (err != nil) != tt.wantErr {
-				s.T().Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+				s.T().Errorf("InstallOrUpgrade() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 

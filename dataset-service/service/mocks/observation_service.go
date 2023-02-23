@@ -13,8 +13,8 @@ type ObservationService struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: projectName, svc
-func (_m *ObservationService) Create(projectName string, svc *api.ObservationService) (*api.ObservationService, error) {
+// InstallOrUpgrade provides a mock function with given fields: projectName, svc
+func (_m *ObservationService) InstallOrUpgrade(projectName string, svc *api.ObservationService) (*api.ObservationService, error) {
 	ret := _m.Called(projectName, svc)
 
 	var r0 *api.ObservationService
@@ -36,8 +36,8 @@ func (_m *ObservationService) Create(projectName string, svc *api.ObservationSer
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: projectName, svc
-func (_m *ObservationService) Update(projectName string, svc *api.ObservationService) (*api.ObservationService, error) {
+// Uninstall provides a mock function with given fields: projectName, svc
+func (_m *ObservationService) Uninstall(projectName string, svc *api.ObservationService) (*api.ObservationService, error) {
 	ret := _m.Called(projectName, svc)
 
 	var r0 *api.ObservationService

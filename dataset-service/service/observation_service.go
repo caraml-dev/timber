@@ -23,9 +23,9 @@ const (
 // ObservationService provides a set of methods for controlling observation log's deployment
 type ObservationService interface {
 	// Create creates new Observation Service Helm release and returns ID of created Observation Service
-	Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
+	InstallOrUpgrade(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
 	// Update updates existing Observation Service Helm release and returns ID of updated Observation Service
-	Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
+	Uninstall(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
 }
 
 type observationService struct {
@@ -54,7 +54,7 @@ func NewObservationService(
 	}, nil
 }
 
-func (o *observationService) Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
+func (o *observationService) InstallOrUpgrade(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
 	//TODO: create BQ dataset and/or table before deploying the observation service, although observation service has that privileges
 	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
 	val, err := o.createHelmValues(releaseName, projectName, svc)
@@ -62,7 +62,7 @@ func (o *observationService) Create(projectName string, svc *timberv1.Observatio
 		return nil, fmt.Errorf("error creating helm values: %w", err)
 	}
 	// Trigger helm installation
-	r, err := o.helmClient.Install(releaseName, projectName, o.helmChart, val, nil)
+	r, err := o.helmClient.InstallOrUpgrade(releaseName, projectName, o.helmChart, val, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
@@ -72,25 +72,15 @@ func (o *observationService) Create(projectName string, svc *timberv1.Observatio
 	return svc, nil
 }
 
-func (o *observationService) Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
-
+func (o *observationService) Uninstall(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
 	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
-	val, err := o.createHelmValues(releaseName, projectName, svc)
+
+	err := o.helmClient.Uninstall(releaseName, projectName, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating helm values: %w", err)
+		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
-	// Trigger helm release update
-	r, err := o.helmClient.Upgrade(releaseName, projectName, o.helmChart, val, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error upgrading observation service: %w", err)
-	}
-
-	log.Debugf("deployment manifest %s", r.Manifest)
-
-	svc.Status = helm.ConvertStatusToProto(r.Info.Status)
-
-	// TODO: store observation service in DB and update the status based on the final release status
+	svc.Status = timberv1.Status_STATUS_UNINSTALLED
 	return svc, nil
 }
 

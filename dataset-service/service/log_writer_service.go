@@ -28,10 +28,10 @@ const (
 
 // LogWriterService provides a set of methods for controlling the log writer's deployment
 type LogWriterService interface {
-	// Create creates a new log writer deployment
-	Create(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
-	// Update updates an existing log writer deployment
-	Update(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
+	// InstallOrUpgrade creates a new log writer deployment
+	InstallOrUpgrade(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
+	// Uninstall uninstalls an existing log writer deployment
+	Uninstall(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error)
 }
 
 type logWriterService struct {
@@ -57,7 +57,7 @@ func NewLogWriterService(commonDeployConfig *config.CommonDeploymentConfig, logW
 	}, nil
 }
 
-func (l *logWriterService) Create(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
+func (l *logWriterService) InstallOrUpgrade(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	// TODO: create BQ dataset and/or table before deploying the log writer
 	releaseName := createReleaseName(logWriter)
 	val, err := l.createHelmValues(projectName, logWriter)
@@ -66,29 +66,26 @@ func (l *logWriterService) Create(projectName string, logWriter *model.LogWriter
 	}
 
 	// Trigger helm installation
-	r, err := l.helmClient.Install(releaseName, projectName, l.helmChart, val, nil)
+	r, err := l.helmClient.InstallOrUpgrade(releaseName, projectName, l.helmChart, val, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
 	logWriter.Status = helm.ConvertStatus(r.Info.Status)
+	logWriter.Error = ""
 	return logWriter, nil
 }
 
-func (l *logWriterService) Update(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
+func (l *logWriterService) Uninstall(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	releaseName := createReleaseName(logWriter)
-	val, err := l.createHelmValues(projectName, logWriter)
-	if err != nil {
-		return nil, fmt.Errorf("error creating helm values: %w", err)
-	}
 
-	// Trigger helm installation
-	r, err := l.helmClient.Upgrade(releaseName, projectName, l.helmChart, val, nil)
+	err := l.helmClient.Uninstall(releaseName, projectName, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
-	logWriter.Status = helm.ConvertStatus(r.Info.Status)
+	logWriter.Status = model.StatusUninstalled
+	logWriter.Error = ""
 	return logWriter, nil
 }
 

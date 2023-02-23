@@ -13,8 +13,8 @@ type LogWriterService struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: projectName, logWriter
-func (_m *LogWriterService) Create(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
+// InstallOrUpgrade provides a mock function with given fields: projectName, logWriter
+func (_m *LogWriterService) InstallOrUpgrade(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	ret := _m.Called(projectName, logWriter)
 
 	var r0 *model.LogWriter
@@ -36,8 +36,8 @@ func (_m *LogWriterService) Create(projectName string, logWriter *model.LogWrite
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: projectName, logWriter
-func (_m *LogWriterService) Update(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
+// Uninstall provides a mock function with given fields: projectName, logWriter
+func (_m *LogWriterService) Uninstall(projectName string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	ret := _m.Called(projectName, logWriter)
 
 	var r0 *model.LogWriter
