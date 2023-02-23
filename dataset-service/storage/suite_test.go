@@ -95,4 +95,5 @@ func TestMain(m *testing.M) {
 
 func TestStorage(t *testing.T) {
 	suite.Run(t, new(LogWriterStorageTestSuite))
+	suite.Run(t, new(ObservationServiceStorageTestSuite))
 }

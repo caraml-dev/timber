@@ -11,11 +11,7 @@ import (
 
 // LogWriter data model for log writer
 type LogWriter struct {
-	// Base provides common DB model field
-	// ID        		uint `gorm:"primarykey"`
-	// ProjectID        uint `gorm:"primarykey"`
-	// CreatedAt time.Time
-	// UpdatedAt time.Time
+	// Base provides common DB model field, namely ID, ProjectID, CreatedAt, UpdatedAt
 	Base
 	// Name of the log writer
 	Name string

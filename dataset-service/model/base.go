@@ -10,6 +10,6 @@ type Base struct {
 	ProjectID int64
 	// CreatedAt creation timestamp
 	CreatedAt time.Time
-	// UpdatedAt last upate timestamp
+	// UpdatedAt last update timestamp
 	UpdatedAt time.Time
 }

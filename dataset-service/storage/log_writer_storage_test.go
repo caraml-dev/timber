@@ -18,7 +18,6 @@ type LogWriterStorageTestSuite struct {
 
 func (s *LogWriterStorageTestSuite) SetupSuite() {
 	s.Suite.T().Log("Setting up LogWriterStorageTestSuite")
-
 	s.logWriterStorage = logWriter{db: testDB}
 
 	for i := 0; i < 100; i++ {
@@ -49,7 +48,7 @@ func (s *LogWriterStorageTestSuite) SetupSuite() {
 	}
 }
 
-func (s *LogWriterStorageTestSuite) TestGet() {
+func (s *LogWriterStorageTestSuite) TestGetLogWriter() {
 	ctx := context.Background()
 
 	// Test get with id
@@ -71,7 +70,7 @@ func (s *LogWriterStorageTestSuite) TestGet() {
 	s.Assert().Equal(int64(100), got.ID)
 }
 
-func (s *LogWriterStorageTestSuite) TestList() {
+func (s *LogWriterStorageTestSuite) TestListLogWriter() {
 	ctx := context.Background()
 
 	// Test list first 5
@@ -107,7 +106,7 @@ func (s *LogWriterStorageTestSuite) TestList() {
 	s.Assert().Len(got, 0)
 }
 
-func (s *LogWriterStorageTestSuite) TestCreate() {
+func (s *LogWriterStorageTestSuite) TestCreateLogWriter() {
 	ctx := context.Background()
 
 	got, err := s.logWriterStorage.Create(ctx, &model.LogWriter{
@@ -165,7 +164,7 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 	s.Assert().ErrorContains(err, "log_writer exists")
 }
 
-func (s *LogWriterStorageTestSuite) TestUpdate() {
+func (s *LogWriterStorageTestSuite) TestUpdateLogWriter() {
 	ctx := context.Background()
 
 	lw, err := s.logWriterStorage.Create(ctx, &model.LogWriter{
