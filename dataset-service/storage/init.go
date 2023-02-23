@@ -8,13 +8,14 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/caraml-dev/timber/common/log"
-	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/golang-migrate/migrate/v4"
 	migratePg "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/caraml-dev/timber/common/log"
+	"github.com/caraml-dev/timber/dataset-service/config"
 )
 
 // InitDB initialize database instance based on application configuration

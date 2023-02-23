@@ -3,8 +3,9 @@ package storage
 import (
 	"fmt"
 
-	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/jackc/pgconn"
+
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 )
 
 // GetInput is common type used for querying specific entity in its storage
@@ -17,11 +18,11 @@ type GetInput struct {
 	ProjectID int64
 }
 
-// String return human readable string of GetInput
+// String return human-readable string of GetInput
 func (i GetInput) String() string {
 	str := fmt.Sprintf("ID: %d, project ID: %d", i.ID, i.ProjectID)
 	if i.Name != "" {
-		str = fmt.Sprintf("%s, name: %s", i.Name)
+		str = fmt.Sprintf("%s, name: %s", str, i.Name)
 	}
 	return str
 }
