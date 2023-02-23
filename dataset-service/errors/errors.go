@@ -11,9 +11,9 @@ type NotFoundError struct {
 // Error Return error message
 func (e *NotFoundError) Error() string { return e.err.Error() }
 
-func NewNotFoundError(entity string, id any) *NotFoundError {
+func NewNotFoundError(entity string, identity any) *NotFoundError {
 	return &NotFoundError{
-		err: fmt.Errorf("%s with id %v is not found", entity, id),
+		err: fmt.Errorf("%s with %s is not found", entity, identity),
 	}
 }
 

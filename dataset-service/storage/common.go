@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"fmt"
+
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 	"github.com/jackc/pgconn"
 )
@@ -13,6 +15,15 @@ type GetInput struct {
 	Name string
 	// ProjectID of the entity belongs to
 	ProjectID int64
+}
+
+// String return human readable string of GetInput
+func (i GetInput) String() string {
+	str := fmt.Sprintf("ID: %d, project ID: %d", i.ID, i.ProjectID)
+	if i.Name != "" {
+		str = fmt.Sprintf("%s, name: %s", i.Name)
+	}
+	return str
 }
 
 // ListInput is common type used for querying list of entities in its storage
