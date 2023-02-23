@@ -60,7 +60,7 @@ def test_simple_observation_service_creation(
 @pytest.mark.order(2)
 def test_simple_observation_service_updation(
     dataset_service_client: DatasetServiceClient,
-    k8s_client: client.CoreV1Api,
+    k8s_client: client.AppsV1Api,
 ):
     # Upgrade Observation Service
     service_name = "my-observation"
@@ -72,7 +72,7 @@ def test_simple_observation_service_updation(
                 "type": "OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA",
                 "kafka": {"brokers": "kafka.mlp.svc.cluster.local", "topic": "hello"},
             },
-            "status": "STATUS_DEPLOYED"
+            "status": "STATUS_DEPLOYED",
         }
     }
     resp = dataset_service_client.update_observation_service(
