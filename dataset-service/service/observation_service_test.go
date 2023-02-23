@@ -16,6 +16,7 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/caraml-dev/timber/dataset-service/model"
 	osconfig "github.com/caraml-dev/timber/observation-service/config"
 )
 
@@ -38,16 +39,16 @@ func (s *ObservationServiceTestSuite) TearDownSuite() {
 	s.Suite.T().Log("Cleaning up ObservationServiceTestSuite")
 }
 
-func (s *ObservationServiceTestSuite) TestCreate() {
+func (s *ObservationServiceTestSuite) TestInstallOrUpgrade() {
 	type args struct {
 		projectName string
-		svc         *timberv1.ObservationService
+		svc         *model.ObservationService
 	}
 
 	tests := []struct {
 		name string
 		args args
-		want *timberv1.ObservationService
+		want *model.ObservationService
 		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.ObservationServiceHelmValues
 		wantErr                bool
@@ -56,14 +57,16 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 			name: "create",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.ObservationService{
-					ProjectId: 1,
-					Name:      "my-observation-svc",
-					Source: &timberv1.ObservationServiceSource{
-						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka.brokers",
-							Topic:   "sample-topic",
+				svc: &model.ObservationService{
+					Base: model.Base{ProjectID: 1},
+					Name: "my-observation-svc",
+					Source: &model.ObservationServiceSource{
+						ObservationServiceSource: &timberv1.ObservationServiceSource{
+							Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka.brokers",
+								Topic:   "sample-topic",
+							},
 						},
 					},
 				},
@@ -114,17 +117,19 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 					}),
 				},
 			},
-			want: &timberv1.ObservationService{
-				ProjectId: 1,
-				Name:      "my-observation-svc",
-				Source: &timberv1.ObservationServiceSource{
-					Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
-					Kafka: &timberv1.KafkaConfig{
-						Brokers: "kafka.brokers",
-						Topic:   "sample-topic",
+			want: &model.ObservationService{
+				Base: model.Base{ProjectID: 1},
+				Name: "my-observation-svc",
+				Source: &model.ObservationServiceSource{
+					ObservationServiceSource: &timberv1.ObservationServiceSource{
+						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+						Kafka: &timberv1.KafkaConfig{
+							Brokers: "kafka.brokers",
+							Topic:   "sample-topic",
+						},
 					},
 				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 	}
