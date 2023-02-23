@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 
+	"gorm.io/gorm"
+
 	dserrors "github.com/caraml-dev/timber/dataset-service/errors"
 	"github.com/caraml-dev/timber/dataset-service/model"
-	"gorm.io/gorm"
 )
 
 // observationServiceEntityName entity name for observation service
