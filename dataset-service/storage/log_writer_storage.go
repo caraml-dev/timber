@@ -73,6 +73,8 @@ func (l *logWriter) List(ctx context.Context, listInput ListInput) ([]*model.Log
 		},
 	}).Limit(listInput.Limit).
 		Offset(listInput.Offset).
+		// TODO: allow users to provide the ordering option
+		Order("id").
 		Find(&logWriters)
 	return logWriters, tx.Error
 }

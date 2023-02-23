@@ -2,20 +2,20 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"os"
+	"strconv"
 	"testing"
 
-	"github.com/go-gormigrate/gormigrate/v2"
+	"github.com/caraml-dev/timber/common/log"
+	"github.com/caraml-dev/timber/dataset-service/config"
+
 	"github.com/stretchr/testify/suite"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/caraml-dev/timber/common/log"
-	"github.com/caraml-dev/timber/dataset-service/storage/migration"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 var testDB *gorm.DB
@@ -47,6 +47,7 @@ func TestMain(m *testing.M) {
 
 	if err != nil {
 		log.Errorf("Unable to start postgresql container : %v", err)
+		return
 	}
 
 	defer func() {
@@ -59,27 +60,36 @@ func TestMain(m *testing.M) {
 	ep, err := pgC.Endpoint(ctx, "")
 	if err != nil {
 		log.Errorf("Unable to get endpoint : %v", err)
+		return
 	}
 
-	host, port, err := net.SplitHostPort(ep)
+	host, portStr, err := net.SplitHostPort(ep)
 	if err != nil {
 		log.Errorf("Unable to get endpoint : %v", err)
+		return
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbName, port)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	port, err := strconv.Atoi(portStr)
 	if err != nil {
-		log.Errorf("Unable to connect to postgresql : %v", err)
+		log.Errorf("error conversion : %v", err)
+		return
+	}
+
+	dbConfig := &config.DatabaseConfig{
+		Host:     host,
+		Port:     port,
+		User:     "timber",
+		Password: "timber",
+		Database: "timber",
+	}
+
+	db, err := InitDB(dbConfig)
+	if err != nil {
+		log.Errorf("error initializing database : %v", err)
+		return
 	}
 
 	testDB = db
-
-	mig := gormigrate.New(db, gormigrate.DefaultOptions, migration.Migrations)
-	if err = mig.Migrate(); err != nil {
-		log.Errorf("Could not migrate: %v", err)
-	}
-	log.Infof("Migration ran successfully")
-
 	code = m.Run()
 }
 
