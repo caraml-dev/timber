@@ -28,9 +28,10 @@ func InitDB(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 		cfg.Password)
 
 	db, err := gorm.Open(postgres.Open(databaseURL), &gorm.Config{
+		// https://github.com/go-gorm/gorm/issues/4834
 		NowFunc: func() time.Time {
 			ti, _ := time.LoadLocation("UTC")
-			return time.Now().In(ti)
+			return time.Now().Round(time.Second).In(ti)
 		},
 	})
 
