@@ -89,7 +89,6 @@ func (l *logWriterService) Update(projectName string, logWriter *model.LogWriter
 	}
 
 	logWriter.Status = helm.ConvertStatus(r.Info.Status)
-	// TODO: store log writer in DB and update the status based on the final release status
 	return logWriter, nil
 }
 
