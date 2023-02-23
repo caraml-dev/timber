@@ -1,14 +1,13 @@
 package appcontext
 
 import (
-	"github.com/caraml-dev/timber/dataset-service/storage"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
+	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/mlp"
 	"github.com/caraml-dev/timber/dataset-service/service"
-
-	"github.com/caraml-dev/timber/dataset-service/config"
+	"github.com/caraml-dev/timber/dataset-service/storage"
 )
 
 // AppContext captures the config of all related internal services to run Dataset Service
