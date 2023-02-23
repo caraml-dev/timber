@@ -2,6 +2,7 @@ package errors
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -17,23 +18,21 @@ func Handler(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marsh
 		Err:        err,
 	}
 
-	switch err.(type) {
-	case *NotFoundError:
+	if errors.Is(err, &NotFoundError{}) {
 		newError = &runtime.HTTPStatusError{
 			HTTPStatus: http.StatusNotFound,
 			Err:        err,
 		}
-	case *ConflictError:
+	} else if errors.Is(err, &ConflictError{}) {
 		newError = &runtime.HTTPStatusError{
 			HTTPStatus: http.StatusConflict,
 			Err:        err,
 		}
-	case *InvalidInputError:
+	} else if errors.Is(err, &InvalidInputError{}) {
 		newError = &runtime.HTTPStatusError{
 			HTTPStatus: http.StatusBadRequest,
 			Err:        err,
 		}
-	default:
 	}
 
 	// using default handler to do the rest of heavy lifting of marshaling error and adding headers
