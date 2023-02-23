@@ -138,7 +138,7 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 	})
 
 	s.Assert().NoError(err)
-	s.Assert().Equal(got, exp)
+	s.Assert().Equal(exp, got)
 
 	// test conflict
 	_, err = s.logWriterStorage.Create(ctx, &model.LogWriter{
@@ -204,7 +204,7 @@ func (s *LogWriterStorageTestSuite) TestUpdate() {
 	got, err := s.logWriterStorage.Update(ctx, lw)
 
 	s.Assert().NoError(err)
-	s.Assert().Equal(got.Status, lw.Status)
-	s.Assert().Equal(got.Source, lw.Source)
-	s.Assert().Equal(got.Error, lw.Error)
+	s.Assert().Equal(lw.Status, got.Status)
+	s.Assert().Equal(lw.Source, got.Source)
+	s.Assert().Equal(lw.Error, got.Error)
 }
