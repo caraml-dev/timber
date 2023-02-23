@@ -49,7 +49,7 @@ def test_simple_observation_service_creation(
 
     # TODO: Improve the assertion once DB is implemented
     assert body["observation_service"]
-    assert body["observation_service"]["status"] == "STATUS_DEPLOYED"
+    assert body["observation_service"]["status"] == "STATUS_PENDING"
 
     wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "os-my-observation-fluentd")
     wait_deployment_ready(
@@ -72,6 +72,7 @@ def test_simple_observation_service_updation(
                 "type": "OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA",
                 "kafka": {"brokers": "kafka.mlp.svc.cluster.local", "topic": "hello"},
             },
+            "status": "STATUS_DEPLOYED"
         }
     }
     resp = dataset_service_client.update_observation_service(
@@ -84,7 +85,7 @@ def test_simple_observation_service_updation(
 
     # TODO: Improve the assertion once DB is implemented
     assert body["observation_service"]
-    assert body["observation_service"]["status"] == "STATUS_DEPLOYED"
+    assert body["observation_service"]["status"] == "STATUS_PENDING"
 
     wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "os-my-observation-fluentd")
     wait_deployment_ready(
@@ -122,7 +123,7 @@ def test_simple_router_log_writer_creation(
 
     # TODO: Improve the assertion once DB is implemented
     assert body["log_writer"]
-    assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
+    assert body["log_writer"]["status"] == "STATUS_PENDING"
 
     wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "rl-my-router-log-fluentd")
 
@@ -157,7 +158,7 @@ def test_simple_prediction_log_writer_creation(
 
     # TODO: Improve the assertion once DB is implemented
     assert body["log_writer"]
-    assert body["log_writer"]["status"] == "STATUS_DEPLOYED"
+    assert body["log_writer"]["status"] == "STATUS_PENDING"
 
     wait_statefulset_ready(k8s_client, TEST_PROJECT_NAME, "pl-my-model-log-fluentd")
 
