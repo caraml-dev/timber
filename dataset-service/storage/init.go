@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"path"
 	"runtime"
@@ -11,6 +12,7 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/golang-migrate/migrate/v4"
 	migratePg "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -71,7 +73,12 @@ func migrateDB(sqlDB *sql.DB, dbName string) error {
 		return err
 	}
 
-	return migration.Up()
+	err = migration.Up()
+	if err != nil && errors.Is(err, migrate.ErrNoChange) {
+		return nil
+	}
+
+	return err
 }
 
 func getFileURL(filePath string) string {

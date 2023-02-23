@@ -1,6 +1,9 @@
 package storage
 
-import timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+import (
+	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/jackc/pgconn"
+)
 
 // GetInput is common type used for querying specific entity in its storage
 type GetInput struct {
@@ -36,3 +39,5 @@ func ListInputFromOption(projectID int64, detail *timberv1.ListOption) ListInput
 		Limit:     int(detail.Limit),
 	}
 }
+
+var duplicateEntryError = &pgconn.PgError{Code: "23505"}

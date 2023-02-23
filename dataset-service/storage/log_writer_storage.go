@@ -55,6 +55,11 @@ func (l *logWriter) Get(ctx context.Context, input GetInput) (*model.LogWriter, 
 // Create a new log writer and return the stored log writer with ID populated or error
 func (l *logWriter) Create(ctx context.Context, lw *model.LogWriter) (*model.LogWriter, error) {
 	tx := l.db.WithContext(ctx).Create(lw)
+	if tx.Error != nil && errors.As(tx.Error, &duplicateEntryError) {
+		// handle duplicate
+		return nil, dserrors.NewConflictError(LogWriterEntityName, tx.Error)
+	}
+
 	return lw, tx.Error
 }
 

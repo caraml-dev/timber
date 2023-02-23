@@ -139,6 +139,30 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 
 	s.Assert().NoError(err)
 	s.Assert().Equal(got, exp)
+
+	// test conflict
+	got, err = s.logWriterStorage.Create(ctx, &model.LogWriter{
+		Base: model.Base{
+			ProjectID: 2,
+		},
+		Name:   fmt.Sprintf("log-writer-0"),
+		Status: model.StatusDeployed,
+		Source: &model.LogWriterSource{
+			LogWriterSource: &timberv1.LogWriterSource{
+				Type: timberv1.LogWriterSourceType_LOG_WRITER_SOURCE_TYPE_ROUTER_LOG,
+				RouterLogSource: &timberv1.RouterLogSource{
+					RouterId:   1,
+					RouterName: "router-1",
+					Kafka: &timberv1.KafkaConfig{
+						Brokers: "my-broker",
+						Topic:   "my-topic",
+					},
+				},
+			},
+		},
+	})
+
+	s.Assert().ErrorContains(err, "log_writer exists")
 }
 
 func (s *LogWriterStorageTestSuite) TestUpdate() {
