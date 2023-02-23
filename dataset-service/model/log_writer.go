@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 )
@@ -15,7 +16,6 @@ type LogWriter struct {
 	// ProjectID        uint `gorm:"primarykey"`
 	// CreatedAt time.Time
 	// UpdatedAt time.Time
-	// DeletedAt DeletedAt `gorm:"index"`
 	Base
 	// Name of the log writer
 	Name string
@@ -29,12 +29,30 @@ type LogWriter struct {
 
 // ToLogWriterProto convert internal LogWriter representation into LogWriter proto message
 func (w *LogWriter) ToLogWriterProto() *timberv1.LogWriter {
-	return &timberv1.LogWriter{}
+	return &timberv1.LogWriter{
+		ProjectId: w.ProjectID,
+		Id:        w.ID,
+		Name:      w.Name,
+		Source:    w.Source.LogWriterSource,
+		Status:    w.Status.ToStatusProto(),
+		Error:     w.Error,
+		CreatedAt: timestamppb.New(w.CreatedAt),
+		UpdatedAt: timestamppb.New(w.UpdatedAt),
+	}
 }
 
-// FromLogWriterProto convert LogWriter proto to internal representation of LogWriter
-func FromLogWriterProto(msg *timberv1.LogWriter) *LogWriter {
-	return nil
+// LogWriterFromProto convert LogWriter proto to internal representation of LogWriter
+func LogWriterFromProto(msg *timberv1.LogWriter) *LogWriter {
+	return &LogWriter{
+		Base: Base{
+			ID:        msg.Id,
+			ProjectID: msg.ProjectId,
+		},
+		Name:   msg.Name,
+		Source: &LogWriterSource{msg.Source},
+		Status: StatusFromProto(msg.Status),
+		Error:  msg.Error,
+	}
 }
 
 // LogWriterSource is wrapper of LogWriterSource proto message to allow marshalling and unmarshalling to DB
