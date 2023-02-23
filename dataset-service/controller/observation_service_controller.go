@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	dserrors "github.com/caraml-dev/timber/dataset-service/errors"
 	"github.com/jinzhu/copier"
 
 	"github.com/caraml-dev/timber/common/log"
 	timberv1 "github.com/caraml-dev/timber/dataset-service/api"
+	dserrors "github.com/caraml-dev/timber/dataset-service/errors"
 	"github.com/caraml-dev/timber/dataset-service/mlp"
 	"github.com/caraml-dev/timber/dataset-service/model"
 	"github.com/caraml-dev/timber/dataset-service/service"
@@ -138,7 +138,10 @@ func (o *ObservationServiceController) UpdateObservationService(
 
 // createObservationService install observation service deployment and update the storage.
 // The long-running operation is performed in the background and the function will return with observation service having pending status
-func (o *ObservationServiceController) createObservationService(ctx context.Context, project string, observationService *model.ObservationService) (*model.ObservationService, error) {
+func (o *ObservationServiceController) createObservationService(ctx context.Context,
+	project string,
+	observationService *model.ObservationService,
+) (*model.ObservationService, error) {
 	// InstallOrUpgrade new observation service entry in DB with pending state
 	observationService.Status = model.StatusPending
 	observationService, err := o.storage.Create(ctx, observationService)
@@ -183,7 +186,11 @@ func (o *ObservationServiceController) createObservationService(ctx context.Cont
 
 // updateOrDeleteObservationService update or uninstall observation service and update the storage accordingly.
 // The long-running operation is performed in the background and the function will return with observation service having pending status
-func (o *ObservationServiceController) updateOrDeleteObservationService(ctx context.Context, project string, observationService *model.ObservationService) (*model.ObservationService, error) {
+func (o *ObservationServiceController) updateOrDeleteObservationService(
+	ctx context.Context,
+	project string,
+	observationService *model.ObservationService,
+) (*model.ObservationService, error) {
 	targetStatus := observationService.Status
 	// Update observation service entry in DB with pending state
 	observationService.Status = model.StatusPending
