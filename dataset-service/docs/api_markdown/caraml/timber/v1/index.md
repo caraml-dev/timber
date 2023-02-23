@@ -311,6 +311,7 @@ ObservationServiceConfig describes details of a Observation Service
 | name | [string](#string) |  | Observation service name |
 | source | [ObservationServiceSource](#caraml-timber-v1-ObservationServiceSource) |  | Configuration for pull-based Observation Service data source. |
 | status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the observation service |
+| error | [string](#string) |  | Error message |
 | created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
 | updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
@@ -589,6 +590,7 @@ Request message for ListObservationServices method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Observation Services from. |
+| list | [ListOption](#caraml-timber-v1-ListOption) |  | List request details |
 
 
 

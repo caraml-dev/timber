@@ -306,6 +306,22 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "list.offset",
+            "description": "Offset of the list request.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "list.limit",
+            "description": "Number of entry to be returned by list request.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -770,6 +786,10 @@
         "status": {
           "$ref": "#/definitions/timberv1Status",
           "title": "TODO: Add details of where the log is stored at\nStatus of the observation service"
+        },
+        "error": {
+          "type": "string",
+          "title": "Error message"
         },
         "createdAt": {
           "type": "string",

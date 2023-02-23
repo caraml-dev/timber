@@ -177,6 +177,8 @@ message UpdateLogWriterResponse {
 message ListObservationServicesRequest {
     // The CaraML project ID to retrieve list of Observation Services from.
     int64 project_id = 1;
+    // List request details
+    ListOption list = 2;
 }
 
 // Response message for ListObservationServices method.
