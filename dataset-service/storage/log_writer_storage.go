@@ -10,7 +10,8 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/model"
 )
 
-const LogWriterEntityName = "log_writer"
+// logWriterEntityName entity name for log writer
+const logWriterEntityName = "log_writer"
 
 // LogWriter interface providing access for LogWriter storage
 type LogWriter interface {
@@ -46,7 +47,7 @@ func (l *logWriter) Get(ctx context.Context, input GetInput) (*model.LogWriter, 
 	}).Take(&logWriter)
 
 	if tx.Error != nil && errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-		return logWriter, dserrors.NewNotFoundError(LogWriterEntityName, input)
+		return logWriter, dserrors.NewNotFoundError(logWriterEntityName, input)
 	}
 
 	return logWriter, tx.Error
@@ -57,7 +58,7 @@ func (l *logWriter) Create(ctx context.Context, lw *model.LogWriter) (*model.Log
 	tx := l.db.WithContext(ctx).Create(lw)
 	if tx.Error != nil && errors.As(tx.Error, &duplicateEntryError) {
 		// handle duplicate
-		return nil, dserrors.NewConflictError(LogWriterEntityName, tx.Error)
+		return nil, dserrors.NewConflictError(logWriterEntityName, tx.Error)
 	}
 
 	return lw, tx.Error

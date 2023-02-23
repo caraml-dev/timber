@@ -2,6 +2,7 @@ package model
 
 import timberv1 "github.com/caraml-dev/timber/dataset-service/api"
 
+// Status deployment status
 type Status string
 
 const (
@@ -17,6 +18,7 @@ const (
 	StatusPending Status = "STATUS_PENDING"
 )
 
+// ToStatusProto convert internal status representation into timberv1.Status proto message
 func (s Status) ToStatusProto() timberv1.Status {
 	switch s {
 	case StatusDeployed:
@@ -32,6 +34,7 @@ func (s Status) ToStatusProto() timberv1.Status {
 	}
 }
 
+// StatusFromProto creates internal status representation based on timberv1.Status proto message
 func StatusFromProto(statusProto timberv1.Status) Status {
 	switch statusProto {
 	case timberv1.Status_STATUS_DEPLOYED:

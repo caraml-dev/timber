@@ -114,7 +114,7 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 		Base: model.Base{
 			ProjectID: 3,
 		},
-		Name:   fmt.Sprintf("log-writer-10"),
+		Name:   "log-writer-10",
 		Status: model.StatusDeployed,
 		Source: &model.LogWriterSource{
 			LogWriterSource: &timberv1.LogWriterSource{
@@ -141,11 +141,11 @@ func (s *LogWriterStorageTestSuite) TestCreate() {
 	s.Assert().Equal(got, exp)
 
 	// test conflict
-	got, err = s.logWriterStorage.Create(ctx, &model.LogWriter{
+	_, err = s.logWriterStorage.Create(ctx, &model.LogWriter{
 		Base: model.Base{
 			ProjectID: 2,
 		},
-		Name:   fmt.Sprintf("log-writer-0"),
+		Name:   "log-writer-0",
 		Status: model.StatusDeployed,
 		Source: &model.LogWriterSource{
 			LogWriterSource: &timberv1.LogWriterSource{
@@ -172,7 +172,7 @@ func (s *LogWriterStorageTestSuite) TestUpdate() {
 		Base: model.Base{
 			ProjectID: 3,
 		},
-		Name:   fmt.Sprintf("my-log-writer"),
+		Name:   "my-log-writer",
 		Status: model.StatusDeployed,
 		Source: &model.LogWriterSource{
 			LogWriterSource: &timberv1.LogWriterSource{

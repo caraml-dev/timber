@@ -85,7 +85,7 @@ func (h *helmClient) InstallOrUpgrade(release string,
 		return nil, fmt.Errorf("error initializeConfig: %w", err)
 	}
 
-	r, err := h.getRelease(release, namespace, actionConfig)
+	_, err = h.getRelease(release, namespace, actionConfig)
 	if err != nil {
 		if !errors.Is(err, driver.ErrReleaseNotFound) {
 			return nil, err
@@ -98,7 +98,10 @@ func (h *helmClient) InstallOrUpgrade(release string,
 	upgrade := h.newUpgradeAction(actionConfig, namespace)
 
 	log.Debugf("upgrading helm release: %s, namespace: %s, chart: %s, chart version: %s", release, namespace, chart.Name(), chart.Metadata.Version)
-	r, err = upgrade.Run(release, chart, values)
+	r, err := upgrade.Run(release, chart, values)
+	if err != nil {
+		return nil, err
+	}
 
 	log.Debugf("release manifest: %v", r.Manifest)
 	return r, nil

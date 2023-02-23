@@ -112,11 +112,19 @@ func Test_helmClient_InstallOrUpgrade(t *testing.T) {
 			}
 
 			if tt.existingRelease != nil {
-				err := install(tt.existingRelease.releaseName, tt.existingRelease.namespaceName, tt.existingRelease.chart, tt.existingRelease.values, tt.args.actionConfig)
+				err := install(tt.existingRelease.releaseName,
+					tt.existingRelease.namespaceName,
+					tt.existingRelease.chart,
+					tt.existingRelease.values,
+					tt.args.actionConfig)
 				assert.NoError(t, err)
 			}
 
-			got, err := h.InstallOrUpgrade(tt.args.releaseName, tt.args.namespaceName, tt.args.chart, tt.args.values, tt.args.actionConfig)
+			got, err := h.InstallOrUpgrade(tt.args.releaseName,
+				tt.args.namespaceName,
+				tt.args.chart,
+				tt.args.values,
+				tt.args.actionConfig)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("InstallOrUpgrade() error = %v, wantErr %v", err, tt.wantErr)
 				return

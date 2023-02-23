@@ -37,6 +37,7 @@ type ListInput struct {
 	Limit int
 }
 
+// ListInputFromOption creates list input from list request options
 func ListInputFromOption(projectID int64, detail *timberv1.ListOption) ListInput {
 	if detail == nil {
 		detail = &timberv1.ListOption{
@@ -52,4 +53,5 @@ func ListInputFromOption(projectID int64, detail *timberv1.ListOption) ListInput
 	}
 }
 
+// error raised by postgres for unique constraint violation
 var duplicateEntryError = &pgconn.PgError{Code: "23505"}
