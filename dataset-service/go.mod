@@ -11,6 +11,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/imdario/mergo v0.3.12
+	github.com/jackc/pgconn v1.12.1
 	github.com/jinzhu/copier v0.3.5
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
@@ -105,7 +106,6 @@ require (
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
