@@ -86,7 +86,8 @@ type DatabaseConfig struct {
 	Password string `envconfig:"DATABASE_PASSWORD" required:"true"`
 	// Database database name
 	Database string `envconfig:"DATABASE_NAME" default:"timber"`
-
+	// URL to directory containing database migration scripts
+	MigrationSourceURL string
 	// ConnMaxIdleTime maximum connection idle time
 	ConnMaxIdleTime time.Duration `default:"0s"`
 	// ConnMaxIdleTime maximum connection lifetime

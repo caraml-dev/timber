@@ -51,7 +51,7 @@ func InitDB(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
 
 	// migrateDB
-	err = migrateDB(sqlDB, cfg.Database)
+	err = migrateDB(sqlDB, cfg.Database, cfg.MigrationSourceURL)
 	if err != nil {
 		return nil, fmt.Errorf("error migrating database: %w", err)
 	}
@@ -59,16 +59,22 @@ func InitDB(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 	return db, nil
 }
 
-func migrateDB(sqlDB *sql.DB, dbName string) error {
-	log.Infof("running database migration")
+func migrateDB(sqlDB *sql.DB, dbName string, migrationSourceURL string) error {
+	log.Infof("Running database migration")
 
 	driver, err := migratePg.WithInstance(sqlDB, &migratePg.Config{})
 	if err != nil {
 		return err
 	}
 
+	// fallback to known location (i.e. within migration folder)
+	if migrationSourceURL == "" {
+		migrationSourceURL = getFileURL("migration")
+		log.Infof("migrationSourceURL is empty, fallback to %s", migrationSourceURL)
+	}
+
 	migration, err := migrate.NewWithDatabaseInstance(
-		getFileURL("../storage/migration"),
+		migrationSourceURL,
 		dbName,
 		driver)
 	if err != nil {
@@ -77,6 +83,7 @@ func migrateDB(sqlDB *sql.DB, dbName string) error {
 
 	err = migration.Up()
 	if err != nil && errors.Is(err, migrate.ErrNoChange) {
+		log.Infof("Migration is completed without change")
 		return nil
 	}
 
