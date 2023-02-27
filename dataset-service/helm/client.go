@@ -73,7 +73,7 @@ func (h *helmClient) ReadChart(chartPath string) (*chart.Chart, error) {
 	return c, nil
 }
 
-// InstallOrUpgrade  install or upgrade an existing helm release
+// InstallOrUpgrade installs or upgrades an existing helm release
 func (h *helmClient) InstallOrUpgrade(release string,
 	namespace string,
 	chart *chart.Chart,
