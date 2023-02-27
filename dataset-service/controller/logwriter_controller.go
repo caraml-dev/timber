@@ -51,13 +51,13 @@ func (l *LogWriterController) ListLogWriters(
 	}
 
 	// convert to list of protos
-	logWritersProto := make([]*timberv1.LogWriter, len(logWriters))
+	logWriterProtos := make([]*timberv1.LogWriter, len(logWriters))
 	for i, l := range logWriters {
-		logWritersProto[i] = l.ToLogWriterProto()
+		logWriterProtos[i] = l.ToLogWriterProto()
 	}
 
 	return &timberv1.ListLogWritersResponse{
-		LogWriters: logWritersProto,
+		LogWriters: logWriterProtos,
 	}, nil
 }
 
