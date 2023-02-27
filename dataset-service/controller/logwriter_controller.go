@@ -76,7 +76,6 @@ func (l *LogWriterController) GetLogWriter(
 		ID:        r.Id,
 		ProjectID: r.ProjectId,
 	})
-
 	if err != nil {
 		return nil, err
 	}
