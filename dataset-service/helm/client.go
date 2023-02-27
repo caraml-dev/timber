@@ -145,7 +145,6 @@ func (h *helmClient) Uninstall(release string, namespace string, actionConfig *a
 			return err
 		}
 
-		// install
 		log.Debugf("helm release: %s, namespace: %s does not exists", release, namespace)
 		return nil
 	}
@@ -156,7 +155,7 @@ func (h *helmClient) Uninstall(release string, namespace string, actionConfig *a
 	return err
 }
 
-// create new install action
+// create new installation action
 func (h *helmClient) newInstallAction(actionConfig *action.Configuration, release string, namespace string) *action.Install {
 	installation := action.NewInstall(actionConfig)
 	installation.ReleaseName = release
