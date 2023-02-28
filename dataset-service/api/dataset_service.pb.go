@@ -7,12 +7,11 @@
 package api
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -1106,7 +1105,7 @@ type ListOption struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Offset of the list request
+	// Starting offset of the list request
 	Offset int32 `protobuf:"varint,1,opt,name=offset,proto3" json:"offset,omitempty"`
 	// Number of entry to be returned by list request
 	Limit int32 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`

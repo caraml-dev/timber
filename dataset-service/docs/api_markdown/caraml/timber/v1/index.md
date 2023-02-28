@@ -620,7 +620,7 @@ Response message for ListObservationServices method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| offset | [int32](#int32) |  | Offset of the list request |
+| offset | [int32](#int32) |  | Starting offset of the list request |
 | limit | [int32](#int32) |  | Number of entry to be returned by list request |
 
 

@@ -119,7 +119,7 @@
           },
           {
             "name": "list.offset",
-            "description": "Offset of the list request.",
+            "description": "Starting offset of the list request.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -309,7 +309,7 @@
           },
           {
             "name": "list.offset",
-            "description": "Offset of the list request.",
+            "description": "Starting offset of the list request.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -620,7 +620,7 @@
         "offset": {
           "type": "integer",
           "format": "int32",
-          "title": "Offset of the list request"
+          "title": "Starting offset of the list request"
         },
         "limit": {
           "type": "integer",

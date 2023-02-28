@@ -1,4 +1,4 @@
-## Setup Local Development Environment
+## Development Environment
 
 ### Setup Cluster
 1. create k3d cluster

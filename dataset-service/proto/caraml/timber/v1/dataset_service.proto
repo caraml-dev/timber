@@ -232,7 +232,7 @@ message UpdateObservationServiceResponse {
 }
 
 message ListOption {
-    // Offset of the list request
+    // Starting offset of the list request
     int32 offset = 1;
     // Number of entry to be returned by list request
     int32 limit = 2;
