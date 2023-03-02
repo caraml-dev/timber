@@ -132,7 +132,7 @@ func (l *LogWriterController) UpdateLogWriter(
 		return nil, err
 	}
 
-	logWriter, err := l.updateOrDeleteLogWriter(c, project.Name, model.LogWriterFromProto(r.LogWriter))
+	logWriter, err := l.updateLogWriter(c, project.Name, model.LogWriterFromProto(r.LogWriter))
 	if err != nil {
 		return nil, fmt.Errorf("error updating logwriter: %w", err)
 	}
@@ -186,9 +186,9 @@ func (l *LogWriterController) createLogWriter(ctx context.Context, project strin
 	return logWriter, nil
 }
 
-// updateOrDeleteLogWriter update or uninstall log writer and update the storage accordingly.
+// updateLogWriter updates log writer properties of log writer and its deployment state.
 // The long-running operation is performed in the background and the function will return with log writer having pending status
-func (l *LogWriterController) updateOrDeleteLogWriter(ctx context.Context, project string, logWriter *model.LogWriter) (*model.LogWriter, error) {
+func (l *LogWriterController) updateLogWriter(ctx context.Context, project string, logWriter *model.LogWriter) (*model.LogWriter, error) {
 	targetStatus := logWriter.Status
 	// Update log writer entry in DB with pending state
 	logWriter.Status = model.StatusPending
