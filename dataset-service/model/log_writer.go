@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql/driver"
+	"time"
 
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -39,10 +40,23 @@ func (w *LogWriter) ToLogWriterProto() *timberv1.LogWriter {
 
 // LogWriterFromProto convert LogWriter proto to internal representation of LogWriter
 func LogWriterFromProto(msg *timberv1.LogWriter) *LogWriter {
+	var createdTime time.Time
+	var updatedTime time.Time
+
+	if msg.CreatedAt != nil {
+		createdTime = msg.CreatedAt.AsTime()
+	}
+
+	if msg.UpdatedAt != nil {
+		updatedTime = msg.UpdatedAt.AsTime()
+	}
+
 	return &LogWriter{
 		Base: Base{
 			ID:        msg.Id,
 			ProjectID: msg.ProjectId,
+			CreatedAt: createdTime,
+			UpdatedAt: updatedTime,
 		},
 		Name:   msg.Name,
 		Source: &LogWriterSource{msg.Source},
