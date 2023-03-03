@@ -3,21 +3,21 @@ package helm
 import (
 	"helm.sh/helm/v3/pkg/release"
 
-	"github.com/caraml-dev/timber/dataset-service/api"
+	"github.com/caraml-dev/timber/dataset-service/model"
 )
 
 // ConvertStatus converts helm status to dataset service api status
-func ConvertStatus(status release.Status) api.Status {
+func ConvertStatus(status release.Status) model.Status {
 	switch status {
 	case release.StatusDeployed, release.StatusSuperseded:
-		return api.Status_STATUS_DEPLOYED
+		return model.StatusDeployed
 	case release.StatusUninstalled:
-		return api.Status_STATUS_UNINSTALLED
+		return model.StatusUninstalled
 	case release.StatusFailed:
-		return api.Status_STATUS_FAILED
+		return model.StatusFailed
 	case release.StatusUninstalling, release.StatusPendingInstall, release.StatusPendingUpgrade, release.StatusPendingRollback:
-		return api.Status_STATUS_PENDING
+		return model.StatusPending
 	default:
-		return api.Status_STATUS_UNSPECIFIED
+		return model.StatusUnspecified
 	}
 }

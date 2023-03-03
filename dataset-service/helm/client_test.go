@@ -35,7 +35,7 @@ func actionConfigFixture(t *testing.T) *action.Configuration {
 	}
 }
 
-func Test_helmClient_Install(t *testing.T) {
+func Test_helmClient_InstallOrUpgrade(t *testing.T) {
 	type fields struct {
 		clientGetter genericclioptions.RESTClientGetter
 		chartCache   map[string]*chart.Chart
@@ -47,14 +47,24 @@ func Test_helmClient_Install(t *testing.T) {
 		values        map[string]any
 		actionConfig  *action.Configuration
 	}
+
+	type existingRelease struct {
+		releaseName   string
+		namespaceName string
+		chart         *chart.Chart
+		values        map[string]any
+	}
+
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name            string
+		existingRelease *existingRelease
+		fields          fields
+		args            args
+		wantErr         bool
 	}{
 		{
-			name: "test install",
+			name:            "test install without existing release",
+			existingRelease: nil,
 			fields: fields{
 				clientGetter: nil,
 				chartCache:   map[string]*chart.Chart{},
@@ -69,55 +79,20 @@ func Test_helmClient_Install(t *testing.T) {
 				actionConfig: actionConfigFixture(t),
 			},
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			h := &helmClient{
-				clientGetter: tt.fields.clientGetter,
-				chartCache:   tt.fields.chartCache,
-			}
-			got, err := h.Install(tt.args.releaseName, tt.args.namespaceName, tt.args.chart, tt.args.values, tt.args.actionConfig)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Install() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			assert.Equal(t, tt.args.releaseName, got.Name)
-			assert.Equal(t, tt.args.namespaceName, got.Namespace)
-			assert.Equal(t, release.StatusDeployed, got.Info.Status)
-			assert.Equal(t, "Install complete", got.Info.Description)
-			assert.NotEmpty(t, got.Manifest)
-			assert.Contains(t, got.Manifest, "name: debug-container")
-		})
-	}
-}
-
-func Test_helmClient_Upgrade(t *testing.T) {
-	type fields struct {
-		clientGetter genericclioptions.RESTClientGetter
-		chartCache   map[string]*chart.Chart
-	}
-	type args struct {
-		releaseName   string
-		namespaceName string
-		chart         *chart.Chart
-		oldValues     map[string]any
-		values        map[string]any
-		actionConfig  *action.Configuration
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
 		{
 			name: "test upgrade",
+			existingRelease: &existingRelease{
+				releaseName:   "my-release",
+				namespaceName: "my-namespace",
+				chart:         buildChart(),
+				values: map[string]any{
+					"name": any("debug-container"),
+				},
+			},
 			fields: fields{
 				clientGetter: nil,
 				chartCache:   map[string]*chart.Chart{},
 			},
-
 			args: args{
 				releaseName:   "my-release",
 				namespaceName: "my-namespace",
@@ -125,7 +100,81 @@ func Test_helmClient_Upgrade(t *testing.T) {
 				values: map[string]any{
 					"name": any("debug-container-updated"),
 				},
-				oldValues: map[string]any{
+				actionConfig: actionConfigFixture(t),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h := &helmClient{
+				clientGetter: tt.fields.clientGetter,
+				chartCache:   tt.fields.chartCache,
+			}
+
+			if tt.existingRelease != nil {
+				err := install(tt.existingRelease.releaseName,
+					tt.existingRelease.namespaceName,
+					tt.existingRelease.chart,
+					tt.existingRelease.values,
+					tt.args.actionConfig)
+				assert.NoError(t, err)
+			}
+
+			got, err := h.InstallOrUpgrade(tt.args.releaseName,
+				tt.args.namespaceName,
+				tt.args.chart,
+				tt.args.values,
+				tt.args.actionConfig)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("InstallOrUpgrade() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			assert.Equal(t, tt.args.releaseName, got.Name)
+			assert.Equal(t, tt.args.namespaceName, got.Namespace)
+			assert.Equal(t, release.StatusDeployed, got.Info.Status)
+			if tt.existingRelease != nil {
+				assert.Equal(t, "Upgrade complete", got.Info.Description)
+			} else {
+				assert.Equal(t, "Install complete", got.Info.Description)
+			}
+
+			assert.NotEmpty(t, got.Manifest)
+		})
+	}
+}
+
+func Test_helmClient_Uninstall(t *testing.T) {
+	type fields struct {
+		clientGetter genericclioptions.RESTClientGetter
+		chartCache   map[string]*chart.Chart
+	}
+
+	type args struct {
+		releaseName   string
+		namespaceName string
+		chart         *chart.Chart
+		values        map[string]any
+		actionConfig  *action.Configuration
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "test uninstall",
+			fields: fields{
+				clientGetter: nil,
+				chartCache:   map[string]*chart.Chart{},
+			},
+
+			args: args{
+				releaseName:   "my-release",
+				namespaceName: "my-namespace",
+				chart:         buildChart(),
+				values: map[string]any{
 					"name": any("debug-container"),
 				},
 				actionConfig: actionConfigFixture(t),
@@ -139,23 +188,26 @@ func Test_helmClient_Upgrade(t *testing.T) {
 				chartCache:   tt.fields.chartCache,
 			}
 
-			_, err := h.Install(tt.args.releaseName, tt.args.namespaceName, tt.args.chart, tt.args.oldValues, tt.args.actionConfig)
+			_, err := h.InstallOrUpgrade(tt.args.releaseName, tt.args.namespaceName, tt.args.chart, tt.args.values, tt.args.actionConfig)
 			assert.NoError(t, err)
 
-			got, err := h.Upgrade(tt.args.releaseName, tt.args.namespaceName, tt.args.chart, tt.args.values, tt.args.actionConfig)
+			err = h.Uninstall(tt.args.releaseName, tt.args.namespaceName, tt.args.actionConfig)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Upgrade() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("InstallOrUpgrade() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-
-			assert.Equal(t, tt.args.releaseName, got.Name)
-			assert.Equal(t, tt.args.namespaceName, got.Namespace)
-			assert.Equal(t, release.StatusDeployed, got.Info.Status)
-			assert.Equal(t, "Upgrade complete", got.Info.Description)
-			assert.NotEmpty(t, got.Manifest)
-			assert.Contains(t, got.Manifest, "name: debug-container-updated")
 		})
 	}
+}
+
+func install(release string, namespace string, c *chart.Chart, values map[string]any, actionConfig *action.Configuration) error {
+	installAction := action.NewInstall(actionConfig)
+	installAction.ReleaseName = release
+	installAction.Namespace = namespace
+	installAction.CreateNamespace = true
+	_, err := installAction.Run(c, values)
+
+	return err
 }
 
 func buildChart() *chart.Chart {

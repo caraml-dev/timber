@@ -16,6 +16,8 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 
+	dserrors "github.com/caraml-dev/timber/dataset-service/errors"
+
 	"github.com/caraml-dev/timber/common/errors"
 	"github.com/caraml-dev/timber/common/log"
 	"github.com/caraml-dev/timber/common/server"
@@ -83,7 +85,7 @@ func NewServer(configFiles []string) (*Server, error) {
 		UnmarshalOptions: protojson.UnmarshalOptions{
 			DiscardUnknown: true,
 		},
-	}),
+	}), runtime.WithErrorHandler(dserrors.Handler),
 	)
 	// Register custom controller gRPC service
 	grpcServer, srv := controller.NewDatasetServiceController(appCtx)

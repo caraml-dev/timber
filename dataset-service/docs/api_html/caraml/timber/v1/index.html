@@ -350,6 +350,10 @@
                 </li>
               
                 <li>
+                  <a href="#caraml.timber.v1.ListOption"><span class="badge">M</span>ListOption</a>
+                </li>
+              
+                <li>
                   <a href="#caraml.timber.v1.UpdateLogWriterRequest"><span class="badge">M</span>UpdateLogWriterRequest</a>
                 </li>
               
@@ -680,6 +684,13 @@ Status of the log writer deployment </p></td>
                 </tr>
               
                 <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error message, will be populated if the status failed </p></td>
+                </tr>
+              
+                <tr>
                   <td>created_at</td>
                   <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
                   <td></td>
@@ -903,6 +914,13 @@ Whereas, if the value is LOG_TYPE_ROUTER_LOG, then router_log_source should be v
                   <td></td>
                   <td><p>TODO: Add details of where the log is stored at
 Status of the observation service </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error message </p></td>
                 </tr>
               
                 <tr>
@@ -1341,6 +1359,13 @@ Observation Service should be deployed for just the eager API</p></td>
                   <td><p>The CaraML project ID to retrieve list of Log Writers from. </p></td>
                 </tr>
               
+                <tr>
+                  <td>list</td>
+                  <td><a href="#caraml.timber.v1.ListOption">ListOption</a></td>
+                  <td></td>
+                  <td><p>List request details </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1389,6 +1414,13 @@ Observation Service should be deployed for just the eager API</p></td>
                   <td><p>The CaraML project ID to retrieve list of Observation Services from. </p></td>
                 </tr>
               
+                <tr>
+                  <td>list</td>
+                  <td><a href="#caraml.timber.v1.ListOption">ListOption</a></td>
+                  <td></td>
+                  <td><p>List request details </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1411,6 +1443,37 @@ Observation Service should be deployed for just the eager API</p></td>
                   <td><a href="#caraml.timber.v1.ObservationService">ObservationService</a></td>
                   <td>repeated</td>
                   <td><p>Observation Services deployed by Dataset Service for a particular CaraML project. </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="caraml.timber.v1.ListOption">ListOption</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>offset</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Starting offset of the list request </p></td>
+                </tr>
+              
+                <tr>
+                  <td>limit</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Number of entry to be returned by list request </p></td>
                 </tr>
               
             </tbody>

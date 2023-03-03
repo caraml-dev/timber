@@ -46,6 +46,7 @@
     - [ListLogWritersResponse](#caraml-timber-v1-ListLogWritersResponse)
     - [ListObservationServicesRequest](#caraml-timber-v1-ListObservationServicesRequest)
     - [ListObservationServicesResponse](#caraml-timber-v1-ListObservationServicesResponse)
+    - [ListOption](#caraml-timber-v1-ListOption)
     - [UpdateLogWriterRequest](#caraml-timber-v1-UpdateLogWriterRequest)
     - [UpdateLogWriterResponse](#caraml-timber-v1-UpdateLogWriterResponse)
     - [UpdateObservationServiceRequest](#caraml-timber-v1-UpdateObservationServiceRequest)
@@ -208,6 +209,7 @@ LogWriter describes details of a Log Writer
 | name | [string](#string) |  | Name of the log writer |
 | source | [LogWriterSource](#caraml-timber-v1-LogWriterSource) |  | Log writer source |
 | status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the log writer deployment |
+| error | [string](#string) |  | Error message, will be populated if the status failed |
 | created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
 | updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
@@ -309,6 +311,7 @@ ObservationServiceConfig describes details of a Observation Service
 | name | [string](#string) |  | Observation service name |
 | source | [ObservationServiceSource](#caraml-timber-v1-ObservationServiceSource) |  | Configuration for pull-based Observation Service data source. |
 | status | [Status](#caraml-timber-v1-Status) |  | TODO: Add details of where the log is stored at Status of the observation service |
+| error | [string](#string) |  | Error message |
 | created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Creation timestamp |
 | updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  | Last update timestamp |
 
@@ -556,6 +559,7 @@ Request message for ListLogWriters method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Log Writers from. |
+| list | [ListOption](#caraml-timber-v1-ListOption) |  | List request details |
 
 
 
@@ -586,6 +590,7 @@ Request message for ListObservationServices method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [int64](#int64) |  | The CaraML project ID to retrieve list of Observation Services from. |
+| list | [ListOption](#caraml-timber-v1-ListOption) |  | List request details |
 
 
 
@@ -601,6 +606,22 @@ Response message for ListObservationServices method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | observation_services | [ObservationService](#caraml-timber-v1-ObservationService) | repeated | Observation Services deployed by Dataset Service for a particular CaraML project. |
+
+
+
+
+
+
+<a name="caraml-timber-v1-ListOption"></a>
+
+### ListOption
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| offset | [int32](#int32) |  | Starting offset of the list request |
+| limit | [int32](#int32) |  | Number of entry to be returned by list request |
 
 
 

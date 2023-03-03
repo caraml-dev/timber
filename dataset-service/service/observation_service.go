@@ -12,6 +12,7 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/caraml-dev/timber/dataset-service/model"
 	osconfig "github.com/caraml-dev/timber/observation-service/config"
 )
 
@@ -22,10 +23,10 @@ const (
 
 // ObservationService provides a set of methods for controlling observation log's deployment
 type ObservationService interface {
-	// Create creates new Observation Service Helm release and returns ID of created Observation Service
-	Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
-	// Update updates existing Observation Service Helm release and returns ID of updated Observation Service
-	Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error)
+	// InstallOrUpgrade install or update an existing Observation Service
+	InstallOrUpgrade(projectName string, svc *model.ObservationService) (*model.ObservationService, error)
+	// Uninstall uninstalls existing Observation Service Helm release
+	Uninstall(projectName string, svc *model.ObservationService) (*model.ObservationService, error)
 }
 
 type observationService struct {
@@ -54,48 +55,38 @@ func NewObservationService(
 	}, nil
 }
 
-func (o *observationService) Create(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
+func (o *observationService) InstallOrUpgrade(projectName string, svc *model.ObservationService) (*model.ObservationService, error) {
 	//TODO: create BQ dataset and/or table before deploying the observation service, although observation service has that privileges
-	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
+	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.Name)
 	val, err := o.createHelmValues(releaseName, projectName, svc)
 	if err != nil {
 		return nil, fmt.Errorf("error creating helm values: %w", err)
 	}
 	// Trigger helm installation
-	r, err := o.helmClient.Install(releaseName, projectName, o.helmChart, val, nil)
+	r, err := o.helmClient.InstallOrUpgrade(releaseName, projectName, o.helmChart, val, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
 	svc.Status = helm.ConvertStatus(r.Info.Status)
-	// TODO: store observation service in DB and update the status based on the final release status
+	svc.Error = ""
 	return svc, nil
 }
 
-func (o *observationService) Update(projectName string, svc *timberv1.ObservationService) (*timberv1.ObservationService, error) {
+func (o *observationService) Uninstall(projectName string, svc *model.ObservationService) (*model.ObservationService, error) {
+	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.Name)
 
-	releaseName := fmt.Sprintf("%s-%s", releaseNamePrefix, svc.GetName())
-	val, err := o.createHelmValues(releaseName, projectName, svc)
+	err := o.helmClient.Uninstall(releaseName, projectName, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error creating helm values: %w", err)
+		return nil, fmt.Errorf("error creating observation service: %w", err)
 	}
 
-	// Trigger helm release update
-	r, err := o.helmClient.Upgrade(releaseName, projectName, o.helmChart, val, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error upgrading observation service: %w", err)
-	}
-
-	log.Debugf("deployment manifest %s", r.Manifest)
-
-	svc.Status = helm.ConvertStatus(r.Info.Status)
-
-	// TODO: store observation service in DB and update the status based on the final release status
+	svc.Status = model.StatusUninstalled
 	return svc, nil
 }
 
 // createHelmValues create helm values for deployment based on the default values and the configuration given by the request
-func (o *observationService) createHelmValues(releaseName string, projectName string, svc *timberv1.ObservationService) (map[string]any, error) {
+func (o *observationService) createHelmValues(releaseName string, projectName string, svc *model.ObservationService) (map[string]any, error) {
 	val := &values.ObservationServiceHelmValues{}
 	err := copier.CopyWithOption(val, o.defaults, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if err != nil {
@@ -121,9 +112,9 @@ func (o *observationService) createHelmValues(releaseName string, projectName st
 // setLogConsumerConfig configures custom values for LogConsumerConfig
 func setLogConsumerConfig(
 	val *values.ObservationServiceHelmValues,
-	svc *timberv1.ObservationService,
+	svc *model.ObservationService,
 ) (*values.ObservationServiceHelmValues, error) {
-	switch svc.GetSource().GetType() {
+	switch svc.Source.GetType() {
 	case timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_EAGER:
 		return nil, fmt.Errorf("source type (eager) is currently unsupported")
 	case timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA:
@@ -133,7 +124,7 @@ func setLogConsumerConfig(
 	case timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_UNSPECIFIED:
 		log.Infof("No source type specified for Observation Service deployment")
 	default:
-		return nil, fmt.Errorf("invalid source type (%s) was provided", svc.GetSource().GetType())
+		return nil, fmt.Errorf("invalid source type (%s) was provided", svc.Source.GetType())
 	}
 
 	return val, nil
@@ -144,7 +135,7 @@ func setLogConsumerConfig(
 func setLogProducerConfig(releaseName string,
 	projectName string,
 	val *values.ObservationServiceHelmValues,
-	svc *timberv1.ObservationService,
+	svc *model.ObservationService,
 	bqConfig *config.BQConfig) (*values.ObservationServiceHelmValues, error) {
 
 	// configure fluentd and BQ as default
@@ -155,7 +146,7 @@ func setLogProducerConfig(releaseName string,
 
 	// TODO: extract BQ table/dataset naming into separate functions
 	datasetName := bq.DatasetFromProject(bqConfig, projectName)
-	tableName := bq.TableFromObservationService(bqConfig, svc.GetName())
+	tableName := bq.TableFromObservationService(bqConfig, svc.Name)
 
 	val.ObservationService.APIConfig.LogProducerConfig.FluentdConfig.BQConfig.Project = bqConfig.GCPProject
 	val.ObservationService.APIConfig.LogProducerConfig.FluentdConfig.BQConfig.Dataset = datasetName

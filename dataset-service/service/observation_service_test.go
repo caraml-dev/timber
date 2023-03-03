@@ -16,6 +16,7 @@ import (
 	"github.com/caraml-dev/timber/dataset-service/config"
 	"github.com/caraml-dev/timber/dataset-service/helm/mocks"
 	"github.com/caraml-dev/timber/dataset-service/helm/values"
+	"github.com/caraml-dev/timber/dataset-service/model"
 	osconfig "github.com/caraml-dev/timber/observation-service/config"
 )
 
@@ -38,16 +39,16 @@ func (s *ObservationServiceTestSuite) TearDownSuite() {
 	s.Suite.T().Log("Cleaning up ObservationServiceTestSuite")
 }
 
-func (s *ObservationServiceTestSuite) TestCreate() {
+func (s *ObservationServiceTestSuite) TestInstallOrUpgrade() {
 	type args struct {
 		projectName string
-		svc         *timberv1.ObservationService
+		svc         *model.ObservationService
 	}
 
 	tests := []struct {
 		name string
 		args args
-		want *timberv1.ObservationService
+		want *model.ObservationService
 		// helm values that's being overridden by observation service
 		wantOverrideHelmValues *values.ObservationServiceHelmValues
 		wantErr                bool
@@ -56,14 +57,16 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 			name: "create",
 			args: args{
 				projectName: "my-project",
-				svc: &timberv1.ObservationService{
-					ProjectId: 1,
-					Name:      "my-observation-svc",
-					Source: &timberv1.ObservationServiceSource{
-						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
-						Kafka: &timberv1.KafkaConfig{
-							Brokers: "kafka.brokers",
-							Topic:   "sample-topic",
+				svc: &model.ObservationService{
+					Base: model.Base{ProjectID: 1},
+					Name: "my-observation-svc",
+					Source: &model.ObservationServiceSource{
+						ObservationServiceSource: &timberv1.ObservationServiceSource{
+							Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
+							Kafka: &timberv1.KafkaConfig{
+								Brokers: "kafka.brokers",
+								Topic:   "sample-topic",
+							},
 						},
 					},
 				},
@@ -114,82 +117,11 @@ func (s *ObservationServiceTestSuite) TestCreate() {
 					}),
 				},
 			},
-			want: &timberv1.ObservationService{
-				ProjectId: 1,
-				Name:      "my-observation-svc",
-				Source: &timberv1.ObservationServiceSource{
-					Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
-					Kafka: &timberv1.KafkaConfig{
-						Brokers: "kafka.brokers",
-						Topic:   "sample-topic",
-					},
-				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		s.Run(tt.name, func() {
-			mockHelmClient := &mocks.Client{}
-			mockHelmClient.On("Install",
-				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
-				tt.args.projectName,
-				s.helmChart,
-				mock.Anything,
-				mock.Anything,
-			).
-				Return(&release.Release{
-					Info: &release.Info{
-						Status: release.StatusDeployed,
-					},
-				}, nil)
-
-			obs := &observationService{
-				helmClient:         mockHelmClient,
-				helmChart:          s.helmChart,
-				commonDeployConfig: s.config.CommonDeploymentConfig,
-				defaults:           s.config.ObservationServiceConfig.DefaultValues,
-			}
-
-			got, err := obs.Create(tt.args.projectName, tt.args.svc)
-			if (err != nil) != tt.wantErr {
-				s.T().Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			assert.Equal(s.T(), tt.want, got)
-
-			// validate that the helm values passed to helm client is as expected
-			// the expected data is built from default values (`s.obs.defaults`) and merged with `wantOverrideHelmValues`
-			s.assertHelmValuesOverride(mockHelmClient, tt.wantOverrideHelmValues)
-			mockHelmClient.AssertExpectations(s.T())
-		})
-	}
-}
-
-func (s *ObservationServiceTestSuite) TestUpdate() {
-	type args struct {
-		projectName string
-		svc         *timberv1.ObservationService
-	}
-
-	tests := []struct {
-		name string
-		args args
-		want *timberv1.ObservationService
-		// helm values that's being overridden by observation service
-		wantOverrideHelmValues *values.ObservationServiceHelmValues
-		wantErr                bool
-	}{
-		{
-			name: "update",
-			args: args{
-				projectName: "my-project",
-				svc: &timberv1.ObservationService{
-					ProjectId: 1,
-					Name:      "my-observation-svc",
-					Source: &timberv1.ObservationServiceSource{
+			want: &model.ObservationService{
+				Base: model.Base{ProjectID: 1},
+				Name: "my-observation-svc",
+				Source: &model.ObservationServiceSource{
+					ObservationServiceSource: &timberv1.ObservationServiceSource{
 						Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
 						Kafka: &timberv1.KafkaConfig{
 							Brokers: "kafka.brokers",
@@ -197,64 +129,7 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 						},
 					},
 				},
-			},
-			wantOverrideHelmValues: &values.ObservationServiceHelmValues{
-				ObservationService: values.ObservationService{
-					APIConfig: osconfig.Config{
-						DeploymentConfig: osconfig.DeploymentConfig{
-							ProjectName: "my-project",
-							ServiceName: "my-observation-svc",
-						},
-						LogConsumerConfig: osconfig.LogConsumerConfig{
-							Kind: osconfig.LoggerKafkaConsumer,
-							KafkaConfig: &osconfig.KafkaConfig{
-								Brokers: "kafka.brokers",
-								Topic:   "sample-topic",
-							},
-						},
-						LogProducerConfig: osconfig.LogProducerConfig{
-							Kind: osconfig.LoggerFluentdProducer,
-							FluentdConfig: &osconfig.FluentdConfig{
-								Kind: osconfig.LoggerBQSinkFluentdProducer,
-								Host: "os-my-observation-svc-fluentd.my-project",
-								BQConfig: &osconfig.BQConfig{
-									Project: "my-gcp-project",
-									Dataset: "caraml_my_project",
-									Table:   "os_my_observation_svc",
-								},
-							},
-						},
-						MonitoringConfig: osconfig.MonitoringConfig{},
-					},
-				},
-				Fluentd: values.FluentdHelmValues{
-					ExtraEnvs: values.MergeEnvs(s.config.ObservationServiceConfig.DefaultValues.Fluentd.ExtraEnvs, []values.Env{
-						{
-							Name:  values.FluentdBQDatasetEnv,
-							Value: "caraml_my_project",
-						},
-						{
-							Name:  values.FluentdGCPProjectEnv,
-							Value: "my-gcp-project",
-						},
-						{
-							Name:  values.FluentdBQTableEnv,
-							Value: "os_my_observation_svc",
-						},
-					}),
-				},
-			},
-			want: &timberv1.ObservationService{
-				ProjectId: 1,
-				Name:      "my-observation-svc",
-				Source: &timberv1.ObservationServiceSource{
-					Type: timberv1.ObservationServiceSourceType_OBSERVATION_SERVICE_SOURCE_TYPE_KAFKA,
-					Kafka: &timberv1.KafkaConfig{
-						Brokers: "kafka.brokers",
-						Topic:   "sample-topic",
-					},
-				},
-				Status: timberv1.Status_STATUS_DEPLOYED,
+				Status: model.StatusDeployed,
 			},
 		},
 	}
@@ -262,7 +137,7 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 	for _, tt := range tests {
 		s.Run(tt.name, func() {
 			mockHelmClient := &mocks.Client{}
-			mockHelmClient.On("Upgrade",
+			mockHelmClient.On("InstallOrUpgrade",
 				fmt.Sprintf("%s-%s", releaseNamePrefix, tt.args.svc.Name),
 				tt.args.projectName,
 				s.helmChart,
@@ -282,9 +157,9 @@ func (s *ObservationServiceTestSuite) TestUpdate() {
 				defaults:           s.config.ObservationServiceConfig.DefaultValues,
 			}
 
-			got, err := obs.Update(tt.args.projectName, tt.args.svc)
+			got, err := obs.InstallOrUpgrade(tt.args.projectName, tt.args.svc)
 			if (err != nil) != tt.wantErr {
-				s.T().Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+				s.T().Errorf("InstallOrUpgrade() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 

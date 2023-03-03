@@ -3,6 +3,7 @@ package config
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gojek/mlp/api/pkg/instrumentation/newrelic"
 	"github.com/gojek/mlp/api/pkg/instrumentation/sentry"
@@ -157,6 +158,17 @@ func TestLoadConfigFiles(t *testing.T) {
 						Enabled: false,
 						DSN:     "xxx.xxx.xxx",
 						Labels:  map[string]string{"app": "dataset-service"},
+					},
+					DatabaseConfig: &DatabaseConfig{
+						Host:            "localhost",
+						Port:            5432,
+						User:            "timber",
+						Password:        "dummy",
+						Database:        "timber",
+						ConnMaxIdleTime: time.Second * 60,
+						ConnMaxLifetime: time.Second * 3600,
+						MaxIdleConns:    2,
+						MaxOpenConns:    1,
 					},
 				},
 				CommonDeploymentConfig: &CommonDeploymentConfig{
